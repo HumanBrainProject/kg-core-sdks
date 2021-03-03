@@ -16,8 +16,15 @@ from kg_core.__communication import TokenHandler, RequestsWithTokenHandler
 from kg_core.models import KGResult, Stage, Pagination, ResponseConfiguration
 
 
+def _reduce_to_uuid(id):
+    if id and id.startswith(KGv3.ID_NAMESPACE):
+        return id[len(KGv3.ID_NAMESPACE):]
+    return id
+
+
 class KGv3(RequestsWithTokenHandler):
     KG_VERSION = "v3-beta"
+    ID_NAMESPACE = "https://kg.ebrains.eu/api/instances/"
 
     def __init__(self, host: str, token_handler: TokenHandler):
         super(KGv3, self).__init__(f"https://{host}/{KGv3.KG_VERSION}", token_handler)
@@ -28,7 +35,7 @@ class KGv3(RequestsWithTokenHandler):
                              "stage": stage,
                              "from": pagination.start_from,
                              "size": pagination.size,
-                             "instanceId": instance_id
+                             "instanceId": _reduce_to_uuid(instance_id)
                          })
 
     def instances(self, stage: Stage, target_type: str, space: str = None, search_by_label: str = None, response_configuration: ResponseConfiguration = ResponseConfiguration(),
