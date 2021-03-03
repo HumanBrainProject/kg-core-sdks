@@ -22,8 +22,13 @@ class KGv3(RequestsWithTokenHandler):
     def __init__(self, host: str, token_handler: TokenHandler):
         super(KGv3, self).__init__(f"https://{host}/{KGv3.KG_VERSION}", token_handler)
 
-    def queries(self, query: dict, stage: Stage) -> KGResult:
-        return self.post("/queries", query, {"stage": stage})
+    def queries(self, query: dict, stage: Stage, pagination: Pagination = Pagination()) -> KGResult:
+        return self.post("/queries", query,
+                         {
+                             "stage": stage,
+                             "from": pagination.start_from,
+                             "size": pagination.size
+                         })
 
     def instances(self, stage: Stage, target_type: str, space: str = None, search_by_label: str = None, response_configuration: ResponseConfiguration = ResponseConfiguration(),
                   pagination: Pagination = Pagination()) -> KGResult:
