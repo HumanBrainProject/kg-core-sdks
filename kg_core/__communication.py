@@ -46,37 +46,6 @@ class TokenHandler(ABC):
                     self._auth_endpoint = auth_endpoint["data"]["endpoint"]
 
 
-class SimpleToken(TokenHandler):
-
-    def __init__(self, token: str):
-        super(SimpleToken, self).__init__()
-        self.__simple_token = token
-
-    def _fetch_token(self):
-        return self.__simple_token
-
-
-class ClientCredentials(TokenHandler):
-
-    def __init__(self, client_id: str, client_secret: str):
-        super(ClientCredentials, self).__init__()
-        self.__client_id = client_id
-        self.__client_secret = client_secret
-
-    def _fetch_token(self):
-        if self._auth_endpoint and self.__client_id and self.__client_secret:
-            token_response = requests.post(self._auth_endpoint, data={
-                "grant_type": "client_credentials",
-                "client_id": self.__client_id,
-                "client_secret": self.__client_secret
-            })
-            if token_response.status_code == 200:
-                token = token_response.json()
-                if token and "access_token" in token:
-                    return token["access_token"]
-            return None
-
-
 class RequestsWithTokenHandler(ABC):
     def __init__(self, endpoint: str, token_handler: TokenHandler):
         self.token_handler = token_handler
