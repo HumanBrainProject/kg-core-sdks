@@ -12,9 +12,7 @@
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
 
-from copy import deepcopy
-
-from kg_core.auth import TokenHandler, RequestsWithTokenHandler
+from kg_core.__communication import TokenHandler, RequestsWithTokenHandler
 from kg_core.models import KGResult, Stage, Pagination, ResponseConfiguration
 
 
@@ -24,18 +22,7 @@ class KGv3(RequestsWithTokenHandler):
     def __init__(self, host: str, token_handler: TokenHandler):
         super(KGv3, self).__init__(f"https://{host}/{KGv3.KG_VERSION}", token_handler)
 
-    def next_page(self, result: KGResult):
-        remaining_items = result.total() - (result.start_from() + result.size())
-        if remaining_items > 0:
-            if result.request_args:
-                new_args = deepcopy(result.request_args)
-                if "params" not in new_args:
-                    new_args["params"] = {}
-                new_args["params"]["from"] = result.start_from() + result.size()
-                return self._do_request(new_args, result.request_payload)
-        return None
-
-    def queries(self, query: dict, stage: Stage):
+    def queries(self, query: dict, stage: Stage) -> KGResult:
         return self.post("/queries", query, {"stage": stage})
 
     def instances(self, stage: Stage, target_type: str, space: str = None, search_by_label: str = None, response_configuration: ResponseConfiguration = ResponseConfiguration(),

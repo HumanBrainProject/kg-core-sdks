@@ -123,3 +123,14 @@ class RequestsWithTokenHandler(ABC):
 
     def patch(self, path: str, payload, params: dict):
         return self._request("PATCH", path, payload, params)
+
+    def next_page(self, result: KGResult):
+        remaining_items = result.total() - (result.start_from() + result.size())
+        if remaining_items > 0:
+            if result.request_args:
+                new_args = deepcopy(result.request_args)
+                if "params" not in new_args:
+                    new_args["params"] = {}
+                new_args["params"]["from"] = result.start_from() + result.size()
+                return self._do_request(new_args, result.request_payload)
+        return None
