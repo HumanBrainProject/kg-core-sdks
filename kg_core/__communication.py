@@ -69,7 +69,7 @@ class RequestsWithTokenHandler(ABC):
         }
         return self._do_request(args, payload)
 
-    def _do_request(self, args, payload):
+    def _do_request(self, args, payload) -> KGResult:
         self._set_headers(args, False)
         if payload is not None:
             args['json'] = payload
@@ -79,7 +79,26 @@ class RequestsWithTokenHandler(ABC):
             r = requests.request(**args)
         args_clone = deepcopy(args)
         del args_clone["headers"]
-        return KGResult(r.json(), args_clone, payload)
+        """
+        if python3.9 support we can simplify with
+        return KGResult(
+            **{
+                r.json | {
+                    request_args: args_clone,
+                    request_payload: payload
+                }
+            }
+        )
+        """
+        return KGResult(
+            **{
+                **r.json(), 
+                **{
+                    request_args: args_clone
+                    request_payload: payload
+                }
+        )
+
 
     def get(self, path: str, params: dict):
         return self._request("GET", path, None, params)
