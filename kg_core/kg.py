@@ -29,6 +29,8 @@ class KGv3(RequestsWithTokenHandler):
     @staticmethod
     def uuid_from_absolute_id(identifier) -> Optional[UUID]:
         if identifier:
+            if type(identifier) == UUID:
+                return identifier
             try:
                 if identifier.startswith(KGv3.ID_NAMESPACE):
                     return uuid.UUID(identifier[len(KGv3.ID_NAMESPACE):])
