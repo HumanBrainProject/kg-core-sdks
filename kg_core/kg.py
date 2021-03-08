@@ -11,7 +11,8 @@
 #   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
-from typing import List
+import uuid
+from typing import List, Optional
 from uuid import UUID
 
 from kg_core.__communication import TokenHandler, RequestsWithTokenHandler
@@ -26,9 +27,14 @@ class KGv3(RequestsWithTokenHandler):
     ID_NAMESPACE = "https://kg.ebrains.eu/api/instances/"
 
     @staticmethod
-    def uuid_from_absolute_id(identifier):
-        if identifier and identifier.startswith(KGv3.ID_NAMESPACE):
-            return identifier[len(KGv3.ID_NAMESPACE):]
+    def uuid_from_absolute_id(identifier) -> Optional[UUID]:
+        if identifier:
+            try:
+                if identifier.startswith(KGv3.ID_NAMESPACE):
+                    return uuid.UUID(identifier[len(KGv3.ID_NAMESPACE):])
+                return uuid.UUID(identifier)
+            except ValueError:
+                return None
         return None
 
     def __init__(self, host: str, token_handler: TokenHandler):
