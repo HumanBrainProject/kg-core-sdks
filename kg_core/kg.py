@@ -85,3 +85,29 @@ class KGv3(RequestsWithTokenHandler):
                              "deferInference": defer_inference,
                              "normalizePayload": normalize_payload
                          })
+
+    def replace_contribution_to_instance(self, instance_id: UUID, payload: dict, undeprecate: bool=False, response_configuration: ResponseConfiguration = ResponseConfiguration(), defer_inference:bool=False, normalize_payload:bool = True):
+        return self.put(path = f"/instances/{instance_id}", payload=payload, params={
+                            "undeprecate": undeprecate,
+                             "returnPayload": response_configuration.return_payload,
+                             "returnPermissions": response_configuration.return_permissions,
+                             "returnAlternatives": response_configuration.return_alternatives,
+                             "returnEmbedded": response_configuration.return_embedded,
+                             #"returnIncomingLinks": response_configuration.return_incoming_links,
+                             #"sortByLabel": response_configuration.sort_by_label,
+                             "deferInference": defer_inference,
+                             "normalizePayload": normalize_payload
+                         })
+
+    def partially_update_contribution_to_instance(self, instance_id: UUID, payload: dict, undeprecate: bool=False, response_configuration: ResponseConfiguration = ResponseConfiguration(), defer_inference:bool=False, normalize_payload:bool = True):
+        return self.patch(path = f"/instances/{instance_id}", payload=payload, params={
+                            "undeprecate": undeprecate,
+                             "returnPayload": response_configuration.return_payload,
+                             "returnPermissions": response_configuration.return_permissions,
+                             "returnAlternatives": response_configuration.return_alternatives,
+                             "returnEmbedded": response_configuration.return_embedded,
+                             #"returnIncomingLinks": response_configuration.return_incoming_links,
+                             #"sortByLabel": response_configuration.sort_by_label,
+                             "deferInference": defer_inference,
+                             "normalizePayload": normalize_payload
+                         })
