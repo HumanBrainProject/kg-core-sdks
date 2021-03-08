@@ -30,9 +30,9 @@ class KGv3(RequestsWithTokenHandler):
     def __init__(self, host: str, token_handler: TokenHandler):
         super(KGv3, self).__init__(f"https://{host}/{KGv3.KG_VERSION}", token_handler)
 
-    def queries(self, query: dict, stage: Stage, instance_id = None, pagination: Pagination = Pagination()) -> KGResult:
-        return self.post("/queries", query,
-                         {
+    def queries(self, query: dict, stage: Stage, instance_id: str = None, pagination: Pagination = Pagination()) -> KGResult:
+        return self.post(path="/queries", payload=query,
+                         params= {
                              "stage": stage,
                              "from": pagination.start_from,
                              "size": pagination.size,
@@ -40,9 +40,9 @@ class KGv3(RequestsWithTokenHandler):
                          })
 
     def get_instances(self, stage: Stage, target_type: str, space: str = None, search_by_label: str = None, response_configuration: ResponseConfiguration = ResponseConfiguration(),
-                  pagination: Pagination = Pagination()) -> KGResult:
-        return self.get("/instances",
-                        {
+                      pagination: Pagination = Pagination()) -> KGResult:
+        return self.get(path="/instances",
+                        params={
                             "stage": stage,
                             "type": target_type,
                             "space": space,
@@ -57,17 +57,17 @@ class KGv3(RequestsWithTokenHandler):
                             "size": pagination.size
                         })
 
-    def create_instance(self,  space: str, instance_id:UUID = None, response_configuration: ResponseConfiguration = ResponseConfiguration(),
-                  defer_inference: bool = False, normalize_payload = False) -> KGResult:
-        return self.post("/instances" if instance_id is None else f"/instances/{instance_id}",
-                        {
-                            "space": space,
-                            "returnPayload": response_configuration.return_payload,
-                            "returnPermissions": response_configuration.return_permissions,
-                            "returnAlternatives": response_configuration.return_alternatives,
-                            "returnEmbedded": response_configuration.return_embedded,
-                            "returnIncomingLinks": response_configuration.return_incoming_links,
-                            "sortByLabel": response_configuration.sort_by_label,
-                            "deferInference": defer_inference,
-                            "normalizePayload": normalize_payload
-                        })
+    def create_instance(self, space: str, payload: dict, instance_id: UUID = None, response_configuration: ResponseConfiguration = ResponseConfiguration(),
+                        defer_inference: bool = False, normalize_payload=False) -> KGResult:
+        return self.post(path="/instances" if instance_id is None else f"/instances/{instance_id}", payload=payload,
+                         params={
+                             "space": space,
+                             "returnPayload": response_configuration.return_payload,
+                             "returnPermissions": response_configuration.return_permissions,
+                             "returnAlternatives": response_configuration.return_alternatives,
+                             "returnEmbedded": response_configuration.return_embedded,
+                             "returnIncomingLinks": response_configuration.return_incoming_links,
+                             "sortByLabel": response_configuration.sort_by_label,
+                             "deferInference": defer_inference,
+                             "normalizePayload": normalize_payload
+                         })
