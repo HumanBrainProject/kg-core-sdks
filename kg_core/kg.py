@@ -11,16 +11,17 @@
 #   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
+from typing import List
 from uuid import UUID
 
 from kg_core.__communication import TokenHandler, RequestsWithTokenHandler
 from kg_core.models import KGResult, Stage, Pagination, ResponseConfiguration
 
 
-def _reduce_to_uuid(id):
-    if id and id.startswith(KGv3.ID_NAMESPACE):
-        return id[len(KGv3.ID_NAMESPACE):]
-    return id
+def _reduce_to_uuid(identifier):
+    if identifier and identifier.startswith(KGv3.ID_NAMESPACE):
+        return identifier[len(KGv3.ID_NAMESPACE):]
+    return identifier
 
 
 class KGv3(RequestsWithTokenHandler):
@@ -32,11 +33,24 @@ class KGv3(RequestsWithTokenHandler):
 
     def queries(self, query: dict, stage: Stage, instance_id: str = None, pagination: Pagination = Pagination()) -> KGResult:
         return self.post(path="/queries", payload=query,
-                         params= {
+                         params={
                              "stage": stage,
                              "from": pagination.start_from,
                              "size": pagination.size,
                              "instanceId": _reduce_to_uuid(instance_id)
+                         })
+
+    def get_instances_by_identifiers(self, stage: Stage, identifiers: List[str], response_configuration: ResponseConfiguration = ResponseConfiguration()):
+        return self.post(path="/instancesByIdentifiers",
+                         payload=identifiers,
+                         params={
+                             "stage": stage,
+                             "returnPayload": response_configuration.return_payload,
+                             "returnPermissions": response_configuration.return_permissions,
+                             "returnAlternatives": response_configuration.return_alternatives,
+                             "returnEmbedded": response_configuration.return_embedded,
+                             "returnIncomingLinks": response_configuration.return_incoming_links,
+                             "sortByLabel": response_configuration.sort_by_label
                          })
 
     def get_instances(self, stage: Stage, target_type: str, space: str = None, search_by_label: str = None, response_configuration: ResponseConfiguration = ResponseConfiguration(),
