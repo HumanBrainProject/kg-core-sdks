@@ -43,6 +43,12 @@ class KGResult(object):
 
     def data(self):
         return self.payload["data"] if "data" in self.payload else None
+    
+    def is_successful(self):
+        return not self.error()
+    
+    def error(self):
+        return self.payload["error"] if "error" in self.payload else None
 
     def message(self):
         return self.payload["message"] if "message" in self.payload else None
