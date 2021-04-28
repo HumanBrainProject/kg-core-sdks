@@ -27,6 +27,10 @@ class KGv3(RequestsWithTokenHandler):
     ID_NAMESPACE = "https://kg.ebrains.eu/api/instances/"
 
     @staticmethod
+    def absolute_id(uuid:UUID) -> str:
+        return f"{KGv3.ID_NAMESPACE}{uuid}"
+    
+    @staticmethod
     def uuid_from_absolute_id(identifier) -> Optional[UUID]:
         if identifier:
             if type(identifier) == UUID:
