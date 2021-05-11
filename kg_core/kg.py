@@ -38,9 +38,6 @@ from kg_core.__communication import TokenHandler, RequestsWithTokenHandler
 from kg_core.models import KGResult, Stage, Pagination, ResponseConfiguration
 
 
-
-
-
 class KGv3(RequestsWithTokenHandler):
     KG_VERSION = "v3-beta"
     ID_NAMESPACE = "https://kg.ebrains.eu/api/instances/"
@@ -64,6 +61,18 @@ class KGv3(RequestsWithTokenHandler):
 
     def __init__(self, host: str, token_handler: TokenHandler):
         super(KGv3, self).__init__(f"https://{host}/{KGv3.KG_VERSION}", token_handler)
+        
+    def types(self, stage:Stage, space:str = None, with_properties:bool = False, with_incoming_links:bool = False, with_counts:bool = False, pagination: Pagination = Pagination()) -> KGResult:
+        return self.get(path="/types", params={
+            "stage": stage,
+            "space": space,
+            "withProperties": with_properties,
+            "withIncomingLinks": with_incoming_links,
+            "withCounts": with_counts,
+            "from": pagination.start_from,
+            "size": pagination.size        
+        })
+        
 
     def queries(self, query: dict, stage: Stage, instance_id: str = None, pagination: Pagination = Pagination()) -> KGResult:
         return self.post(path="/queries", payload=query,
