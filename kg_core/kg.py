@@ -157,3 +157,6 @@ class KGv3(RequestsWithTokenHandler):
 
     def deprecate_instance(self, instance_id: UUID) -> KGResult:
         return self.delete(path=f"/instances/{instance_id}", params={})
+
+    def unrelease_instance(self, instance_id: UUID) -> KGResult:
+        return self.delete(path=f"/instances/{instance_id}/release", params={})
