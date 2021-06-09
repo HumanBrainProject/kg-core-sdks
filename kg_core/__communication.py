@@ -109,6 +109,9 @@ class RequestsWithTokenHandler(ABC):
     def put(self, path: str, payload, params: dict):
         return self._request("PUT", path, payload, params)
 
+    def delete(self, path: str, payload, params: dict):
+        return self._request("DELETE", path, payload, params)
+
     def patch(self, path: str, payload, params: dict):
         return self._request("PATCH", path, payload, params)
 

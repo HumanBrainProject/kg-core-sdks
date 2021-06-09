@@ -154,3 +154,6 @@ class KGv3(RequestsWithTokenHandler):
                              "deferInference": defer_inference,
                              "normalizePayload": normalize_payload
                          })
+
+    def deprecate_instance(self, instance_id: UUID) -> KGResult:
+        return self.delete(path=f"/instances/{instance_id}")
