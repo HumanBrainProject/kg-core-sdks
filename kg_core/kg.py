@@ -125,6 +125,16 @@ class KGv3(RequestsWithTokenHandler):
                             "from": pagination.start_from,
                             "size": pagination.size
                         })
+    
+    def get_incoming_links(self, instance_id: UUID = None, stage: Stage, property: str, type:str, pagination: Pagination = Pagination()) -> KGResult:
+        return self.get(path="/instances/{instance_id}/incomingLinks",
+                        params={
+                            "stage": stage,
+                            "type": type,
+                            "property": property,
+                            "from": pagination.start_from,
+                            "size": pagination.size
+                        })
 
     def create_instance(self, space: str, payload: dict, instance_id: UUID = None, response_configuration: ResponseConfiguration = ResponseConfiguration(),
                         defer_inference: bool = False, normalize_payload=False) -> KGResult:
