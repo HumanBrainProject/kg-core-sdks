@@ -83,7 +83,7 @@ class KGv3(RequestsWithTokenHandler):
                              "instanceId": KGv3.uuid_from_absolute_id(instance_id)
                          })
 
-    def get_instance(self, instance_id: UUID) -> KGResult:
+    def get_instance(self, instance_id: UUID, stage: Stage, response_configuration: ResponseConfiguration = ResponseConfiguration()) -> KGResult:
         return self.get(path=f"/instances/{instance_id}",  
                         params={
                              "stage": stage,
