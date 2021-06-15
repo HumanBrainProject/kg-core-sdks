@@ -126,7 +126,7 @@ class KGv3(RequestsWithTokenHandler):
                             "size": pagination.size
                         })
     
-    def get_incoming_links(self, instance_id: UUID = None, stage: Stage, property: str, type:str, pagination: Pagination = Pagination()) -> KGResult:
+    def get_incoming_links(self, instance_id: UUID, stage: Stage, property: str, type:str, pagination: Pagination = Pagination()) -> KGResult:
         return self.get(path="/instances/{instance_id}/incomingLinks",
                         params={
                             "stage": stage,
