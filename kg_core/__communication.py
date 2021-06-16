@@ -102,7 +102,7 @@ class RequestsWithTokenHandler(ABC):
         try:
             return KGResult(r.json(), args_clone, payload)
         except JSONDecodeError:
-            return None
+            return KGResult(None, args_clone, payload)
             
         
     def get(self, path: str, params: dict):
