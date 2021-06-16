@@ -184,9 +184,9 @@ class KGv3(RequestsWithTokenHandler):
         return self.delete(path=f"/instances/{instance_id}/release", params={})
     
     def get_terms_of_use(self):
-        return self.get(path="/users/termsOfUse")
+        return self.get(path="/users/termsOfUse", params={})
     
     def accept_terms_of_use(self, version:str):
-        return self.post(path=f"/users/termsOfUse/{version}/accept")
+        return self.post(path=f"/users/termsOfUse/{version}/accept", params={})
 
 
