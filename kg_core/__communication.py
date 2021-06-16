@@ -33,6 +33,7 @@
 import threading
 from abc import ABC, abstractmethod
 from copy import deepcopy
+from json import JSONDecodeError
 
 import requests
 
@@ -98,8 +99,12 @@ class RequestsWithTokenHandler(ABC):
             r = requests.request(**args)
         args_clone = deepcopy(args)
         del args_clone["headers"]
-        return KGResult(r.json(), args_clone, payload)
-
+        try:
+            return KGResult(r.json(), args_clone, payload)
+        except JSONDecodeError:
+            return None
+            
+        
     def get(self, path: str, params: dict):
         return self._request("GET", path, None, params)
 
