@@ -61,28 +61,28 @@ class KGResult(object):
         self.request_payload = payload
 
     def data(self):
-        return self.payload["data"] if "data" in self.payload else None
+        return self.payload["data"] if self.payload and "data" in self.payload else None
     
     def is_successful(self):
         return not self.error()
     
     def error(self):
-        return self.payload["error"] if "error" in self.payload else None
+        return self.payload["error"] if self.payload and "error" in self.payload else None
 
     def message(self):
-        return self.payload["message"] if "message" in self.payload else None
+        return self.payload["message"] if self.payload and "message" in self.payload else None
 
     def start_time(self):
-        return self.payload["startTime"] if "startTime" in self.payload else None
+        return self.payload["startTime"] if self.payload and "startTime" in self.payload else None
 
     def duration_in_ms(self):
-        return self.payload["durationInMs"] if "durationInMs" in self.payload else None
+        return self.payload["durationInMs"] if self.payload and "durationInMs" in self.payload else None
 
     def total(self):
-        return self.payload["total"] if "total" in self.payload else 0
+        return self.payload["total"] if self.payload and "total" in self.payload else 0
 
     def size(self):
-        return self.payload["size"] if "size" in self.payload else 0
+        return self.payload["size"] if self.payload and "size" in self.payload else 0
 
     def start_from(self):
-        return self.payload["from"] if "from" in self.payload else 0
+        return self.payload["from"] if self.payload and "from" in self.payload else 0
