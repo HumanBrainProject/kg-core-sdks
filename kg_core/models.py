@@ -31,6 +31,8 @@
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
 
+from typing import Any, Dict, Optional
+
 class Pagination(object):
     def __init__(self, start_from: int = 0, size: int = 50):
         self.start_from = start_from
@@ -44,7 +46,7 @@ class Stage(str):
 
 class ResponseConfiguration(object):
 
-    def __init__(self, return_payload=True, return_permissions=False, return_alternatives=False, return_embedded=False, return_incoming_links=False, sort_by_label=False):
+    def __init__(self, return_payload: bool = True, return_permissions: bool=False, return_alternatives: bool=False, return_embedded: bool=False, return_incoming_links: bool=False, sort_by_label: bool=False):
         self.return_payload = return_payload
         self.return_permissions = return_permissions
         self.return_alternatives = return_alternatives
@@ -55,7 +57,7 @@ class ResponseConfiguration(object):
 
 class KGResult(object):
 
-    def __init__(self, json: dict, request_args: dict, payload):
+    def __init__(self, json: Optional[Dict[str, Any]], request_args: Optional[Dict[str, Any]], payload: Optional[Dict[str, Any]]):
         self.payload = json
         self.request_args = request_args
         self.request_payload = payload

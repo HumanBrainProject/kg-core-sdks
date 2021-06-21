@@ -33,7 +33,7 @@
 import threading
 from abc import ABC, abstractmethod
 from copy import deepcopy
-from json import JSONDecodeError
+from typing import Any, Dict, Optional
 
 import requests
 
@@ -47,7 +47,7 @@ class TokenHandler(ABC):
         self.__token = None
         self.__lock = threading.Lock()
 
-    def get_token(self, force_fetch=False):
+    def get_token(self, force_fetch: bool=False) -> Optional[str]:
         if not self.__token or force_fetch:
             with self.__lock:
                 self.__token = self._fetch_token()
@@ -72,7 +72,7 @@ class RequestsWithTokenHandler(ABC):
         self.endpoint = endpoint
         self.token_handler.define_endpoint(self.endpoint)
 
-    def _set_headers(self, args, force_token_fetch: bool):
+    def _set_headers(self, args: Dict[str, Any], force_token_fetch: bool):
         if self.token_handler:
             token = self.token_handler.get_token(force_token_fetch)
             if token:
@@ -80,16 +80,16 @@ class RequestsWithTokenHandler(ABC):
                     "Authorization": f"Bearer {token}"
                 }
 
-    def _request(self, method: str, path: str, payload, params: dict):
+    def _request(self, method: str, path: str, payload: Optional[Dict[str, Any]], params: Dict[str, Any]):
         absolute_path = f"{self.endpoint}{path}"
-        args = {
+        args: Dict[str, Any] = {
             'method': method,
             'url': absolute_path,
             'params': params
         }
         return self._do_request(args, payload)
 
-    def _do_request(self, args, payload):
+    def _do_request(self, args: Dict[str, Any], payload: Optional[Dict[str, Any]]):
         self._set_headers(args, False)
         if payload is not None:
             args['json'] = payload
@@ -101,23 +101,23 @@ class RequestsWithTokenHandler(ABC):
         del args_clone["headers"]
         try:
             return KGResult(r.json(), args_clone, payload)
-        except JSONDecodeError:
+        except ValueError:
             return KGResult(None, args_clone, payload)
             
         
-    def get(self, path: str, params: dict):
+    def get(self, path: str, params: Dict[str, Any]):
         return self._request("GET", path, None, params)
 
-    def post(self, path: str, payload, params: dict):
+    def post(self, path: str, payload: Optional[Dict[str, Any]], params: Dict[str, Any]):
         return self._request("POST", path, payload, params)
 
-    def put(self, path: str, payload, params: dict):
+    def put(self, path: str, payload: Dict[str, Any], params: Dict[str, Any]):
         return self._request("PUT", path, payload, params)
 
-    def delete(self, path: str, params: dict):
+    def delete(self, path: str, params: Dict[str, Any]):
         return self._request("DELETE", path, None, params)
 
-    def patch(self, path: str, payload, params: dict):
+    def patch(self, path: str, payload: Dict[str, Any], params: Dict[str, Any]):
         return self._request("PATCH", path, payload, params)
 
     def next_page(self, result: KGResult):

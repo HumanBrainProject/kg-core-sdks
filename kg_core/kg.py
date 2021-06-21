@@ -31,7 +31,7 @@
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
 import uuid
-from typing import List, Optional
+from typing import Any, Dict, List, Optional, Union, cast
 from uuid import UUID
 
 from kg_core.__communication import TokenHandler, RequestsWithTokenHandler
@@ -47,14 +47,15 @@ class KGv3(RequestsWithTokenHandler):
         return f"{KGv3.ID_NAMESPACE}{uuid}"
     
     @staticmethod
-    def uuid_from_absolute_id(identifier) -> Optional[UUID]:
+    def uuid_from_absolute_id(identifier: Optional[Union[str, UUID]]) -> Optional[UUID]:
         if identifier:
             if type(identifier) == UUID:
-                return identifier
+                return cast(UUID, identifier)
             try:
-                if identifier.startswith(KGv3.ID_NAMESPACE):
-                    return uuid.UUID(identifier[len(KGv3.ID_NAMESPACE):])
-                return uuid.UUID(identifier)
+                id_str = cast(str, identifier)
+                if id_str.startswith(KGv3.ID_NAMESPACE):
+                    return uuid.UUID(id_str[len(KGv3.ID_NAMESPACE):])
+                return uuid.UUID(id_str)
             except ValueError:
                 return None
         return None
@@ -62,7 +63,7 @@ class KGv3(RequestsWithTokenHandler):
     def __init__(self, host: str, token_handler: TokenHandler):
         super(KGv3, self).__init__(f"https://{host}/{KGv3.KG_VERSION}", token_handler)
         
-    def types(self, stage:Stage, space:str = None, with_properties:bool = False, with_incoming_links:bool = False, with_counts:bool = False, pagination: Pagination = Pagination()) -> KGResult:
+    def types(self, stage:Stage, space: Optional[str] = None, with_properties:bool = False, with_incoming_links:bool = False, with_counts:bool = False, pagination: Pagination = Pagination()) -> KGResult:
         return self.get(path="/types", params={
             "stage": stage,
             "space": space,
@@ -74,7 +75,7 @@ class KGv3(RequestsWithTokenHandler):
         })
         
 
-    def queries(self, query: dict, stage: Stage, instance_id: str = None, pagination: Pagination = Pagination()) -> KGResult:
+    def queries(self, query: Dict[str, Any], stage: Stage, instance_id: Optional[str] = None, pagination: Pagination = Pagination()) -> KGResult:
         return self.post(path="/queries", payload=query,
                          params={
                              "stage": stage,
@@ -108,7 +109,7 @@ class KGv3(RequestsWithTokenHandler):
                              "sortByLabel": response_configuration.sort_by_label
                          })
 
-    def get_instances(self, stage: Stage, target_type: str, space: str = None, search_by_label: str = None, response_configuration: ResponseConfiguration = ResponseConfiguration(),
+    def get_instances(self, stage: Stage, target_type: str, space: Optional[str] = None, search_by_label: Optional[str] = None, response_configuration: ResponseConfiguration = ResponseConfiguration(),
                       pagination: Pagination = Pagination()) -> KGResult:
         return self.get(path="/instances",
                         params={
@@ -136,8 +137,8 @@ class KGv3(RequestsWithTokenHandler):
                             "size": pagination.size
                         })
 
-    def create_instance(self, space: str, payload: dict, instance_id: UUID = None, response_configuration: ResponseConfiguration = ResponseConfiguration(),
-                        defer_inference: bool = False, normalize_payload=False) -> KGResult:
+    def create_instance(self, space: str, payload: Dict[str, Any], instance_id: Optional[UUID] = None, response_configuration: ResponseConfiguration = ResponseConfiguration(),
+                        defer_inference: bool = False, normalize_payload: bool=False) -> KGResult:
         return self.post(path="/instances" if instance_id is None else f"/instances/{instance_id}", payload=payload,
                          params={
                              "space": space,
@@ -151,7 +152,7 @@ class KGv3(RequestsWithTokenHandler):
                              "normalizePayload": normalize_payload
                          })
 
-    def replace_contribution_to_instance(self, instance_id: UUID, payload: dict, undeprecate: bool=False, response_configuration: ResponseConfiguration = ResponseConfiguration(), defer_inference:bool=False, normalize_payload:bool = True):
+    def replace_contribution_to_instance(self, instance_id: UUID, payload: Dict[str, Any], undeprecate: bool=False, response_configuration: ResponseConfiguration = ResponseConfiguration(), defer_inference:bool=False, normalize_payload:bool = True):
         return self.put(path = f"/instances/{instance_id}", payload=payload, params={
                             "undeprecate": undeprecate,
                              "returnPayload": response_configuration.return_payload,
@@ -164,7 +165,7 @@ class KGv3(RequestsWithTokenHandler):
                              "normalizePayload": normalize_payload
                          })
 
-    def partially_update_contribution_to_instance(self, instance_id: UUID, payload: dict, undeprecate: bool=False, response_configuration: ResponseConfiguration = ResponseConfiguration(), defer_inference:bool=False, normalize_payload:bool = True):
+    def partially_update_contribution_to_instance(self, instance_id: UUID, payload: Dict[str, Any], undeprecate: bool=False, response_configuration: ResponseConfiguration = ResponseConfiguration(), defer_inference:bool=False, normalize_payload:bool = True):
         return self.patch(path = f"/instances/{instance_id}", payload=payload, params={
                             "undeprecate": undeprecate,
                              "returnPayload": response_configuration.return_payload,
