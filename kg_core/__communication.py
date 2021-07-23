@@ -67,10 +67,13 @@ class TokenHandler(ABC):
 
 
 class RequestsWithTokenHandler(ABC):
-    def __init__(self, endpoint: str, token_handler: TokenHandler):
+    def __init__(self, endpoint: str, token_handler: TokenHandler, client_token_handler: TokenHandler=None):
         self.token_handler = token_handler
         self.endpoint = endpoint
         self.token_handler.define_endpoint(self.endpoint)
+        self.client_token_handler = client_token_handler
+        if self.client_token_handler:
+            self.client_token_handler.define_endpoint(self.endpoint)
 
     def _set_headers(self, args: Dict[str, Any], force_token_fetch: bool):
         if self.token_handler:
@@ -79,6 +82,10 @@ class RequestsWithTokenHandler(ABC):
                 args['headers'] = {
                     "Authorization": f"Bearer {token}"
                 }
+            if self.client_token_handler:
+                client_token = self.client_token_handler.get_token(force_token_fetch)
+                if client_token:
+                    args["headers"]["Client-Authorization"] = f"Bearer {client_token}"
 
     def _request(self, method: str, path: str, payload: Optional[Dict[str, Any]], params: Dict[str, Any]):
         absolute_path = f"{self.endpoint}{path}"
