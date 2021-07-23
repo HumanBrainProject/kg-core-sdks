@@ -60,8 +60,8 @@ class KGv3(RequestsWithTokenHandler):
                 return None
         return None
 
-    def __init__(self, host: str, token_handler: TokenHandler):
-        super(KGv3, self).__init__(f"https://{host}/{KGv3.KG_VERSION}", token_handler)
+    def __init__(self, host: str, token_handler: TokenHandler, client_token_handler: TokenHandler=None):
+        super(KGv3, self).__init__(f"https://{host}/{KGv3.KG_VERSION}", token_handler=token_handler, client_token_handler=client_token_handler)
         
     def types(self, stage:Stage, space: Optional[str] = None, with_properties:bool = False, with_incoming_links:bool = False, with_counts:bool = False, pagination: Pagination = Pagination()) -> KGResult:
         return self.get(path="/types", params={
