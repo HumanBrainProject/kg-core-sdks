@@ -138,8 +138,8 @@ class KGv3(RequestsWithTokenHandler):
                         })
 
     def create_instance(self, space: str, payload: Dict[str, Any], instance_id: Optional[UUID] = None, response_configuration: ResponseConfiguration = ResponseConfiguration(),
-                        defer_inference: bool = False, normalize_payload: bool=False) -> KGResult:
-        return self.post(path="/instances" if instance_id is None else f"/instances/{instance_id}", payload=payload,
+                        defer_inference: bool = False, normalize_payload: bool=False, update_if_exists:bool=False) -> KGResult:
+        result = self.post(path="/instances" if instance_id is None else f"/instances/{instance_id}", payload=payload,
                          params={
                              "space": space,
                              "returnPayload": response_configuration.return_payload,
@@ -151,6 +151,11 @@ class KGv3(RequestsWithTokenHandler):
                              "deferInference": defer_inference,
                              "normalizePayload": normalize_payload
                          })
+        if result.status_code == 409 and update_if_exists and "instanceId" in result.error():
+            instance = result.error()["instanceId"]
+            if instance:
+                return self.replace_contribution_to_instance(UUID(instance), payload, response_configuration=response_configuration, defer_inference=defer_inference, normalize_payload=normalize_payload)
+        return result
 
     def replace_contribution_to_instance(self, instance_id: UUID, payload: Dict[str, Any], undeprecate: bool=False, response_configuration: ResponseConfiguration = ResponseConfiguration(), defer_inference:bool=False, normalize_payload:bool = True):
         return self.put(path = f"/instances/{instance_id}", payload=payload, params={
