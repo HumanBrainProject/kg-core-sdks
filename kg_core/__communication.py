@@ -107,9 +107,9 @@ class RequestsWithTokenHandler(ABC):
         args_clone = deepcopy(args)
         del args_clone["headers"]
         try:
-            return KGResult(r.json(), args_clone, payload)
+            return KGResult(r.json(), args_clone, payload, r.status_code)
         except ValueError:
-            return KGResult(None, args_clone, payload)
+            return KGResult(None, args_clone, payload, r.status_code)
             
         
     def get(self, path: str, params: Dict[str, Any]):

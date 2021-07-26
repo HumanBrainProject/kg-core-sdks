@@ -57,10 +57,11 @@ class ResponseConfiguration(object):
 
 class KGResult(object):
 
-    def __init__(self, json: Optional[Dict[str, Any]], request_args: Optional[Dict[str, Any]], payload: Optional[Dict[str, Any]]):
+    def __init__(self, json: Optional[Dict[str, Any]], request_args: Optional[Dict[str, Any]], payload: Optional[Dict[str, Any]], status_code:int):
         self.payload = json
         self.request_args = request_args
         self.request_payload = payload
+        self.status_code = status_code
 
     def data(self):
         return self.payload["data"] if self.payload and "data" in self.payload else None
