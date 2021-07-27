@@ -195,7 +195,9 @@ class KGv3(RequestsWithTokenHandler):
     def accept_terms_of_use(self, version:str):
         return self.post(path=f"/users/termsOfUse/{version}/accept", payload=None, params={})
 
-    def get_users(self):
-        return self.get(path="/users", params={})
+    def get_users(self, id:str):
+        return self.get(path="/users/limited", params={
+            "id": id
+        })
 
 
