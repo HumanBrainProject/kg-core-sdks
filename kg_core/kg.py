@@ -84,6 +84,13 @@ class KGv3(RequestsWithTokenHandler):
                              "instanceId": KGv3.uuid_from_absolute_id(instance_id)
                          })
 
+    def spaces(self, with_permissions:bool = False, pagination: Pagination = Pagination()) -> KGResult:
+        return self.get(path="/spaces", params={
+            "permissions": with_permissions,
+            "from": pagination.start_from,
+            "size": pagination.size
+        })
+
     def get_instance(self, instance_id: UUID, stage: Stage, response_configuration: ResponseConfiguration = ResponseConfiguration()) -> KGResult:
         return self.get(path=f"/instances/{instance_id}",  
                         params={
