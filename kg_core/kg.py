@@ -209,7 +209,7 @@ class KGv3(RequestsWithTokenHandler):
         return self.get(path=f"/instances/{instance_id}/release/status", params={"releaseTreeScope": release_tree_scope})
 
     def release_instance(self, instance_id: UUID) -> KGResult:
-        return self.put(path=f"/instances/{instance_id}/release", params={})
+        return self.put(path=f"/instances/{instance_id}/release", payload={}, params={})
 
     def unrelease_instance(self, instance_id: UUID) -> KGResult:
         return self.delete(path=f"/instances/{instance_id}/release", params={})
