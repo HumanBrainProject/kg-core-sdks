@@ -24,7 +24,7 @@ from typing import Any, Dict, List, Optional, Union, cast
 from uuid import UUID
 
 from kg_core.__communication import TokenHandler, RequestsWithTokenHandler
-from kg_core.models import KGResult, Stage, Pagination, ResponseConfiguration
+from kg_core.models import KGResult, Stage, Pagination, ResponseConfiguration, ReleaseTreeScope
 
 
 class KGv3(RequestsWithTokenHandler):
@@ -204,6 +204,12 @@ class KGv3(RequestsWithTokenHandler):
 
     def deprecate_instance(self, instance_id: UUID) -> KGResult:
         return self.delete(path=f"/instances/{instance_id}", params={})
+
+    def get_release_status_of_instance(self, instance_id: UUID, release_tree_scope: ReleaseTreeScope) -> KGResult:
+        return self.get(path=f"/instances/{instance_id}/release/status", params={"releaseTreeScope": release_tree_scope})
+
+    def release_instance(self, instance_id: UUID) -> KGResult:
+        return self.put(path=f"/instances/{instance_id}/release", params={})
 
     def unrelease_instance(self, instance_id: UUID) -> KGResult:
         return self.delete(path=f"/instances/{instance_id}/release", params={})

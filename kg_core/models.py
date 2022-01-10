@@ -62,6 +62,10 @@ class Stage(str):
     IN_PROGRESS = "IN_PROGRESS"
     RELEASED = "RELEASED"
 
+class ReleaseTreeScope(str):
+    TOP_INSTANCE_ONLY = "TOP_INSTANCE_ONLY"
+    CHILDREN_ONLY = "CHILDREN_ONLY"
+
 
 class ResponseConfiguration(object):
 
