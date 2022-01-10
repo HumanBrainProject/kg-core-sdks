@@ -193,7 +193,7 @@ class KGv3(RequestsWithTokenHandler):
                          })
 
     def move_instance_to_another_space(self, instance_id: UUID, space, response_configuration: ResponseConfiguration = ResponseConfiguration()):
-        return self.put(path = f"/instances/{instance_id}/spaces/{space}", params={
+        return self.put(path = f"/instances/{instance_id}/spaces/{space}", payload={}, params={
                              "returnPayload": response_configuration.return_payload,
                              "returnPermissions": response_configuration.return_permissions,
                              "returnAlternatives": response_configuration.return_alternatives,
