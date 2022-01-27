@@ -36,15 +36,14 @@
 #  Framework Programme for Research and Innovation under
 #  Specific Grant Agreements No. 720270, No. 785907, and No. 945539
 #  (Human Brain Project SGA1, SGA2 and SGA3).
-#
-#
+
 from setuptools import setup
 
 long_description = "KG core python is a client library to access the EBRAINS KG core API."
 
 setup(
     name='kg_core',
-    version='3.0.11',
+    version='3.0.12',
     packages=['kg_core'],
     install_requires=['requests'],
     author='EBRAINS',

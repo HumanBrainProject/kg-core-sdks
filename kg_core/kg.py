@@ -36,8 +36,7 @@
 #  Framework Programme for Research and Innovation under
 #  Specific Grant Agreements No. 720270, No. 785907, and No. 945539
 #  (Human Brain Project SGA1, SGA2 and SGA3).
-#
-#
+
 import uuid
 from typing import Any, Dict, List, Optional, Union, cast
 from uuid import UUID
