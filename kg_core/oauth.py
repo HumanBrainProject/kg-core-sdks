@@ -34,15 +34,6 @@ import requests
 from kg_core.__communication import TokenHandler
 
 
-class CollabToken(TokenHandler):
-
-    def __init__(self):
-        super(TokenHandler, self).__init__()
-
-    def _fetch_token(self):
-        return clb_oauth.get_token()
-
-
 class SimpleToken(TokenHandler):
 
     def __init__(self, token: str):
