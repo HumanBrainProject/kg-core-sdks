@@ -268,5 +268,5 @@ class KGv3(RequestsWithTokenHandler):
             "id": id
         })
     
-     def me(self):
+    def me(self):
         return self.get(path="/users/me", params={})
