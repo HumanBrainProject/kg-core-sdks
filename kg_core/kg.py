@@ -96,7 +96,7 @@ class KGv3(RequestsWithTokenHandler):
    
     def query_instances(self, query_id: str, stage: Stage, instance_id: Optional[str] = None,
                 pagination: Pagination = Pagination()) -> KGResult:
-        return self.get(path="/queries/{query_id}/instances", params={
+        return self.get(path=f"/queries/{query_id}/instances", params={
                              "stage": stage,
                              "from": pagination.start_from,
                              "size": pagination.size,
