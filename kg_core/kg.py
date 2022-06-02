@@ -93,6 +93,15 @@ class KGv3(RequestsWithTokenHandler):
                              "size": pagination.size,
                              "instanceId": KGv3.uuid_from_absolute_id(instance_id)
                          })
+   
+    def query_instances(self, query_id: str, stage: Stage, instance_id: Optional[str] = None,
+                pagination: Pagination = Pagination()) -> KGResult:
+        return self.get(path="/queries/{query_id}/instances", params={
+                             "stage": stage,
+                             "from": pagination.start_from,
+                             "size": pagination.size,
+                             "instanceId": KGv3.uuid_from_absolute_id(instance_id)
+                         })
 
     def spaces(self, with_permissions: bool = False, pagination: Pagination = Pagination()) -> KGResult:
         return self.get(path="/spaces", params={
