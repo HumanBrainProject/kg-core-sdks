@@ -42,7 +42,7 @@ from setuptools import setup
 long_description = "This is a client library to access the EBRAINS KG core API via python."
 
 setup(
-    name='ebrains_kg',
+    name='ebrains_kg_core',
     version='0.0.1',
     packages=['kg_core'],
     install_requires=['requests'],
