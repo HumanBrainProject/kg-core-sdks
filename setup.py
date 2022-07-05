@@ -39,11 +39,11 @@
 
 from setuptools import setup
 
-long_description = "KG core python is a client library to access the EBRAINS KG core API."
+long_description = "This is a client library to access the EBRAINS KG core API via python."
 
 setup(
-    name='ebrains_kg_core',
-    version='3.0.12',
+    name='ebrains_kg',
+    version='0.0.1',
     packages=['kg_core'],
     install_requires=['requests'],
     author='EBRAINS',
@@ -52,6 +52,5 @@ setup(
     keywords = ['EBRAINS', 'Knowledge Graph', 'KG'],
     classifiers = [],
     url = 'https://github.com/HumanBrainProject/kg-core-python',
-    download_url = 'https://github.com/HumanBrainProject/kg-core-python/archive/master.zip',
     long_description = long_description
 )
