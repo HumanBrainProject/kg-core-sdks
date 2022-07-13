@@ -1,0 +1,1168 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<meta name="generator" content="pdoc 0.10.0" />
+<title>kg_core.response API documentation</title>
+<meta name="description" content="" />
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
+<link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
+<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js" integrity="sha256-Uv3H6lx7dJmRfRvH8TH6kJD1TSK1aFcwgx+mdg3epi8=" crossorigin></script>
+<script>window.addEventListener('DOMContentLoaded', () => hljs.initHighlighting())</script>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>kg_core.response</code></h1>
+</header>
+<section id="section-intro">
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">#  Copyright 2022 EBRAINS AISBL
+#
+#  Licensed under the Apache License, Version 2.0 (the &#34;License&#34;);
+#  you may not use this file except in compliance with the License.
+#  You may obtain a copy of the License at
+#
+#  http://www.apache.org/licenses/LICENSE-2.0.
+#
+#  Unless required by applicable law or agreed to in writing, software
+#  distributed under the License is distributed on an &#34;AS IS&#34; BASIS,
+#  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#  See the License for the specific language governing permissions and
+#  limitations under the License.
+#
+#  This open source software code was developed in part or in whole in the
+#  Human Brain Project, funded from the European Union&#39;s Horizon 2020
+#  Framework Programme for Research and Innovation under
+#  Specific Grant Agreements No. 720270, No. 785907, and No. 945539
+#  (Human Brain Project SGA1, SGA2 and SGA3).
+#
+
+from __future__ import annotations
+import http.client
+import uuid
+from abc import ABC
+from enum import Enum, EnumMeta
+from typing import Optional, Dict, TypeVar, Generic, Any, List
+from uuid import UUID
+
+from pydantic import BaseModel
+from pydantic.main import ModelMetaclass
+
+from kg_core.__communication import KGRequestWithResponseContext
+
+
+class ReleaseStatus(Enum):
+    RELEASED = 1
+    UNRELEASED = 2
+    HAS_CHANGED = 3
+
+
+class JsonLdDocument(Dict[str, any]):
+
+    def __init__(self, seq=None, **kwargs):
+        super(JsonLdDocument, self).__init__(seq, **kwargs)
+
+
+class ListOfJsonLdDocuments(List[JsonLdDocument]):
+
+    def __init__(self, seq=()):
+      super(ListOfJsonLdDocuments, self).__init__(seq)
+
+
+class Instance(JsonLdDocument):
+
+    def __init__(self, seq=None, id_namespace:str=None, **kwargs):
+        super(Instance, self).__init__(seq, **kwargs)
+        self.__id_namespace = id_namespace
+        self.instance_id = self[&#34;@id&#34;] if &#34;@id&#34; in self else None
+        if self.instance_id and self.instance_id.startswith(self.__id_namespace):
+            self.uuid = uuid.UUID(self.instance_id[len(self.__id_namespace):])
+        else:
+            self.uuid = None
+
+    def __str__(self):
+        return f&#34;Instance {self.uuid if self.uuid else &#39;unknown&#39;}&#34;
+
+class TermsOfUse(BaseModel):
+    accepted: bool = False
+    version: str
+    data: str
+
+
+class Error(BaseModel):
+    code: int
+    message: Optional[str] = None
+    instance_id: Optional[UUID] = None
+
+    class Config:
+        fields = {
+            &#34;instance_id&#34;: &#34;instanceId&#34;
+        }
+
+
+class Scope(BaseModel):
+    instance_id: Optional[UUID] = None
+    label: Optional[str] = None
+    space: Optional[str] = None
+    types: Optional[List[str]] = None
+    children: Optional[List[Scope]] = None
+    permissions: Optional[List[str]] = None
+
+    class Config:
+        fields = {
+            &#34;instance_id&#34;: &#34;id&#34;
+        }
+
+
+class SpaceInformation(BaseModel):
+    identifier: Optional[str] = None
+    name: Optional[str] = None
+    permissions: Optional[List[str]] = None
+
+    class Config:
+        fields = {
+            &#34;identifier&#34;: &#34;http://schema.org/identifier&#34;,
+            &#34;name&#34;: &#34;http://schema.org/name&#34;,
+            &#34;email&#34;: &#34;http://schema.org/email&#34;,
+            &#34;permissions&#34;: &#34;https://core.kg.ebrains.eu/vocab/meta/permissions&#34;
+        }
+
+
+class TypeInformation(BaseModel):
+    identifier: Optional[str] = None
+    description: Optional[str] = None
+    name: Optional[str] = None
+    # TODO incoming_links
+    occurrences: Optional[int] = None
+    # TODO properties
+    # TODO spaces
+
+    class Config:
+        fields = {
+            &#34;identifier&#34;: &#34;http://schema.org/identifier&#34;,
+            &#34;description&#34;: &#34;http://schema.org/description&#34;,
+            &#34;name&#34;: &#34;http://schema.org/name&#34;,
+            &#34;occurrences&#34;: &#34;https://core.kg.ebrains.eu/vocab/meta/occurrences&#34;
+        }
+
+
+class User(BaseModel):
+    alternate_name: Optional[str] = None
+    name: Optional[str] = None
+    email: Optional[str] = None
+    given_name: Optional[str] = None
+    family_name: Optional[str] = None
+    identifiers: Optional[List[str]] = None
+
+    class Config:
+        fields = {
+            &#34;alternate_name&#34;: &#34;http://schema.org/alternateName&#34;,
+            &#34;name&#34;: &#34;http://schema.org/name&#34;,
+            &#34;email&#34;: &#34;http://schema.org/email&#34;,
+            &#34;given_name&#34;: &#34;http://schema.org/givenName&#34;,
+            &#34;family_name&#34;: &#34;http://schema.org/familyName&#34;,
+            &#34;identifiers&#34;: &#34;http://schema.org/identifier&#34;
+        }
+
+
+class UserWithRoles(BaseModel):
+    user: User
+    client_roles: Optional[List[str]] = None
+    user_roles: Optional[List[str]] = None
+    invitations: Optional[List[str]] = None
+    client_id : Optional[str] = None
+    #permissions
+
+    class Config:
+        fields = {
+            &#34;client_roles&#34;: &#34;clientRoles&#34;,
+            &#34;user_roles&#34;: &#34;userRoles&#34;,
+            &#34;client_id&#34;: &#34;clientId&#34;
+        }
+
+
+ResponseType = TypeVar(&#34;ResponseType&#34;)
+
+
+def translate_error(response: KGRequestWithResponseContext) -&gt; Optional[Error]:
+    return Error(**response.content[&#34;error&#34;]) if response.content and &#34;error&#34; in response.content and response.content[&#34;error&#34;] \
+        else Error(code=response.status_code, message=http.client.responses[response.status_code]) if response.status_code and response.status_code &gt;= 400 else None
+
+
+class _AbstractResult(ABC):
+
+    def __init__(self, response: KGRequestWithResponseContext):
+        self.message: Optional[str] = response.content[&#34;message&#34;] if response.content and &#34;message&#34; in response.content else None
+        self.start_time: Optional[int] = response.content[&#34;startTime&#34;] if response.content and &#34;startTime&#34; in response.content else None
+        self.duration_in_ms: Optional[int] = response.content[&#34;durationInMs&#34;] if response.content and &#34;durationInMs&#34; in response.content else None
+        self.transaction_id: Optional[int] = response.content[&#34;transactionId&#34;] if response.content and &#34;transactionId&#34; in response.content else None
+        self.error: Optional[Error] = translate_error(response)
+
+
+class _AbstractResultPage(_AbstractResult):
+
+    def __init__(self, response: KGRequestWithResponseContext):
+        super(_AbstractResultPage, self).__init__(response)
+        self.total: Optional[int] = response.content[&#34;total&#34;] if response.content and &#34;total&#34; in response.content else None
+        self.size: Optional[int] = response.content[&#34;size&#34;] if response.content and &#34;size&#34; in response.content else None
+        self.start_from: Optional[int] = response.content[&#34;from&#34;] if response.content and &#34;from&#34; in response.content else None
+
+
+def _init_response_object(constructor, data, id_namespace):
+    if data and constructor:
+        if type(constructor) is ModelMetaclass:
+            return constructor(**data)
+        elif type(constructor) is EnumMeta:
+            return constructor[data]
+        elif constructor == Instance:
+            return constructor(data, id_namespace)
+        else:
+            return constructor(data)
+    return None
+
+
+class ResultPageIterator(Generic[ResponseType]):
+
+    def __init__(self, result_page: ResultPage[ResponseType]):
+        self._result_page: ResultPage[ResponseType] = result_page
+
+    def __iter__(self):
+        self.n = 0
+        return self
+
+    def __next__(self):
+        if self._result_page:
+            if self._result_page.error:
+                raise ValueError(self._result_page.error.message)
+            elif self._result_page.data:
+                if self.n &lt; self._result_page.total:
+                    if self.n &gt;= self._result_page.start_from+self._result_page.size and self._result_page.has_next_page():
+                        self._result_page = self._result_page.next_page()
+                    result = self._result_page.data[self.n-self._result_page.start_from]
+                    self.n += 1
+                    return result
+        raise StopIteration
+
+
+class ResultPage(_AbstractResultPage, Generic[ResponseType]):
+
+    def __init__(self, response: KGRequestWithResponseContext, constructor):
+        super(ResultPage, self).__init__(response)
+        self.data: Optional[ResponseType] = [_init_response_object(constructor, r, response.id_namespace) for r in response.content[&#34;data&#34;]] if response.content and &#34;data&#34; in response.content else None
+        self._original_response = response
+        self._original_constructor = constructor
+
+    def __str__(self):
+        return f&#34;{super.__str__(self)} - status: {self.error.code if self.error else &#39;success&#39;}&#34;
+
+    def next_page(self) -&gt; Optional[ResultPage[ResponseType]]:
+        if self.has_next_page():
+            result = self._original_response.next_page(self.start_from, self.size)
+            return ResultPage[ResponseType](response=result, constructor=self._original_constructor) if result else None
+        return None
+
+    def has_next_page(self) -&gt; bool:
+        if self.total is not None and self.start_from is not None and self.size is not None:
+            return self.start_from+self.size &lt; self.total
+        return False
+
+    def items(self) -&gt; ResultPageIterator:
+        return ResultPageIterator(self)
+
+
+class Result(_AbstractResult, Generic[ResponseType]):
+
+    def __init__(self, response: KGRequestWithResponseContext, constructor):
+        super(Result, self).__init__(response)
+        self.data: Optional[ResponseType] = _init_response_object(constructor, response.content[&#34;data&#34;], response.id_namespace) if response.content and &#34;data&#34; in response.content and response.content[&#34;data&#34;] else None
+
+    def __str__(self):
+        return f&#34;{super.__str__(self)} - status: {str(self.error.code)+&#39; (&#39;+self.error.message+&#39;)&#39; if self.error else &#39;success&#39;}&#34;
+
+
+class ResultsById(_AbstractResult, Generic[ResponseType]):
+
+    def __init__(self, response: KGRequestWithResponseContext, constructor):
+        super(ResultsById, self).__init__(response)
+        self.data: Dict[str, Result[ResponseType]] = {k: Result[ResponseType](KGRequestWithResponseContext(r, None, None, None, response.id_namespace), constructor) for k, r in response.content[&#34;data&#34;].items()} if response.content and &#34;data&#34; in response.content and response.content[&#34;data&#34;] else None
+
+    def __str__(self):
+        return f&#34;{super.__str__(self)} - status: {self.error.code if self.error else &#39;success&#39;}&#34;</code></pre>
+</details>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-functions">Functions</h2>
+<dl>
+<dt id="kg_core.response.translate_error"><code class="name flex">
+<span>def <span class="ident">translate_error</span></span>(<span>response: KGRequestWithResponseContext) ‑> Optional[<a title="kg_core.response.Error" href="#kg_core.response.Error">Error</a>]</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def translate_error(response: KGRequestWithResponseContext) -&gt; Optional[Error]:
+    return Error(**response.content[&#34;error&#34;]) if response.content and &#34;error&#34; in response.content and response.content[&#34;error&#34;] \
+        else Error(code=response.status_code, message=http.client.responses[response.status_code]) if response.status_code and response.status_code &gt;= 400 else None</code></pre>
+</details>
+</dd>
+</dl>
+</section>
+<section>
+<h2 class="section-title" id="header-classes">Classes</h2>
+<dl>
+<dt id="kg_core.response.Error"><code class="flex name class">
+<span>class <span class="ident">Error</span></span>
+<span>(</span><span>**data: Any)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Create a new model by parsing and validating input data from keyword arguments.</p>
+<p>Raises ValidationError if the input data cannot be parsed to form a valid model.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Error(BaseModel):
+    code: int
+    message: Optional[str] = None
+    instance_id: Optional[UUID] = None
+
+    class Config:
+        fields = {
+            &#34;instance_id&#34;: &#34;instanceId&#34;
+        }</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>pydantic.main.BaseModel</li>
+<li>pydantic.utils.Representation</li>
+</ul>
+<h3>Class variables</h3>
+<dl>
+<dt id="kg_core.response.Error.Config"><code class="name">var <span class="ident">Config</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="kg_core.response.Error.code"><code class="name">var <span class="ident">code</span> : int</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="kg_core.response.Error.instance_id"><code class="name">var <span class="ident">instance_id</span> : Optional[uuid.UUID]</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="kg_core.response.Error.message"><code class="name">var <span class="ident">message</span> : Optional[str]</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+</dd>
+<dt id="kg_core.response.Instance"><code class="flex name class">
+<span>class <span class="ident">Instance</span></span>
+<span>(</span><span>seq=None, id_namespace: str = None, **kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>dict() -&gt; new empty dictionary
+dict(mapping) -&gt; new dictionary initialized from a mapping object's
+(key, value) pairs
+dict(iterable) -&gt; new dictionary initialized as if via:
+d = {}
+for k, v in iterable:
+d[k] = v
+dict(**kwargs) -&gt; new dictionary initialized with the name=value pairs
+in the keyword argument list.
+For example:
+dict(one=1, two=2)</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Instance(JsonLdDocument):
+
+    def __init__(self, seq=None, id_namespace:str=None, **kwargs):
+        super(Instance, self).__init__(seq, **kwargs)
+        self.__id_namespace = id_namespace
+        self.instance_id = self[&#34;@id&#34;] if &#34;@id&#34; in self else None
+        if self.instance_id and self.instance_id.startswith(self.__id_namespace):
+            self.uuid = uuid.UUID(self.instance_id[len(self.__id_namespace):])
+        else:
+            self.uuid = None
+
+    def __str__(self):
+        return f&#34;Instance {self.uuid if self.uuid else &#39;unknown&#39;}&#34;</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="kg_core.response.JsonLdDocument" href="#kg_core.response.JsonLdDocument">JsonLdDocument</a></li>
+<li>builtins.dict</li>
+<li>typing.Generic</li>
+</ul>
+</dd>
+<dt id="kg_core.response.JsonLdDocument"><code class="flex name class">
+<span>class <span class="ident">JsonLdDocument</span></span>
+<span>(</span><span>seq=None, **kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>dict() -&gt; new empty dictionary
+dict(mapping) -&gt; new dictionary initialized from a mapping object's
+(key, value) pairs
+dict(iterable) -&gt; new dictionary initialized as if via:
+d = {}
+for k, v in iterable:
+d[k] = v
+dict(**kwargs) -&gt; new dictionary initialized with the name=value pairs
+in the keyword argument list.
+For example:
+dict(one=1, two=2)</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class JsonLdDocument(Dict[str, any]):
+
+    def __init__(self, seq=None, **kwargs):
+        super(JsonLdDocument, self).__init__(seq, **kwargs)</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>builtins.dict</li>
+<li>typing.Generic</li>
+</ul>
+<h3>Subclasses</h3>
+<ul class="hlist">
+<li><a title="kg_core.response.Instance" href="#kg_core.response.Instance">Instance</a></li>
+</ul>
+</dd>
+<dt id="kg_core.response.ListOfJsonLdDocuments"><code class="flex name class">
+<span>class <span class="ident">ListOfJsonLdDocuments</span></span>
+<span>(</span><span>seq=())</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Built-in mutable sequence.</p>
+<p>If no argument is given, the constructor creates a new empty list.
+The argument must be an iterable if specified.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class ListOfJsonLdDocuments(List[JsonLdDocument]):
+
+    def __init__(self, seq=()):
+      super(ListOfJsonLdDocuments, self).__init__(seq)</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>builtins.list</li>
+<li>typing.Generic</li>
+</ul>
+</dd>
+<dt id="kg_core.response.ReleaseStatus"><code class="flex name class">
+<span>class <span class="ident">ReleaseStatus</span></span>
+<span>(</span><span>value, names=None, *, module=None, qualname=None, type=None, start=1)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>An enumeration.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class ReleaseStatus(Enum):
+    RELEASED = 1
+    UNRELEASED = 2
+    HAS_CHANGED = 3</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>enum.Enum</li>
+</ul>
+<h3>Class variables</h3>
+<dl>
+<dt id="kg_core.response.ReleaseStatus.HAS_CHANGED"><code class="name">var <span class="ident">HAS_CHANGED</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="kg_core.response.ReleaseStatus.RELEASED"><code class="name">var <span class="ident">RELEASED</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="kg_core.response.ReleaseStatus.UNRELEASED"><code class="name">var <span class="ident">UNRELEASED</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+</dd>
+<dt id="kg_core.response.Result"><code class="flex name class">
+<span>class <span class="ident">Result</span></span>
+<span>(</span><span>response: KGRequestWithResponseContext, constructor)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Helper class that provides a standard way to create an ABC using
+inheritance.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Result(_AbstractResult, Generic[ResponseType]):
+
+    def __init__(self, response: KGRequestWithResponseContext, constructor):
+        super(Result, self).__init__(response)
+        self.data: Optional[ResponseType] = _init_response_object(constructor, response.content[&#34;data&#34;], response.id_namespace) if response.content and &#34;data&#34; in response.content and response.content[&#34;data&#34;] else None
+
+    def __str__(self):
+        return f&#34;{super.__str__(self)} - status: {str(self.error.code)+&#39; (&#39;+self.error.message+&#39;)&#39; if self.error else &#39;success&#39;}&#34;</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>kg_core.response._AbstractResult</li>
+<li>abc.ABC</li>
+<li>typing.Generic</li>
+</ul>
+</dd>
+<dt id="kg_core.response.ResultPage"><code class="flex name class">
+<span>class <span class="ident">ResultPage</span></span>
+<span>(</span><span>response: KGRequestWithResponseContext, constructor)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Helper class that provides a standard way to create an ABC using
+inheritance.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class ResultPage(_AbstractResultPage, Generic[ResponseType]):
+
+    def __init__(self, response: KGRequestWithResponseContext, constructor):
+        super(ResultPage, self).__init__(response)
+        self.data: Optional[ResponseType] = [_init_response_object(constructor, r, response.id_namespace) for r in response.content[&#34;data&#34;]] if response.content and &#34;data&#34; in response.content else None
+        self._original_response = response
+        self._original_constructor = constructor
+
+    def __str__(self):
+        return f&#34;{super.__str__(self)} - status: {self.error.code if self.error else &#39;success&#39;}&#34;
+
+    def next_page(self) -&gt; Optional[ResultPage[ResponseType]]:
+        if self.has_next_page():
+            result = self._original_response.next_page(self.start_from, self.size)
+            return ResultPage[ResponseType](response=result, constructor=self._original_constructor) if result else None
+        return None
+
+    def has_next_page(self) -&gt; bool:
+        if self.total is not None and self.start_from is not None and self.size is not None:
+            return self.start_from+self.size &lt; self.total
+        return False
+
+    def items(self) -&gt; ResultPageIterator:
+        return ResultPageIterator(self)</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>kg_core.response._AbstractResultPage</li>
+<li>kg_core.response._AbstractResult</li>
+<li>abc.ABC</li>
+<li>typing.Generic</li>
+</ul>
+<h3>Methods</h3>
+<dl>
+<dt id="kg_core.response.ResultPage.has_next_page"><code class="name flex">
+<span>def <span class="ident">has_next_page</span></span>(<span>self) ‑> bool</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def has_next_page(self) -&gt; bool:
+    if self.total is not None and self.start_from is not None and self.size is not None:
+        return self.start_from+self.size &lt; self.total
+    return False</code></pre>
+</details>
+</dd>
+<dt id="kg_core.response.ResultPage.items"><code class="name flex">
+<span>def <span class="ident">items</span></span>(<span>self) ‑> <a title="kg_core.response.ResultPageIterator" href="#kg_core.response.ResultPageIterator">ResultPageIterator</a></span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def items(self) -&gt; ResultPageIterator:
+    return ResultPageIterator(self)</code></pre>
+</details>
+</dd>
+<dt id="kg_core.response.ResultPage.next_page"><code class="name flex">
+<span>def <span class="ident">next_page</span></span>(<span>self) ‑> Optional[<a title="kg_core.response.ResultPage" href="#kg_core.response.ResultPage">ResultPage</a>[~ResponseType]]</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def next_page(self) -&gt; Optional[ResultPage[ResponseType]]:
+    if self.has_next_page():
+        result = self._original_response.next_page(self.start_from, self.size)
+        return ResultPage[ResponseType](response=result, constructor=self._original_constructor) if result else None
+    return None</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="kg_core.response.ResultPageIterator"><code class="flex name class">
+<span>class <span class="ident">ResultPageIterator</span></span>
+<span>(</span><span>result_page: <a title="kg_core.response.ResultPage" href="#kg_core.response.ResultPage">ResultPage</a>[ResponseType])</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Abstract base class for generic types.</p>
+<p>A generic type is typically declared by inheriting from
+this class parameterized with one or more type variables.
+For example, a generic mapping type might be defined as::</p>
+<p>class Mapping(Generic[KT, VT]):
+def <strong>getitem</strong>(self, key: KT) -&gt; VT:
+&hellip;
+# Etc.</p>
+<p>This class can then be used as follows::</p>
+<p>def lookup_name(mapping: Mapping[KT, VT], key: KT, default: VT) -&gt; VT:
+try:
+return mapping[key]
+except KeyError:
+return default</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class ResultPageIterator(Generic[ResponseType]):
+
+    def __init__(self, result_page: ResultPage[ResponseType]):
+        self._result_page: ResultPage[ResponseType] = result_page
+
+    def __iter__(self):
+        self.n = 0
+        return self
+
+    def __next__(self):
+        if self._result_page:
+            if self._result_page.error:
+                raise ValueError(self._result_page.error.message)
+            elif self._result_page.data:
+                if self.n &lt; self._result_page.total:
+                    if self.n &gt;= self._result_page.start_from+self._result_page.size and self._result_page.has_next_page():
+                        self._result_page = self._result_page.next_page()
+                    result = self._result_page.data[self.n-self._result_page.start_from]
+                    self.n += 1
+                    return result
+        raise StopIteration</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>typing.Generic</li>
+</ul>
+</dd>
+<dt id="kg_core.response.ResultsById"><code class="flex name class">
+<span>class <span class="ident">ResultsById</span></span>
+<span>(</span><span>response: KGRequestWithResponseContext, constructor)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Helper class that provides a standard way to create an ABC using
+inheritance.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class ResultsById(_AbstractResult, Generic[ResponseType]):
+
+    def __init__(self, response: KGRequestWithResponseContext, constructor):
+        super(ResultsById, self).__init__(response)
+        self.data: Dict[str, Result[ResponseType]] = {k: Result[ResponseType](KGRequestWithResponseContext(r, None, None, None, response.id_namespace), constructor) for k, r in response.content[&#34;data&#34;].items()} if response.content and &#34;data&#34; in response.content and response.content[&#34;data&#34;] else None
+
+    def __str__(self):
+        return f&#34;{super.__str__(self)} - status: {self.error.code if self.error else &#39;success&#39;}&#34;</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>kg_core.response._AbstractResult</li>
+<li>abc.ABC</li>
+<li>typing.Generic</li>
+</ul>
+</dd>
+<dt id="kg_core.response.Scope"><code class="flex name class">
+<span>class <span class="ident">Scope</span></span>
+<span>(</span><span>**data: Any)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Create a new model by parsing and validating input data from keyword arguments.</p>
+<p>Raises ValidationError if the input data cannot be parsed to form a valid model.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Scope(BaseModel):
+    instance_id: Optional[UUID] = None
+    label: Optional[str] = None
+    space: Optional[str] = None
+    types: Optional[List[str]] = None
+    children: Optional[List[Scope]] = None
+    permissions: Optional[List[str]] = None
+
+    class Config:
+        fields = {
+            &#34;instance_id&#34;: &#34;id&#34;
+        }</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>pydantic.main.BaseModel</li>
+<li>pydantic.utils.Representation</li>
+</ul>
+<h3>Class variables</h3>
+<dl>
+<dt id="kg_core.response.Scope.Config"><code class="name">var <span class="ident">Config</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="kg_core.response.Scope.children"><code class="name">var <span class="ident">children</span> : Optional[List[<a title="kg_core.response.Scope" href="#kg_core.response.Scope">Scope</a>]]</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="kg_core.response.Scope.instance_id"><code class="name">var <span class="ident">instance_id</span> : Optional[uuid.UUID]</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="kg_core.response.Scope.label"><code class="name">var <span class="ident">label</span> : Optional[str]</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="kg_core.response.Scope.permissions"><code class="name">var <span class="ident">permissions</span> : Optional[List[str]]</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="kg_core.response.Scope.space"><code class="name">var <span class="ident">space</span> : Optional[str]</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="kg_core.response.Scope.types"><code class="name">var <span class="ident">types</span> : Optional[List[str]]</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+</dd>
+<dt id="kg_core.response.SpaceInformation"><code class="flex name class">
+<span>class <span class="ident">SpaceInformation</span></span>
+<span>(</span><span>**data: Any)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Create a new model by parsing and validating input data from keyword arguments.</p>
+<p>Raises ValidationError if the input data cannot be parsed to form a valid model.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class SpaceInformation(BaseModel):
+    identifier: Optional[str] = None
+    name: Optional[str] = None
+    permissions: Optional[List[str]] = None
+
+    class Config:
+        fields = {
+            &#34;identifier&#34;: &#34;http://schema.org/identifier&#34;,
+            &#34;name&#34;: &#34;http://schema.org/name&#34;,
+            &#34;email&#34;: &#34;http://schema.org/email&#34;,
+            &#34;permissions&#34;: &#34;https://core.kg.ebrains.eu/vocab/meta/permissions&#34;
+        }</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>pydantic.main.BaseModel</li>
+<li>pydantic.utils.Representation</li>
+</ul>
+<h3>Class variables</h3>
+<dl>
+<dt id="kg_core.response.SpaceInformation.Config"><code class="name">var <span class="ident">Config</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="kg_core.response.SpaceInformation.identifier"><code class="name">var <span class="ident">identifier</span> : Optional[str]</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="kg_core.response.SpaceInformation.name"><code class="name">var <span class="ident">name</span> : Optional[str]</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="kg_core.response.SpaceInformation.permissions"><code class="name">var <span class="ident">permissions</span> : Optional[List[str]]</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+</dd>
+<dt id="kg_core.response.TermsOfUse"><code class="flex name class">
+<span>class <span class="ident">TermsOfUse</span></span>
+<span>(</span><span>**data: Any)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Create a new model by parsing and validating input data from keyword arguments.</p>
+<p>Raises ValidationError if the input data cannot be parsed to form a valid model.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class TermsOfUse(BaseModel):
+    accepted: bool = False
+    version: str
+    data: str</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>pydantic.main.BaseModel</li>
+<li>pydantic.utils.Representation</li>
+</ul>
+<h3>Class variables</h3>
+<dl>
+<dt id="kg_core.response.TermsOfUse.accepted"><code class="name">var <span class="ident">accepted</span> : bool</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="kg_core.response.TermsOfUse.data"><code class="name">var <span class="ident">data</span> : str</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="kg_core.response.TermsOfUse.version"><code class="name">var <span class="ident">version</span> : str</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+</dd>
+<dt id="kg_core.response.TypeInformation"><code class="flex name class">
+<span>class <span class="ident">TypeInformation</span></span>
+<span>(</span><span>**data: Any)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Create a new model by parsing and validating input data from keyword arguments.</p>
+<p>Raises ValidationError if the input data cannot be parsed to form a valid model.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class TypeInformation(BaseModel):
+    identifier: Optional[str] = None
+    description: Optional[str] = None
+    name: Optional[str] = None
+    # TODO incoming_links
+    occurrences: Optional[int] = None
+    # TODO properties
+    # TODO spaces
+
+    class Config:
+        fields = {
+            &#34;identifier&#34;: &#34;http://schema.org/identifier&#34;,
+            &#34;description&#34;: &#34;http://schema.org/description&#34;,
+            &#34;name&#34;: &#34;http://schema.org/name&#34;,
+            &#34;occurrences&#34;: &#34;https://core.kg.ebrains.eu/vocab/meta/occurrences&#34;
+        }</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>pydantic.main.BaseModel</li>
+<li>pydantic.utils.Representation</li>
+</ul>
+<h3>Class variables</h3>
+<dl>
+<dt id="kg_core.response.TypeInformation.Config"><code class="name">var <span class="ident">Config</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="kg_core.response.TypeInformation.description"><code class="name">var <span class="ident">description</span> : Optional[str]</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="kg_core.response.TypeInformation.identifier"><code class="name">var <span class="ident">identifier</span> : Optional[str]</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="kg_core.response.TypeInformation.name"><code class="name">var <span class="ident">name</span> : Optional[str]</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="kg_core.response.TypeInformation.occurrences"><code class="name">var <span class="ident">occurrences</span> : Optional[int]</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+</dd>
+<dt id="kg_core.response.User"><code class="flex name class">
+<span>class <span class="ident">User</span></span>
+<span>(</span><span>**data: Any)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Create a new model by parsing and validating input data from keyword arguments.</p>
+<p>Raises ValidationError if the input data cannot be parsed to form a valid model.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class User(BaseModel):
+    alternate_name: Optional[str] = None
+    name: Optional[str] = None
+    email: Optional[str] = None
+    given_name: Optional[str] = None
+    family_name: Optional[str] = None
+    identifiers: Optional[List[str]] = None
+
+    class Config:
+        fields = {
+            &#34;alternate_name&#34;: &#34;http://schema.org/alternateName&#34;,
+            &#34;name&#34;: &#34;http://schema.org/name&#34;,
+            &#34;email&#34;: &#34;http://schema.org/email&#34;,
+            &#34;given_name&#34;: &#34;http://schema.org/givenName&#34;,
+            &#34;family_name&#34;: &#34;http://schema.org/familyName&#34;,
+            &#34;identifiers&#34;: &#34;http://schema.org/identifier&#34;
+        }</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>pydantic.main.BaseModel</li>
+<li>pydantic.utils.Representation</li>
+</ul>
+<h3>Class variables</h3>
+<dl>
+<dt id="kg_core.response.User.Config"><code class="name">var <span class="ident">Config</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="kg_core.response.User.alternate_name"><code class="name">var <span class="ident">alternate_name</span> : Optional[str]</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="kg_core.response.User.email"><code class="name">var <span class="ident">email</span> : Optional[str]</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="kg_core.response.User.family_name"><code class="name">var <span class="ident">family_name</span> : Optional[str]</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="kg_core.response.User.given_name"><code class="name">var <span class="ident">given_name</span> : Optional[str]</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="kg_core.response.User.identifiers"><code class="name">var <span class="ident">identifiers</span> : Optional[List[str]]</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="kg_core.response.User.name"><code class="name">var <span class="ident">name</span> : Optional[str]</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+</dd>
+<dt id="kg_core.response.UserWithRoles"><code class="flex name class">
+<span>class <span class="ident">UserWithRoles</span></span>
+<span>(</span><span>**data: Any)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Create a new model by parsing and validating input data from keyword arguments.</p>
+<p>Raises ValidationError if the input data cannot be parsed to form a valid model.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class UserWithRoles(BaseModel):
+    user: User
+    client_roles: Optional[List[str]] = None
+    user_roles: Optional[List[str]] = None
+    invitations: Optional[List[str]] = None
+    client_id : Optional[str] = None
+    #permissions
+
+    class Config:
+        fields = {
+            &#34;client_roles&#34;: &#34;clientRoles&#34;,
+            &#34;user_roles&#34;: &#34;userRoles&#34;,
+            &#34;client_id&#34;: &#34;clientId&#34;
+        }</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>pydantic.main.BaseModel</li>
+<li>pydantic.utils.Representation</li>
+</ul>
+<h3>Class variables</h3>
+<dl>
+<dt id="kg_core.response.UserWithRoles.Config"><code class="name">var <span class="ident">Config</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="kg_core.response.UserWithRoles.client_id"><code class="name">var <span class="ident">client_id</span> : Optional[str]</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="kg_core.response.UserWithRoles.client_roles"><code class="name">var <span class="ident">client_roles</span> : Optional[List[str]]</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="kg_core.response.UserWithRoles.invitations"><code class="name">var <span class="ident">invitations</span> : Optional[List[str]]</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="kg_core.response.UserWithRoles.user"><code class="name">var <span class="ident">user</span> : <a title="kg_core.response.User" href="#kg_core.response.User">User</a></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="kg_core.response.UserWithRoles.user_roles"><code class="name">var <span class="ident">user_roles</span> : Optional[List[str]]</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+</dd>
+</dl>
+</section>
+</article>
+<nav id="sidebar">
+<h1>Index</h1>
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3>Super-module</h3>
+<ul>
+<li><code><a title="kg_core" href="index.html">kg_core</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-functions">Functions</a></h3>
+<ul class="">
+<li><code><a title="kg_core.response.translate_error" href="#kg_core.response.translate_error">translate_error</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-classes">Classes</a></h3>
+<ul>
+<li>
+<h4><code><a title="kg_core.response.Error" href="#kg_core.response.Error">Error</a></code></h4>
+<ul class="">
+<li><code><a title="kg_core.response.Error.Config" href="#kg_core.response.Error.Config">Config</a></code></li>
+<li><code><a title="kg_core.response.Error.code" href="#kg_core.response.Error.code">code</a></code></li>
+<li><code><a title="kg_core.response.Error.instance_id" href="#kg_core.response.Error.instance_id">instance_id</a></code></li>
+<li><code><a title="kg_core.response.Error.message" href="#kg_core.response.Error.message">message</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="kg_core.response.Instance" href="#kg_core.response.Instance">Instance</a></code></h4>
+</li>
+<li>
+<h4><code><a title="kg_core.response.JsonLdDocument" href="#kg_core.response.JsonLdDocument">JsonLdDocument</a></code></h4>
+</li>
+<li>
+<h4><code><a title="kg_core.response.ListOfJsonLdDocuments" href="#kg_core.response.ListOfJsonLdDocuments">ListOfJsonLdDocuments</a></code></h4>
+</li>
+<li>
+<h4><code><a title="kg_core.response.ReleaseStatus" href="#kg_core.response.ReleaseStatus">ReleaseStatus</a></code></h4>
+<ul class="">
+<li><code><a title="kg_core.response.ReleaseStatus.HAS_CHANGED" href="#kg_core.response.ReleaseStatus.HAS_CHANGED">HAS_CHANGED</a></code></li>
+<li><code><a title="kg_core.response.ReleaseStatus.RELEASED" href="#kg_core.response.ReleaseStatus.RELEASED">RELEASED</a></code></li>
+<li><code><a title="kg_core.response.ReleaseStatus.UNRELEASED" href="#kg_core.response.ReleaseStatus.UNRELEASED">UNRELEASED</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="kg_core.response.Result" href="#kg_core.response.Result">Result</a></code></h4>
+</li>
+<li>
+<h4><code><a title="kg_core.response.ResultPage" href="#kg_core.response.ResultPage">ResultPage</a></code></h4>
+<ul class="">
+<li><code><a title="kg_core.response.ResultPage.has_next_page" href="#kg_core.response.ResultPage.has_next_page">has_next_page</a></code></li>
+<li><code><a title="kg_core.response.ResultPage.items" href="#kg_core.response.ResultPage.items">items</a></code></li>
+<li><code><a title="kg_core.response.ResultPage.next_page" href="#kg_core.response.ResultPage.next_page">next_page</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="kg_core.response.ResultPageIterator" href="#kg_core.response.ResultPageIterator">ResultPageIterator</a></code></h4>
+</li>
+<li>
+<h4><code><a title="kg_core.response.ResultsById" href="#kg_core.response.ResultsById">ResultsById</a></code></h4>
+</li>
+<li>
+<h4><code><a title="kg_core.response.Scope" href="#kg_core.response.Scope">Scope</a></code></h4>
+<ul class="two-column">
+<li><code><a title="kg_core.response.Scope.Config" href="#kg_core.response.Scope.Config">Config</a></code></li>
+<li><code><a title="kg_core.response.Scope.children" href="#kg_core.response.Scope.children">children</a></code></li>
+<li><code><a title="kg_core.response.Scope.instance_id" href="#kg_core.response.Scope.instance_id">instance_id</a></code></li>
+<li><code><a title="kg_core.response.Scope.label" href="#kg_core.response.Scope.label">label</a></code></li>
+<li><code><a title="kg_core.response.Scope.permissions" href="#kg_core.response.Scope.permissions">permissions</a></code></li>
+<li><code><a title="kg_core.response.Scope.space" href="#kg_core.response.Scope.space">space</a></code></li>
+<li><code><a title="kg_core.response.Scope.types" href="#kg_core.response.Scope.types">types</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="kg_core.response.SpaceInformation" href="#kg_core.response.SpaceInformation">SpaceInformation</a></code></h4>
+<ul class="">
+<li><code><a title="kg_core.response.SpaceInformation.Config" href="#kg_core.response.SpaceInformation.Config">Config</a></code></li>
+<li><code><a title="kg_core.response.SpaceInformation.identifier" href="#kg_core.response.SpaceInformation.identifier">identifier</a></code></li>
+<li><code><a title="kg_core.response.SpaceInformation.name" href="#kg_core.response.SpaceInformation.name">name</a></code></li>
+<li><code><a title="kg_core.response.SpaceInformation.permissions" href="#kg_core.response.SpaceInformation.permissions">permissions</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="kg_core.response.TermsOfUse" href="#kg_core.response.TermsOfUse">TermsOfUse</a></code></h4>
+<ul class="">
+<li><code><a title="kg_core.response.TermsOfUse.accepted" href="#kg_core.response.TermsOfUse.accepted">accepted</a></code></li>
+<li><code><a title="kg_core.response.TermsOfUse.data" href="#kg_core.response.TermsOfUse.data">data</a></code></li>
+<li><code><a title="kg_core.response.TermsOfUse.version" href="#kg_core.response.TermsOfUse.version">version</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="kg_core.response.TypeInformation" href="#kg_core.response.TypeInformation">TypeInformation</a></code></h4>
+<ul class="">
+<li><code><a title="kg_core.response.TypeInformation.Config" href="#kg_core.response.TypeInformation.Config">Config</a></code></li>
+<li><code><a title="kg_core.response.TypeInformation.description" href="#kg_core.response.TypeInformation.description">description</a></code></li>
+<li><code><a title="kg_core.response.TypeInformation.identifier" href="#kg_core.response.TypeInformation.identifier">identifier</a></code></li>
+<li><code><a title="kg_core.response.TypeInformation.name" href="#kg_core.response.TypeInformation.name">name</a></code></li>
+<li><code><a title="kg_core.response.TypeInformation.occurrences" href="#kg_core.response.TypeInformation.occurrences">occurrences</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="kg_core.response.User" href="#kg_core.response.User">User</a></code></h4>
+<ul class="two-column">
+<li><code><a title="kg_core.response.User.Config" href="#kg_core.response.User.Config">Config</a></code></li>
+<li><code><a title="kg_core.response.User.alternate_name" href="#kg_core.response.User.alternate_name">alternate_name</a></code></li>
+<li><code><a title="kg_core.response.User.email" href="#kg_core.response.User.email">email</a></code></li>
+<li><code><a title="kg_core.response.User.family_name" href="#kg_core.response.User.family_name">family_name</a></code></li>
+<li><code><a title="kg_core.response.User.given_name" href="#kg_core.response.User.given_name">given_name</a></code></li>
+<li><code><a title="kg_core.response.User.identifiers" href="#kg_core.response.User.identifiers">identifiers</a></code></li>
+<li><code><a title="kg_core.response.User.name" href="#kg_core.response.User.name">name</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="kg_core.response.UserWithRoles" href="#kg_core.response.UserWithRoles">UserWithRoles</a></code></h4>
+<ul class="two-column">
+<li><code><a title="kg_core.response.UserWithRoles.Config" href="#kg_core.response.UserWithRoles.Config">Config</a></code></li>
+<li><code><a title="kg_core.response.UserWithRoles.client_id" href="#kg_core.response.UserWithRoles.client_id">client_id</a></code></li>
+<li><code><a title="kg_core.response.UserWithRoles.client_roles" href="#kg_core.response.UserWithRoles.client_roles">client_roles</a></code></li>
+<li><code><a title="kg_core.response.UserWithRoles.invitations" href="#kg_core.response.UserWithRoles.invitations">invitations</a></code></li>
+<li><code><a title="kg_core.response.UserWithRoles.user" href="#kg_core.response.UserWithRoles.user">user</a></code></li>
+<li><code><a title="kg_core.response.UserWithRoles.user_roles" href="#kg_core.response.UserWithRoles.user_roles">user_roles</a></code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc" title="pdoc: Python API documentation generator"><cite>pdoc</cite> 0.10.0</a>.</p>
+</footer>
+</body>
+</html>

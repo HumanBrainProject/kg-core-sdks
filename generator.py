@@ -22,6 +22,7 @@
 import json
 from typing import Optional
 
+import pdoc
 import requests
 import re
 
@@ -125,7 +126,7 @@ class ClientGenerator(object):
                         if len(generics) > 0:
                             generic_response_type = generics[0]
 
-                    method = {"operation": operation, "has_payload": "requestBody" in definition and definition["requestBody"],
+                    method = {"operation": operation, "summary": definition["summary"] if "summary" in definition else None, "has_payload": "requestBody" in definition and definition["requestBody"],
                               "path": {"name": self._translate_path(relative_path, path_parameters), "has_path_params": len(path_parameters) > 0}, "name": method_name,
                               "parameters": method_parameters, "query_parameters": query_parameters, "response_type": response_type, "generic_response_type": generic_response_type}
                     methods_by_category[category].append(method)
@@ -289,6 +290,9 @@ class ClientGenerator(object):
 
 if __name__ == "__main__":
     localhost = ClientGenerator("localhost:8000", "v3/api-docs/", "https://kg.ebrains.eu/api/instances/", "kg-core-python")
+    ppd = ClientGenerator("core.kg-ppd.ebrains.eu", "v3/api-docs/", "https://kg.ebrains.eu/api/instances/", "kg-core-python")
     prod = ClientGenerator("core.kg.ebrains.eu", "v3/api-docs/", "https://kg.ebrains.eu/api/instances/", "kg-core-python")
 
-    localhost.generate()
+    # localhost.generate()
+    #ppd.generate()
+    prod.generate()
