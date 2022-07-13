@@ -1,0 +1,122 @@
+#  Copyright 2022 EBRAINS AISBL
+#
+#  Licensed under the Apache License, Version 2.0 (the "License");
+#  you may not use this file except in compliance with the License.
+#  You may obtain a copy of the License at
+#
+#  http://www.apache.org/licenses/LICENSE-2.0.
+#
+#  Unless required by applicable law or agreed to in writing, software
+#  distributed under the License is distributed on an "AS IS" BASIS,
+#  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#  See the License for the specific language governing permissions and
+#  limitations under the License.
+#
+#  This open source software code was developed in part or in whole in the
+#  Human Brain Project, funded from the European Union's Horizon 2020
+#  Framework Programme for Research and Innovation under
+#  Specific Grant Agreements No. 720270, No. 785907, and No. 945539
+#  (Human Brain Project SGA1, SGA2 and SGA3).
+#
+
+from __future__ import annotations
+import os
+import requests
+from typing import List, Optional
+from uuid import UUID
+
+from kg_core.__communication import TokenHandler, RequestsWithTokenHandler, KGConfig
+from kg_core.request import ResponseConfiguration, ExtendedResponseConfiguration, Pagination, Stage, ReleaseTreeScope
+from kg_core.oauth import SimpleToken, ClientCredentials, DeviceAuthenticationFlow
+from kg_core.response import Result, Instance, JsonLdDocument, ResultsById, ResultPage, ReleaseStatus, Error, translate_error, User, Scope, SpaceInformation, TypeInformation, TermsOfUse
+
+
+def _calculate_base_url(host: str):
+    return f"http{'s' if not host.startswith('localhost') else ''}://{host}/{{api_version}}/"
+
+
+def _create_kg_config(host: str, token_handler: TokenHandler, client_token_handler: Optional[TokenHandler] = None) -> KGConfig:
+    return KGConfig(_calculate_base_url(host), token_handler, client_token_handler, "{{id_namespace}}")
+
+
+class Client(object):
+
+    def __init__(self, host: str, token_handler: TokenHandler, client_token_handler: Optional[TokenHandler] = None):
+        if not host:
+            raise ValueError("No hostname specified")
+        elif not token_handler:
+            raise ValueError("No token provided")
+        kg_config = _create_kg_config(host, token_handler, client_token_handler)
+        {% for category, methods in methods_by_category %}{% if category != 'admin' %}self.{{category}} = {{category.capitalize()}}(kg_config)
+        {% endif %}{% endfor %}
+{% for category, methods in methods_by_category %}
+class {{category.capitalize()}}(RequestsWithTokenHandler):
+    def __init__(self, config: KGConfig):
+        super({{category.capitalize()}}, self).__init__(config)
+{% for method in methods %}
+    def {{method.name}}(self{% if method.has_payload %}, payload: dict{% endif %}{% for p in method.parameters %}{% if not p.replace %}, {{p.name}}{% if p.type %}: {{p.type}}{% endif %}{% endif %}{% endfor %}){% if method.response_type %} -> {{method.response_type}}{% else %} -> Optional[Error]{% endif %}:
+        result = self._{{method.operation}}(path={% if method.path.has_path_params %}f{% endif %}"{{method.path.name}}", {% if method.has_payload %}payload=payload, {%elif method.operation not in ['get', 'delete'] %}payload=None, {% endif %}params={% if not method.query_parameters %}{}){% else %}{ {% for p in method.query_parameters %}
+            "{{p.name}}": {% if p.replace %}{{p.replace}}.{% endif %}{{p.param}}{% if not loop.last %},{% endif %}{% endfor %}
+        }){% endif %}
+        return {% if method.generic_response_type %}{% if 'Optional[' in method.response_type %}None if not result.content else {{method.generic_response_type}}(**result.content){% else %}{{method.response_type}}(response=result, constructor={{method.generic_response_type}}){% endif %}{% elif method.response_type %}{{method.response_type}}(response = result){% else %}translate_error(result){% endif %}
+{% endfor %}
+{% endfor %}
+class ClientBuilder(object):
+
+    def __init__(self, host_name: str):
+        self._host_name = host_name
+        self._token_handler: Optional[TokenHandler] = None
+        self._client_token_handler: Optional[TokenHandler] = None
+
+    def _resolve_token_handler(self) -> TokenHandler:
+        if not self._token_handler:
+            self.with_device_flow()  # We fall back to device flow if there is no explicitly stated token handler and no environment variables are specified
+            return self._token_handler
+        else:
+            return self._token_handler
+
+    def _resolve_client_token_handler(self) -> Optional[TokenHandler]:
+        if not self._client_token_handler:
+            if "KG_CLIENT_ID" in os.environ and "KG_CLIENT_SECRET" in os.environ:
+                return ClientCredentials(os.environ["KG_CLIENT_ID"], os.environ["KG_CLIENT_SECRET"])
+            elif "KG_CLIENT_TOKEN" in os.environ:
+                return SimpleToken(os.environ["KG_CLIENT_TOKEN"])
+            else:
+                return None
+        else:
+            return self._client_token_handler
+
+    def with_device_flow(self, client_id: str = "{{default_client_id_for_device_flow}}", open_id_configuration_url: Optional[str] = None) -> ClientBuilder:
+        if not open_id_configuration_url:
+            auth_endpoint = requests.get(f"{_calculate_base_url(self._host_name)}users/authorization/config").json()
+            if auth_endpoint and "data" in auth_endpoint and auth_endpoint["data"] and "endpoint" in auth_endpoint["data"]:
+                config = auth_endpoint["data"]["endpoint"]
+            else:
+                raise ValueError("Was not able to determine the authentication endpoint. This could be caused by a temporary downtime or a misconfiguration of the host name")
+        else:
+            config = open_id_configuration_url
+        self._token_handler = DeviceAuthenticationFlow(config, client_id)
+        return self
+
+    def with_token(self, token: Optional[str] = None) -> ClientBuilder:
+        self._token_handler = SimpleToken(token if token else os.environ["KG_TOKEN"])
+        return self
+
+    def with_credentials(self, client_id: Optional[str] = None, client_secret: Optional[str] = None) -> ClientBuilder:
+        self._token_handler = ClientCredentials(client_id if client_id else os.environ["KG_CLIENT_ID"], client_secret if client_secret else os.environ["KG_CLIENT_SECRET"])
+        return self
+
+    def add_client_authentication(self, client_id: Optional[str] = None, client_secret: Optional[str] = None) -> ClientBuilder:
+        self._client_token_handler = ClientCredentials(client_id if client_id else os.environ["KG_CLIENT_ID"], client_secret if client_secret else os.environ["KG_CLIENT_SECRET"])
+        return self
+
+    def build(self) -> Client:
+        return Client(self._host_name, self._resolve_token_handler(), self._resolve_client_token_handler())
+
+    def build_admin(self) -> Admin:
+        return Admin(_create_kg_config(self._host_name, self._resolve_token_handler(), self._resolve_client_token_handler()))
+
+
+def kg(host: str = "{{ default_kg_root }}") -> ClientBuilder:
+    return ClientBuilder(host)
+
