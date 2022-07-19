@@ -52,7 +52,7 @@ import http.client
 import uuid
 from abc import ABC
 from enum import Enum, EnumMeta
-from typing import Optional, Dict, TypeVar, Generic, Any, List
+from typing import Any, Callable, Iterable, Optional, Dict, TypeVar, Generic, List
 from uuid import UUID
 
 from pydantic import BaseModel
@@ -67,26 +67,26 @@ class ReleaseStatus(Enum):
     HAS_CHANGED = 3
 
 
-class JsonLdDocument(Dict[str, any]):
+class JsonLdDocument(Dict[str, Any]):
 
-    def __init__(self, seq=None, **kwargs):
+    def __init__(self, seq: Iterable[List[str]]=(), **kwargs: Any):
         super(JsonLdDocument, self).__init__(seq, **kwargs)
 
 
 class ListOfJsonLdDocuments(List[JsonLdDocument]):
 
-    def __init__(self, seq=()):
-      super(ListOfJsonLdDocuments, self).__init__(seq)
+    def __init__(self, seq: Iterable[JsonLdDocument]=()):
+        super(ListOfJsonLdDocuments, self).__init__(seq)
 
 
 class Instance(JsonLdDocument):
-
-    def __init__(self, seq=None, id_namespace:str=None, **kwargs):
+    uuid: Optional[UUID] = None
+    def __init__(self, seq: Iterable[List[str]]=(), id_namespace:Optional[str]=None, **kwargs: Any):
         super(Instance, self).__init__(seq, **kwargs)
         self.__id_namespace = id_namespace
         self.instance_id = self[&#34;@id&#34;] if &#34;@id&#34; in self else None
         if self.instance_id and self.instance_id.startswith(self.__id_namespace):
-            self.uuid = uuid.UUID(self.instance_id[len(self.__id_namespace):])
+            self.uuid = uuid.UUID(self.instance_id[0 if self.__id_namespace is None else len(self.__id_namespace):])
         else:
             self.uuid = None
 
@@ -210,25 +210,31 @@ class _AbstractResult(ABC):
 
 
 class _AbstractResultPage(_AbstractResult):
-
+    DEFAULT_PAGE_SIZE = 50
+    DEFAULT_START_FROM = 0
+    DEFAULT_TOTAL = 0
     def __init__(self, response: KGRequestWithResponseContext):
         super(_AbstractResultPage, self).__init__(response)
-        self.total: Optional[int] = response.content[&#34;total&#34;] if response.content and &#34;total&#34; in response.content else None
-        self.size: Optional[int] = response.content[&#34;size&#34;] if response.content and &#34;size&#34; in response.content else None
-        self.start_from: Optional[int] = response.content[&#34;from&#34;] if response.content and &#34;from&#34; in response.content else None
+        self.total: int = response.content[&#34;total&#34;] if response.content and &#34;total&#34; in response.content else self.DEFAULT_TOTAL
+        self.size: int = response.content[&#34;size&#34;] if response.content and &#34;size&#34; in response.content else self.DEFAULT_PAGE_SIZE
+        self.start_from: int = response.content[&#34;from&#34;] if response.content and &#34;from&#34; in response.content else self.DEFAULT_START_FROM
 
 
-def _init_response_object(constructor, data, id_namespace):
-    if data and constructor:
-        if type(constructor) is ModelMetaclass:
-            return constructor(**data)
-        elif type(constructor) is EnumMeta:
-            return constructor[data]
-        elif constructor == Instance:
-            return constructor(data, id_namespace)
-        else:
-            return constructor(data)
-    return None
+
+class ResponseObjectConstructor(Generic[ResponseType]):
+    @staticmethod
+    def init_response_object(constructor: Optional[Callable[..., ResponseType]], data: Any, id_namespace: Any) -&gt; Optional[ResponseType]:
+        if data and constructor:
+            if type(constructor) is ModelMetaclass:
+                return constructor(**data)
+            elif type(constructor) is EnumMeta:
+                # Not pretty but works for now
+                return constructor[data] # type: ignore 
+            elif type(constructor) == Instance:
+                return constructor(data, id_namespace)
+            else:
+                return constructor(data)
+        return None
 
 
 class ResultPageIterator(Generic[ResponseType]):
@@ -240,7 +246,7 @@ class ResultPageIterator(Generic[ResponseType]):
         self.n = 0
         return self
 
-    def __next__(self):
+    def __next__(self) -&gt; Optional[ResultPage[ResponseType]]:
         if self._result_page:
             if self._result_page.error:
                 raise ValueError(self._result_page.error.message)
@@ -256,9 +262,9 @@ class ResultPageIterator(Generic[ResponseType]):
 
 class ResultPage(_AbstractResultPage, Generic[ResponseType]):
 
-    def __init__(self, response: KGRequestWithResponseContext, constructor):
+    def __init__(self, response: KGRequestWithResponseContext, constructor: Optional[Callable[..., ResponseType]]):
         super(ResultPage, self).__init__(response)
-        self.data: Optional[ResponseType] = [_init_response_object(constructor, r, response.id_namespace) for r in response.content[&#34;data&#34;]] if response.content and &#34;data&#34; in response.content else None
+        self.data: Optional[ResponseType] = [ResponseObjectConstructor.init_response_object(constructor, r, response.id_namespace) for r in response.content[&#34;data&#34;]] if response.content and &#34;data&#34; in response.content else None
         self._original_response = response
         self._original_constructor = constructor
 
@@ -276,25 +282,25 @@ class ResultPage(_AbstractResultPage, Generic[ResponseType]):
             return self.start_from+self.size &lt; self.total
         return False
 
-    def items(self) -&gt; ResultPageIterator:
+    def items(self) -&gt; ResultPageIterator[ResponseType]:
         return ResultPageIterator(self)
 
 
 class Result(_AbstractResult, Generic[ResponseType]):
 
-    def __init__(self, response: KGRequestWithResponseContext, constructor):
+    def __init__(self, response: KGRequestWithResponseContext, constructor: Optional[Callable[..., ResponseType]]):
         super(Result, self).__init__(response)
-        self.data: Optional[ResponseType] = _init_response_object(constructor, response.content[&#34;data&#34;], response.id_namespace) if response.content and &#34;data&#34; in response.content and response.content[&#34;data&#34;] else None
+        self.data: Optional[ResponseType] = ResponseObjectConstructor.init_response_object(constructor, response.content[&#34;data&#34;], response.id_namespace) if response.content and &#34;data&#34; in response.content and response.content[&#34;data&#34;] else None
 
     def __str__(self):
-        return f&#34;{super.__str__(self)} - status: {str(self.error.code)+&#39; (&#39;+self.error.message+&#39;)&#39; if self.error else &#39;success&#39;}&#34;
+        return f&#34;{super.__str__(self)} - status: {str(self.error.code)+&#39; (&#39;+self.error.message+&#39;)&#39; if self.error is not None else &#39;success&#39;}&#34;
 
 
 class ResultsById(_AbstractResult, Generic[ResponseType]):
 
-    def __init__(self, response: KGRequestWithResponseContext, constructor):
+    def __init__(self, response: KGRequestWithResponseContext, constructor: Optional[Callable[..., ResponseType]]):
         super(ResultsById, self).__init__(response)
-        self.data: Dict[str, Result[ResponseType]] = {k: Result[ResponseType](KGRequestWithResponseContext(r, None, None, None, response.id_namespace), constructor) for k, r in response.content[&#34;data&#34;].items()} if response.content and &#34;data&#34; in response.content and response.content[&#34;data&#34;] else None
+        self.data: Optional[Dict[str, Result[ResponseType]]] = {k: Result[ResponseType](KGRequestWithResponseContext(r, None, None, None, response.id_namespace), constructor) for k, r in response.content[&#34;data&#34;].items()} if response.content and &#34;data&#34; in response.content and response.content[&#34;data&#34;] else None
 
     def __str__(self):
         return f&#34;{super.__str__(self)} - status: {self.error.code if self.error else &#39;success&#39;}&#34;</code></pre>
@@ -374,7 +380,7 @@ class ResultsById(_AbstractResult, Generic[ResponseType]):
 </dd>
 <dt id="kg_core.response.Instance"><code class="flex name class">
 <span>class <span class="ident">Instance</span></span>
-<span>(</span><span>seq=None, id_namespace: str = None, **kwargs)</span>
+<span>(</span><span>seq: Iterable[List[str]] = (), id_namespace: Optional[str] = None, **kwargs: Any)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>dict() -&gt; new empty dictionary
@@ -393,13 +399,13 @@ dict(one=1, two=2)</p></div>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class Instance(JsonLdDocument):
-
-    def __init__(self, seq=None, id_namespace:str=None, **kwargs):
+    uuid: Optional[UUID] = None
+    def __init__(self, seq: Iterable[List[str]]=(), id_namespace:Optional[str]=None, **kwargs: Any):
         super(Instance, self).__init__(seq, **kwargs)
         self.__id_namespace = id_namespace
         self.instance_id = self[&#34;@id&#34;] if &#34;@id&#34; in self else None
         if self.instance_id and self.instance_id.startswith(self.__id_namespace):
-            self.uuid = uuid.UUID(self.instance_id[len(self.__id_namespace):])
+            self.uuid = uuid.UUID(self.instance_id[0 if self.__id_namespace is None else len(self.__id_namespace):])
         else:
             self.uuid = None
 
@@ -412,10 +418,17 @@ dict(one=1, two=2)</p></div>
 <li>builtins.dict</li>
 <li>typing.Generic</li>
 </ul>
+<h3>Class variables</h3>
+<dl>
+<dt id="kg_core.response.Instance.uuid"><code class="name">var <span class="ident">uuid</span> : Optional[uuid.UUID]</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
 </dd>
 <dt id="kg_core.response.JsonLdDocument"><code class="flex name class">
 <span>class <span class="ident">JsonLdDocument</span></span>
-<span>(</span><span>seq=None, **kwargs)</span>
+<span>(</span><span>seq: Iterable[List[str]] = (), **kwargs: Any)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>dict() -&gt; new empty dictionary
@@ -433,9 +446,9 @@ dict(one=1, two=2)</p></div>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">class JsonLdDocument(Dict[str, any]):
+<pre><code class="python">class JsonLdDocument(Dict[str, Any]):
 
-    def __init__(self, seq=None, **kwargs):
+    def __init__(self, seq: Iterable[List[str]]=(), **kwargs: Any):
         super(JsonLdDocument, self).__init__(seq, **kwargs)</code></pre>
 </details>
 <h3>Ancestors</h3>
@@ -450,7 +463,7 @@ dict(one=1, two=2)</p></div>
 </dd>
 <dt id="kg_core.response.ListOfJsonLdDocuments"><code class="flex name class">
 <span>class <span class="ident">ListOfJsonLdDocuments</span></span>
-<span>(</span><span>seq=())</span>
+<span>(</span><span>seq: Iterable[<a title="kg_core.response.JsonLdDocument" href="#kg_core.response.JsonLdDocument">JsonLdDocument</a>] = ())</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Built-in mutable sequence.</p>
@@ -462,8 +475,8 @@ The argument must be an iterable if specified.</p></div>
 </summary>
 <pre><code class="python">class ListOfJsonLdDocuments(List[JsonLdDocument]):
 
-    def __init__(self, seq=()):
-      super(ListOfJsonLdDocuments, self).__init__(seq)</code></pre>
+    def __init__(self, seq: Iterable[JsonLdDocument]=()):
+        super(ListOfJsonLdDocuments, self).__init__(seq)</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
@@ -506,9 +519,79 @@ The argument must be an iterable if specified.</p></div>
 </dd>
 </dl>
 </dd>
+<dt id="kg_core.response.ResponseObjectConstructor"><code class="flex name class">
+<span>class <span class="ident">ResponseObjectConstructor</span></span>
+<span>(</span><span>*args, **kwds)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Abstract base class for generic types.</p>
+<p>A generic type is typically declared by inheriting from
+this class parameterized with one or more type variables.
+For example, a generic mapping type might be defined as::</p>
+<p>class Mapping(Generic[KT, VT]):
+def <strong>getitem</strong>(self, key: KT) -&gt; VT:
+&hellip;
+# Etc.</p>
+<p>This class can then be used as follows::</p>
+<p>def lookup_name(mapping: Mapping[KT, VT], key: KT, default: VT) -&gt; VT:
+try:
+return mapping[key]
+except KeyError:
+return default</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class ResponseObjectConstructor(Generic[ResponseType]):
+    @staticmethod
+    def init_response_object(constructor: Optional[Callable[..., ResponseType]], data: Any, id_namespace: Any) -&gt; Optional[ResponseType]:
+        if data and constructor:
+            if type(constructor) is ModelMetaclass:
+                return constructor(**data)
+            elif type(constructor) is EnumMeta:
+                # Not pretty but works for now
+                return constructor[data] # type: ignore 
+            elif type(constructor) == Instance:
+                return constructor(data, id_namespace)
+            else:
+                return constructor(data)
+        return None</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>typing.Generic</li>
+</ul>
+<h3>Static methods</h3>
+<dl>
+<dt id="kg_core.response.ResponseObjectConstructor.init_response_object"><code class="name flex">
+<span>def <span class="ident">init_response_object</span></span>(<span>constructor: Optional[Callable[..., ResponseType]], data: Any, id_namespace: Any) ‑> Optional[~ResponseType]</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@staticmethod
+def init_response_object(constructor: Optional[Callable[..., ResponseType]], data: Any, id_namespace: Any) -&gt; Optional[ResponseType]:
+    if data and constructor:
+        if type(constructor) is ModelMetaclass:
+            return constructor(**data)
+        elif type(constructor) is EnumMeta:
+            # Not pretty but works for now
+            return constructor[data] # type: ignore 
+        elif type(constructor) == Instance:
+            return constructor(data, id_namespace)
+        else:
+            return constructor(data)
+    return None</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
 <dt id="kg_core.response.Result"><code class="flex name class">
 <span>class <span class="ident">Result</span></span>
-<span>(</span><span>response: KGRequestWithResponseContext, constructor)</span>
+<span>(</span><span>response: KGRequestWithResponseContext, constructor: Optional[Callable[..., ResponseType]])</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Helper class that provides a standard way to create an ABC using
@@ -519,12 +602,12 @@ inheritance.</p></div>
 </summary>
 <pre><code class="python">class Result(_AbstractResult, Generic[ResponseType]):
 
-    def __init__(self, response: KGRequestWithResponseContext, constructor):
+    def __init__(self, response: KGRequestWithResponseContext, constructor: Optional[Callable[..., ResponseType]]):
         super(Result, self).__init__(response)
-        self.data: Optional[ResponseType] = _init_response_object(constructor, response.content[&#34;data&#34;], response.id_namespace) if response.content and &#34;data&#34; in response.content and response.content[&#34;data&#34;] else None
+        self.data: Optional[ResponseType] = ResponseObjectConstructor.init_response_object(constructor, response.content[&#34;data&#34;], response.id_namespace) if response.content and &#34;data&#34; in response.content and response.content[&#34;data&#34;] else None
 
     def __str__(self):
-        return f&#34;{super.__str__(self)} - status: {str(self.error.code)+&#39; (&#39;+self.error.message+&#39;)&#39; if self.error else &#39;success&#39;}&#34;</code></pre>
+        return f&#34;{super.__str__(self)} - status: {str(self.error.code)+&#39; (&#39;+self.error.message+&#39;)&#39; if self.error is not None else &#39;success&#39;}&#34;</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
@@ -535,7 +618,7 @@ inheritance.</p></div>
 </dd>
 <dt id="kg_core.response.ResultPage"><code class="flex name class">
 <span>class <span class="ident">ResultPage</span></span>
-<span>(</span><span>response: KGRequestWithResponseContext, constructor)</span>
+<span>(</span><span>response: KGRequestWithResponseContext, constructor: Optional[Callable[..., ResponseType]])</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Helper class that provides a standard way to create an ABC using
@@ -546,9 +629,9 @@ inheritance.</p></div>
 </summary>
 <pre><code class="python">class ResultPage(_AbstractResultPage, Generic[ResponseType]):
 
-    def __init__(self, response: KGRequestWithResponseContext, constructor):
+    def __init__(self, response: KGRequestWithResponseContext, constructor: Optional[Callable[..., ResponseType]]):
         super(ResultPage, self).__init__(response)
-        self.data: Optional[ResponseType] = [_init_response_object(constructor, r, response.id_namespace) for r in response.content[&#34;data&#34;]] if response.content and &#34;data&#34; in response.content else None
+        self.data: Optional[ResponseType] = [ResponseObjectConstructor.init_response_object(constructor, r, response.id_namespace) for r in response.content[&#34;data&#34;]] if response.content and &#34;data&#34; in response.content else None
         self._original_response = response
         self._original_constructor = constructor
 
@@ -566,7 +649,7 @@ inheritance.</p></div>
             return self.start_from+self.size &lt; self.total
         return False
 
-    def items(self) -&gt; ResultPageIterator:
+    def items(self) -&gt; ResultPageIterator[ResponseType]:
         return ResultPageIterator(self)</code></pre>
 </details>
 <h3>Ancestors</h3>
@@ -594,7 +677,7 @@ inheritance.</p></div>
 </details>
 </dd>
 <dt id="kg_core.response.ResultPage.items"><code class="name flex">
-<span>def <span class="ident">items</span></span>(<span>self) ‑> <a title="kg_core.response.ResultPageIterator" href="#kg_core.response.ResultPageIterator">ResultPageIterator</a></span>
+<span>def <span class="ident">items</span></span>(<span>self) ‑> <a title="kg_core.response.ResultPageIterator" href="#kg_core.response.ResultPageIterator">ResultPageIterator</a>[~ResponseType]</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -602,7 +685,7 @@ inheritance.</p></div>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def items(self) -&gt; ResultPageIterator:
+<pre><code class="python">def items(self) -&gt; ResultPageIterator[ResponseType]:
     return ResultPageIterator(self)</code></pre>
 </details>
 </dd>
@@ -656,7 +739,7 @@ return default</p></div>
         self.n = 0
         return self
 
-    def __next__(self):
+    def __next__(self) -&gt; Optional[ResultPage[ResponseType]]:
         if self._result_page:
             if self._result_page.error:
                 raise ValueError(self._result_page.error.message)
@@ -676,7 +759,7 @@ return default</p></div>
 </dd>
 <dt id="kg_core.response.ResultsById"><code class="flex name class">
 <span>class <span class="ident">ResultsById</span></span>
-<span>(</span><span>response: KGRequestWithResponseContext, constructor)</span>
+<span>(</span><span>response: KGRequestWithResponseContext, constructor: Optional[Callable[..., ResponseType]])</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Helper class that provides a standard way to create an ABC using
@@ -687,9 +770,9 @@ inheritance.</p></div>
 </summary>
 <pre><code class="python">class ResultsById(_AbstractResult, Generic[ResponseType]):
 
-    def __init__(self, response: KGRequestWithResponseContext, constructor):
+    def __init__(self, response: KGRequestWithResponseContext, constructor: Optional[Callable[..., ResponseType]]):
         super(ResultsById, self).__init__(response)
-        self.data: Dict[str, Result[ResponseType]] = {k: Result[ResponseType](KGRequestWithResponseContext(r, None, None, None, response.id_namespace), constructor) for k, r in response.content[&#34;data&#34;].items()} if response.content and &#34;data&#34; in response.content and response.content[&#34;data&#34;] else None
+        self.data: Optional[Dict[str, Result[ResponseType]]] = {k: Result[ResponseType](KGRequestWithResponseContext(r, None, None, None, response.id_namespace), constructor) for k, r in response.content[&#34;data&#34;].items()} if response.content and &#34;data&#34; in response.content and response.content[&#34;data&#34;] else None
 
     def __str__(self):
         return f&#34;{super.__str__(self)} - status: {self.error.code if self.error else &#39;success&#39;}&#34;</code></pre>
@@ -1062,6 +1145,9 @@ inheritance.</p></div>
 </li>
 <li>
 <h4><code><a title="kg_core.response.Instance" href="#kg_core.response.Instance">Instance</a></code></h4>
+<ul class="">
+<li><code><a title="kg_core.response.Instance.uuid" href="#kg_core.response.Instance.uuid">uuid</a></code></li>
+</ul>
 </li>
 <li>
 <h4><code><a title="kg_core.response.JsonLdDocument" href="#kg_core.response.JsonLdDocument">JsonLdDocument</a></code></h4>
@@ -1075,6 +1161,12 @@ inheritance.</p></div>
 <li><code><a title="kg_core.response.ReleaseStatus.HAS_CHANGED" href="#kg_core.response.ReleaseStatus.HAS_CHANGED">HAS_CHANGED</a></code></li>
 <li><code><a title="kg_core.response.ReleaseStatus.RELEASED" href="#kg_core.response.ReleaseStatus.RELEASED">RELEASED</a></code></li>
 <li><code><a title="kg_core.response.ReleaseStatus.UNRELEASED" href="#kg_core.response.ReleaseStatus.UNRELEASED">UNRELEASED</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="kg_core.response.ResponseObjectConstructor" href="#kg_core.response.ResponseObjectConstructor">ResponseObjectConstructor</a></code></h4>
+<ul class="">
+<li><code><a title="kg_core.response.ResponseObjectConstructor.init_response_object" href="#kg_core.response.ResponseObjectConstructor.init_response_object">init_response_object</a></code></li>
 </ul>
 </li>
 <li>

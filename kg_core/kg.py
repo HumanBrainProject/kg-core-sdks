@@ -381,7 +381,7 @@ class Queries(RequestsWithTokenHandler):
     def __init__(self, config: KGConfig):
         super(Queries, self).__init__(config)
 
-    def execute_query_by_id(self, query_id: UUID, all_request_params: dict = {}, instance_id: Optional[UUID] = None, restrict_to_spaces: Optional[List[str]] = None, stage: Stage = Stage.RELEASED, pagination: Pagination = Pagination()) -> ResultPage[JsonLdDocument]:
+    def execute_query_by_id(self, query_id: UUID, all_request_params: Dict[str, Any] = {}, instance_id: Optional[UUID] = None, restrict_to_spaces: Optional[List[str]] = None, stage: Stage = Stage.RELEASED, pagination: Pagination = Pagination()) -> ResultPage[JsonLdDocument]:
         """Execute a stored query to receive the instances"""
         result = self._get(path=f"queries/{query_id}/instances", params={ 
             "from": pagination.start,
@@ -420,7 +420,7 @@ class Queries(RequestsWithTokenHandler):
         })
         return Result[Instance](response=result, constructor=Instance)
 
-    def test_query(self, payload: dict, all_request_params: dict = {}, instance_id: Optional[UUID] = None, restrict_to_spaces: Optional[List[str]] = None, stage: Stage = Stage.RELEASED, pagination: Pagination = Pagination()) -> ResultPage[JsonLdDocument]:
+    def test_query(self, payload: dict, all_request_params: Dict[str, Any] = {}, instance_id: Optional[UUID] = None, restrict_to_spaces: Optional[List[str]] = None, stage: Stage = Stage.RELEASED, pagination: Pagination = Pagination()) -> ResultPage[JsonLdDocument]:
         """Execute the query in the payload in test mode (e.g. for execution before saving with the KG QueryBuilder)"""
         result = self._post(path="queries", payload=payload, params={ 
             "from": pagination.start,

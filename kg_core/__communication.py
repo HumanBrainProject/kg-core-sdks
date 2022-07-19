@@ -43,7 +43,7 @@ class TokenHandler(ABC):
         return self._token
 
     @abstractmethod
-    def _fetch_token(self):
+    def _fetch_token(self) -> Optional[str]:
         pass
 
     def define_endpoint(self, kg_endpoint: str):
@@ -66,9 +66,9 @@ class KGConfig(object):
 
 class KGRequestWithResponseContext(object):
 
-    def __init__(self, content:dict, request_arguments:Optional[dict], request_payload:Optional[Any], status_code:Optional[int], kg_config: KGConfig):
+    def __init__(self, content: Optional[Dict[str, Any]], request_arguments: Optional[Dict[str, Any]], request_payload:Optional[Any], status_code:Optional[int], kg_config: KGConfig):
         self.content = content
-        self._request_arguments = request_arguments
+        self._request_arguments: Dict[str, Any] = request_arguments or {}
         self._request_payload = request_payload
         self.status_code = status_code
         self.id_namespace = kg_config.id_namespace
@@ -77,7 +77,7 @@ class KGRequestWithResponseContext(object):
     def next_page(self, original_start_from: int, original_size:int) -> KGRequestWithResponseContext:
         return GenericRequests(self._kg_config).request(self._define_arguments_for_next_page(original_start_from+original_size, original_size), self._request_payload)
 
-    def _define_arguments_for_next_page(self, new_start_from:int, new_size:int) -> dict:
+    def _define_arguments_for_next_page(self, new_start_from: int, new_size: int) -> Dict[str, Any]:
         new_arguments = deepcopy(self._request_arguments)
         if "params" not in new_arguments:
             new_arguments["params"] = dict()
@@ -125,7 +125,7 @@ class RequestsWithTokenHandler(ABC):
         args_clone = deepcopy(args)
         del args_clone["headers"]
         try:
-            response = r.json()
+            response: Optional[Dict[str, Any]] = r.json()
         except ValueError:
             response = None
         return KGRequestWithResponseContext(response, args_clone, payload, r.status_code, self._kg_config)
@@ -150,5 +150,5 @@ class GenericRequests(RequestsWithTokenHandler):
     def __init__(self, config:KGConfig):
         super(GenericRequests, self).__init__(config)
 
-    def request(self, request_arguments: dict, request_payload: Optional[Any]):
+    def request(self, request_arguments: Dict[str, Any], request_payload: Optional[Any]):
         return self._do_request(request_arguments, request_payload)

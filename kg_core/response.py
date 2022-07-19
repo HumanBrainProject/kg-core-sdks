@@ -24,7 +24,7 @@ import http.client
 import uuid
 from abc import ABC
 from enum import Enum, EnumMeta
-from typing import Optional, Dict, TypeVar, Generic, Any, List
+from typing import Any, Callable, Iterable, Optional, Dict, TypeVar, Generic, List
 from uuid import UUID
 
 from pydantic import BaseModel
@@ -39,26 +39,26 @@ class ReleaseStatus(Enum):
     HAS_CHANGED = 3
 
 
-class JsonLdDocument(Dict[str, any]):
+class JsonLdDocument(Dict[str, Any]):
 
-    def __init__(self, seq=None, **kwargs):
+    def __init__(self, seq: Iterable[List[str]]=(), **kwargs: Any):
         super(JsonLdDocument, self).__init__(seq, **kwargs)
 
 
 class ListOfJsonLdDocuments(List[JsonLdDocument]):
 
-    def __init__(self, seq=()):
-      super(ListOfJsonLdDocuments, self).__init__(seq)
+    def __init__(self, seq: Iterable[JsonLdDocument]=()):
+        super(ListOfJsonLdDocuments, self).__init__(seq)
 
 
 class Instance(JsonLdDocument):
-
-    def __init__(self, seq=None, id_namespace:str=None, **kwargs):
+    uuid: Optional[UUID] = None
+    def __init__(self, seq: Iterable[List[str]]=(), id_namespace:Optional[str]=None, **kwargs: Any):
         super(Instance, self).__init__(seq, **kwargs)
         self.__id_namespace = id_namespace
         self.instance_id = self["@id"] if "@id" in self else None
         if self.instance_id and self.instance_id.startswith(self.__id_namespace):
-            self.uuid = uuid.UUID(self.instance_id[len(self.__id_namespace):])
+            self.uuid = uuid.UUID(self.instance_id[0 if self.__id_namespace is None else len(self.__id_namespace):])
         else:
             self.uuid = None
 
@@ -182,25 +182,31 @@ class _AbstractResult(ABC):
 
 
 class _AbstractResultPage(_AbstractResult):
-
+    DEFAULT_PAGE_SIZE = 50
+    DEFAULT_START_FROM = 0
+    DEFAULT_TOTAL = 0
     def __init__(self, response: KGRequestWithResponseContext):
         super(_AbstractResultPage, self).__init__(response)
-        self.total: Optional[int] = response.content["total"] if response.content and "total" in response.content else None
-        self.size: Optional[int] = response.content["size"] if response.content and "size" in response.content else None
-        self.start_from: Optional[int] = response.content["from"] if response.content and "from" in response.content else None
+        self.total: int = response.content["total"] if response.content and "total" in response.content else self.DEFAULT_TOTAL
+        self.size: int = response.content["size"] if response.content and "size" in response.content else self.DEFAULT_PAGE_SIZE
+        self.start_from: int = response.content["from"] if response.content and "from" in response.content else self.DEFAULT_START_FROM
 
 
-def _init_response_object(constructor, data, id_namespace):
-    if data and constructor:
-        if type(constructor) is ModelMetaclass:
-            return constructor(**data)
-        elif type(constructor) is EnumMeta:
-            return constructor[data]
-        elif constructor == Instance:
-            return constructor(data, id_namespace)
-        else:
-            return constructor(data)
-    return None
+
+class ResponseObjectConstructor(Generic[ResponseType]):
+    @staticmethod
+    def init_response_object(constructor: Optional[Callable[..., ResponseType]], data: Any, id_namespace: Any) -> Optional[ResponseType]:
+        if data and constructor:
+            if type(constructor) is ModelMetaclass:
+                return constructor(**data)
+            elif type(constructor) is EnumMeta:
+                # Not pretty but works for now
+                return constructor[data] # type: ignore 
+            elif type(constructor) == Instance:
+                return constructor(data, id_namespace)
+            else:
+                return constructor(data)
+        return None
 
 
 class ResultPageIterator(Generic[ResponseType]):
@@ -212,7 +218,7 @@ class ResultPageIterator(Generic[ResponseType]):
         self.n = 0
         return self
 
-    def __next__(self):
+    def __next__(self) -> Optional[ResultPage[ResponseType]]:
         if self._result_page:
             if self._result_page.error:
                 raise ValueError(self._result_page.error.message)
@@ -228,9 +234,9 @@ class ResultPageIterator(Generic[ResponseType]):
 
 class ResultPage(_AbstractResultPage, Generic[ResponseType]):
 
-    def __init__(self, response: KGRequestWithResponseContext, constructor):
+    def __init__(self, response: KGRequestWithResponseContext, constructor: Optional[Callable[..., ResponseType]]):
         super(ResultPage, self).__init__(response)
-        self.data: Optional[ResponseType] = [_init_response_object(constructor, r, response.id_namespace) for r in response.content["data"]] if response.content and "data" in response.content else None
+        self.data: Optional[ResponseType] = [ResponseObjectConstructor.init_response_object(constructor, r, response.id_namespace) for r in response.content["data"]] if response.content and "data" in response.content else None
         self._original_response = response
         self._original_constructor = constructor
 
@@ -248,25 +254,25 @@ class ResultPage(_AbstractResultPage, Generic[ResponseType]):
             return self.start_from+self.size < self.total
         return False
 
-    def items(self) -> ResultPageIterator:
+    def items(self) -> ResultPageIterator[ResponseType]:
         return ResultPageIterator(self)
 
 
 class Result(_AbstractResult, Generic[ResponseType]):
 
-    def __init__(self, response: KGRequestWithResponseContext, constructor):
+    def __init__(self, response: KGRequestWithResponseContext, constructor: Optional[Callable[..., ResponseType]]):
         super(Result, self).__init__(response)
-        self.data: Optional[ResponseType] = _init_response_object(constructor, response.content["data"], response.id_namespace) if response.content and "data" in response.content and response.content["data"] else None
+        self.data: Optional[ResponseType] = ResponseObjectConstructor.init_response_object(constructor, response.content["data"], response.id_namespace) if response.content and "data" in response.content and response.content["data"] else None
 
     def __str__(self):
-        return f"{super.__str__(self)} - status: {str(self.error.code)+' ('+self.error.message+')' if self.error else 'success'}"
+        return f"{super.__str__(self)} - status: {str(self.error.code)+' ('+self.error.message+')' if self.error is not None else 'success'}"
 
 
 class ResultsById(_AbstractResult, Generic[ResponseType]):
 
-    def __init__(self, response: KGRequestWithResponseContext, constructor):
+    def __init__(self, response: KGRequestWithResponseContext, constructor: Optional[Callable[..., ResponseType]]):
         super(ResultsById, self).__init__(response)
-        self.data: Dict[str, Result[ResponseType]] = {k: Result[ResponseType](KGRequestWithResponseContext(r, None, None, None, response.id_namespace), constructor) for k, r in response.content["data"].items()} if response.content and "data" in response.content and response.content["data"] else None
+        self.data: Optional[Dict[str, Result[ResponseType]]] = {k: Result[ResponseType](KGRequestWithResponseContext(r, None, None, None, response.id_namespace), constructor) for k, r in response.content["data"].items()} if response.content and "data" in response.content and response.content["data"] else None
 
     def __str__(self):
         return f"{super.__str__(self)} - status: {self.error.code if self.error else 'success'}"

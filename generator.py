@@ -161,7 +161,7 @@ class ClientGenerator(object):
         elif type_ == "integer":
             result = "int"
         elif type_ == "object":
-            result = "dict"
+            result = "Dict[str, Any]"
         elif type_ == "array":
             if items and "type" in items and items["type"] == "string":
                 result = "List[str]"
@@ -211,7 +211,6 @@ class ClientGenerator(object):
 
     def _response_type(self, responses: Dict[str, Dict[str, Any]]) -> Optional[str]:
         response_reference = None
-        is_list = False
         if "200" in responses and responses["200"]:
             if "content" in responses["200"] and responses["200"]["content"]:
                 content = None
@@ -223,7 +222,6 @@ class ClientGenerator(object):
                     if "schema" in content and content["schema"]:
                         schema = content["schema"]
                         if "type" in schema and "items" in schema and schema["type"] == "array":
-                            is_list = True
                             schema = schema["items"]
                         if "$ref" in schema and schema:
                             response_reference = schema["$ref"]
