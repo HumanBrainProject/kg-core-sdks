@@ -50,7 +50,7 @@
 from __future__ import annotations
 import os
 import requests
-from typing import List, Optional
+from typing import List, Optional, Dict, Any
 from uuid import UUID
 
 from kg_core.__communication import TokenHandler, RequestsWithTokenHandler, KGConfig
@@ -1932,7 +1932,7 @@ inheritance.</p></div>
 <h3>Methods</h3>
 <dl>
 <dt id="kg_core.kg.Queries.execute_query_by_id"><code class="name flex">
-<span>def <span class="ident">execute_query_by_id</span></span>(<span>self, query_id: UUID, all_request_params: Dict[str, Any] = {}, instance_id: Optional[UUID] = None, restrict_to_spaces: Optional[List[str]] = None, stage: Stage = 'RELEASED', pagination: Pagination = &lt;kg_core.request.Pagination object&gt;) ‑> ResultPage[JsonLdDocument]</span>
+<span>def <span class="ident">execute_query_by_id</span></span>(<span>self, query_id: UUID, all_request_params: Dict[str, Any] = {}, instance_id: Optional[UUID] = None, restrict_to_spaces: Optional[List[str]] = None, stage: Stage = 'RELEASED', pagination: Pagination = &lt;kg_core.request.Pagination object&gt;) ‑> <a title="kg_core.response.ResultPage" href="response.html#kg_core.response.ResultPage">ResultPage</a>[<a title="kg_core.response.JsonLdDocument" href="response.html#kg_core.response.JsonLdDocument">JsonLdDocument</a>]</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Execute a stored query to receive the instances</p></div>
@@ -2021,7 +2021,7 @@ inheritance.</p></div>
 </details>
 </dd>
 <dt id="kg_core.kg.Queries.test_query"><code class="name flex">
-<span>def <span class="ident">test_query</span></span>(<span>self, payload: dict, all_request_params: Dict[str, Any] = {}, instance_id: Optional[UUID] = None, restrict_to_spaces: Optional[List[str]] = None, stage: Stage = 'RELEASED', pagination: Pagination = &lt;kg_core.request.Pagination object&gt;) ‑> ResultPage[JsonLdDocument]</span>
+<span>def <span class="ident">test_query</span></span>(<span>self, payload: dict, all_request_params: Dict[str, Any] = {}, instance_id: Optional[UUID] = None, restrict_to_spaces: Optional[List[str]] = None, stage: Stage = 'RELEASED', pagination: Pagination = &lt;kg_core.request.Pagination object&gt;) ‑> <a title="kg_core.response.ResultPage" href="response.html#kg_core.response.ResultPage">ResultPage</a>[<a title="kg_core.response.JsonLdDocument" href="response.html#kg_core.response.JsonLdDocument">JsonLdDocument</a>]</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Execute the query in the payload in test mode (e.g. for execution before saving with the KG QueryBuilder)</p></div>
