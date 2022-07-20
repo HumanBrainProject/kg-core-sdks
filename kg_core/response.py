@@ -33,20 +33,18 @@ from pydantic.main import ModelMetaclass
 from kg_core.__communication import KGRequestWithResponseContext
 
 
-class ReleaseStatus(Enum):
-    RELEASED = 1
-    UNRELEASED = 2
-    HAS_CHANGED = 3
+class ReleaseStatus(str, Enum):
+    RELEASED = "RELEASED"
+    UNRELEASED = "UNRELEASED"
+    HAS_CHANGED = "HAS_CHANGED"
 
 
 class JsonLdDocument(Dict[str, Any]):
-
     def __init__(self, seq: Iterable[List[str]]=(), **kwargs: Any):
         super(JsonLdDocument, self).__init__(seq, **kwargs)
 
 
 class ListOfJsonLdDocuments(List[JsonLdDocument]):
-
     def __init__(self, seq: Iterable[JsonLdDocument]=()):
         super(ListOfJsonLdDocuments, self).__init__(seq)
 
@@ -182,32 +180,26 @@ class _AbstractResult(ABC):
 
 
 class _AbstractResultPage(_AbstractResult):
-    DEFAULT_PAGE_SIZE = 50
-    DEFAULT_START_FROM = 0
-    DEFAULT_TOTAL = 0
     def __init__(self, response: KGRequestWithResponseContext):
         super(_AbstractResultPage, self).__init__(response)
-        self.total: int = response.content["total"] if response.content and "total" in response.content else self.DEFAULT_TOTAL
-        self.size: int = response.content["size"] if response.content and "size" in response.content else self.DEFAULT_PAGE_SIZE
-        self.start_from: int = response.content["from"] if response.content and "from" in response.content else self.DEFAULT_START_FROM
+        self.total: Optional[int] = response.content["total"] if response.content and "total" in response.content else None
+        self.size: Optional[int] = response.content["size"] if response.content and "size" in response.content else None
+        self.start_from: Optional[int] = response.content["from"] if response.content and "from" in response.content else None
 
 
 
 class ResponseObjectConstructor(Generic[ResponseType]):
     @staticmethod
-    def init_response_object(constructor: Optional[Callable[..., ResponseType]], data: Any, id_namespace: Any) -> Optional[ResponseType]:
-        if data and constructor:
-            if type(constructor) is ModelMetaclass:
-                return constructor(**data)
-            elif type(constructor) is EnumMeta:
-                # Not pretty but works for now
-                return constructor[data] # type: ignore 
-            elif type(constructor) == Instance:
-                return constructor(data, id_namespace)
-            else:
-                return constructor(data)
-        return None
-
+    def init_response_object(constructor: Callable[..., ResponseType], data: Any, id_namespace: Any) -> ResponseType:
+        if type(constructor) is ModelMetaclass:
+            return constructor(**data)
+        elif type(constructor) is EnumMeta:
+            # Not pretty but works for now
+            return constructor[data] # type: ignore 
+        elif type(constructor) == Instance:
+            return constructor(data, id_namespace)
+        else:
+            return constructor(data)
 
 class ResultPageIterator(Generic[ResponseType]):
 
@@ -234,9 +226,9 @@ class ResultPageIterator(Generic[ResponseType]):
 
 class ResultPage(_AbstractResultPage, Generic[ResponseType]):
 
-    def __init__(self, response: KGRequestWithResponseContext, constructor: Optional[Callable[..., ResponseType]]):
+    def __init__(self, response: KGRequestWithResponseContext, constructor: Callable[..., ResponseType]):
         super(ResultPage, self).__init__(response)
-        self.data: Optional[ResponseType] = [ResponseObjectConstructor.init_response_object(constructor, r, response.id_namespace) for r in response.content["data"]] if response.content and "data" in response.content else None
+        self.data: Optional[List[ResponseType]] = [ResponseObjectConstructor.init_response_object(constructor, r, response.id_namespace) for r in response.content["data"]] if response.content and "data" in response.content else None
         self._original_response = response
         self._original_constructor = constructor
 
@@ -260,7 +252,7 @@ class ResultPage(_AbstractResultPage, Generic[ResponseType]):
 
 class Result(_AbstractResult, Generic[ResponseType]):
 
-    def __init__(self, response: KGRequestWithResponseContext, constructor: Optional[Callable[..., ResponseType]]):
+    def __init__(self, response: KGRequestWithResponseContext, constructor: Callable[..., ResponseType]):
         super(Result, self).__init__(response)
         self.data: Optional[ResponseType] = ResponseObjectConstructor.init_response_object(constructor, response.content["data"], response.id_namespace) if response.content and "data" in response.content and response.content["data"] else None
 
@@ -270,7 +262,7 @@ class Result(_AbstractResult, Generic[ResponseType]):
 
 class ResultsById(_AbstractResult, Generic[ResponseType]):
 
-    def __init__(self, response: KGRequestWithResponseContext, constructor: Optional[Callable[..., ResponseType]]):
+    def __init__(self, response: KGRequestWithResponseContext, constructor: Callable[..., ResponseType]):
         super(ResultsById, self).__init__(response)
         self.data: Optional[Dict[str, Result[ResponseType]]] = {k: Result[ResponseType](KGRequestWithResponseContext(r, None, None, None, response.id_namespace), constructor) for k, r in response.content["data"].items()} if response.content and "data" in response.content and response.content["data"] else None
 

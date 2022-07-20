@@ -61,20 +61,18 @@ from pydantic.main import ModelMetaclass
 from kg_core.__communication import KGRequestWithResponseContext
 
 
-class ReleaseStatus(Enum):
-    RELEASED = 1
-    UNRELEASED = 2
-    HAS_CHANGED = 3
+class ReleaseStatus(str, Enum):
+    RELEASED = &#34;RELEASED&#34;
+    UNRELEASED = &#34;UNRELEASED&#34;
+    HAS_CHANGED = &#34;HAS_CHANGED&#34;
 
 
 class JsonLdDocument(Dict[str, Any]):
-
     def __init__(self, seq: Iterable[List[str]]=(), **kwargs: Any):
         super(JsonLdDocument, self).__init__(seq, **kwargs)
 
 
 class ListOfJsonLdDocuments(List[JsonLdDocument]):
-
     def __init__(self, seq: Iterable[JsonLdDocument]=()):
         super(ListOfJsonLdDocuments, self).__init__(seq)
 
@@ -210,32 +208,26 @@ class _AbstractResult(ABC):
 
 
 class _AbstractResultPage(_AbstractResult):
-    DEFAULT_PAGE_SIZE = 50
-    DEFAULT_START_FROM = 0
-    DEFAULT_TOTAL = 0
     def __init__(self, response: KGRequestWithResponseContext):
         super(_AbstractResultPage, self).__init__(response)
-        self.total: int = response.content[&#34;total&#34;] if response.content and &#34;total&#34; in response.content else self.DEFAULT_TOTAL
-        self.size: int = response.content[&#34;size&#34;] if response.content and &#34;size&#34; in response.content else self.DEFAULT_PAGE_SIZE
-        self.start_from: int = response.content[&#34;from&#34;] if response.content and &#34;from&#34; in response.content else self.DEFAULT_START_FROM
+        self.total: Optional[int] = response.content[&#34;total&#34;] if response.content and &#34;total&#34; in response.content else None
+        self.size: Optional[int] = response.content[&#34;size&#34;] if response.content and &#34;size&#34; in response.content else None
+        self.start_from: Optional[int] = response.content[&#34;from&#34;] if response.content and &#34;from&#34; in response.content else None
 
 
 
 class ResponseObjectConstructor(Generic[ResponseType]):
     @staticmethod
-    def init_response_object(constructor: Optional[Callable[..., ResponseType]], data: Any, id_namespace: Any) -&gt; Optional[ResponseType]:
-        if data and constructor:
-            if type(constructor) is ModelMetaclass:
-                return constructor(**data)
-            elif type(constructor) is EnumMeta:
-                # Not pretty but works for now
-                return constructor[data] # type: ignore 
-            elif type(constructor) == Instance:
-                return constructor(data, id_namespace)
-            else:
-                return constructor(data)
-        return None
-
+    def init_response_object(constructor: Callable[..., ResponseType], data: Any, id_namespace: Any) -&gt; ResponseType:
+        if type(constructor) is ModelMetaclass:
+            return constructor(**data)
+        elif type(constructor) is EnumMeta:
+            # Not pretty but works for now
+            return constructor[data] # type: ignore 
+        elif type(constructor) == Instance:
+            return constructor(data, id_namespace)
+        else:
+            return constructor(data)
 
 class ResultPageIterator(Generic[ResponseType]):
 
@@ -262,9 +254,9 @@ class ResultPageIterator(Generic[ResponseType]):
 
 class ResultPage(_AbstractResultPage, Generic[ResponseType]):
 
-    def __init__(self, response: KGRequestWithResponseContext, constructor: Optional[Callable[..., ResponseType]]):
+    def __init__(self, response: KGRequestWithResponseContext, constructor: Callable[..., ResponseType]):
         super(ResultPage, self).__init__(response)
-        self.data: Optional[ResponseType] = [ResponseObjectConstructor.init_response_object(constructor, r, response.id_namespace) for r in response.content[&#34;data&#34;]] if response.content and &#34;data&#34; in response.content else None
+        self.data: Optional[List[ResponseType]] = [ResponseObjectConstructor.init_response_object(constructor, r, response.id_namespace) for r in response.content[&#34;data&#34;]] if response.content and &#34;data&#34; in response.content else None
         self._original_response = response
         self._original_constructor = constructor
 
@@ -288,7 +280,7 @@ class ResultPage(_AbstractResultPage, Generic[ResponseType]):
 
 class Result(_AbstractResult, Generic[ResponseType]):
 
-    def __init__(self, response: KGRequestWithResponseContext, constructor: Optional[Callable[..., ResponseType]]):
+    def __init__(self, response: KGRequestWithResponseContext, constructor: Callable[..., ResponseType]):
         super(Result, self).__init__(response)
         self.data: Optional[ResponseType] = ResponseObjectConstructor.init_response_object(constructor, response.content[&#34;data&#34;], response.id_namespace) if response.content and &#34;data&#34; in response.content and response.content[&#34;data&#34;] else None
 
@@ -298,7 +290,7 @@ class Result(_AbstractResult, Generic[ResponseType]):
 
 class ResultsById(_AbstractResult, Generic[ResponseType]):
 
-    def __init__(self, response: KGRequestWithResponseContext, constructor: Optional[Callable[..., ResponseType]]):
+    def __init__(self, response: KGRequestWithResponseContext, constructor: Callable[..., ResponseType]):
         super(ResultsById, self).__init__(response)
         self.data: Optional[Dict[str, Result[ResponseType]]] = {k: Result[ResponseType](KGRequestWithResponseContext(r, None, None, None, response.id_namespace), constructor) for k, r in response.content[&#34;data&#34;].items()} if response.content and &#34;data&#34; in response.content and response.content[&#34;data&#34;] else None
 
@@ -447,7 +439,6 @@ dict(one=1, two=2)</p></div>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class JsonLdDocument(Dict[str, Any]):
-
     def __init__(self, seq: Iterable[List[str]]=(), **kwargs: Any):
         super(JsonLdDocument, self).__init__(seq, **kwargs)</code></pre>
 </details>
@@ -474,7 +465,6 @@ The argument must be an iterable if specified.</p></div>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class ListOfJsonLdDocuments(List[JsonLdDocument]):
-
     def __init__(self, seq: Iterable[JsonLdDocument]=()):
         super(ListOfJsonLdDocuments, self).__init__(seq)</code></pre>
 </details>
@@ -494,13 +484,14 @@ The argument must be an iterable if specified.</p></div>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">class ReleaseStatus(Enum):
-    RELEASED = 1
-    UNRELEASED = 2
-    HAS_CHANGED = 3</code></pre>
+<pre><code class="python">class ReleaseStatus(str, Enum):
+    RELEASED = &#34;RELEASED&#34;
+    UNRELEASED = &#34;UNRELEASED&#34;
+    HAS_CHANGED = &#34;HAS_CHANGED&#34;</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
+<li>builtins.str</li>
 <li>enum.Enum</li>
 </ul>
 <h3>Class variables</h3>
@@ -544,37 +535,7 @@ return default</p></div>
 </summary>
 <pre><code class="python">class ResponseObjectConstructor(Generic[ResponseType]):
     @staticmethod
-    def init_response_object(constructor: Optional[Callable[..., ResponseType]], data: Any, id_namespace: Any) -&gt; Optional[ResponseType]:
-        if data and constructor:
-            if type(constructor) is ModelMetaclass:
-                return constructor(**data)
-            elif type(constructor) is EnumMeta:
-                # Not pretty but works for now
-                return constructor[data] # type: ignore 
-            elif type(constructor) == Instance:
-                return constructor(data, id_namespace)
-            else:
-                return constructor(data)
-        return None</code></pre>
-</details>
-<h3>Ancestors</h3>
-<ul class="hlist">
-<li>typing.Generic</li>
-</ul>
-<h3>Static methods</h3>
-<dl>
-<dt id="kg_core.response.ResponseObjectConstructor.init_response_object"><code class="name flex">
-<span>def <span class="ident">init_response_object</span></span>(<span>constructor: Optional[Callable[..., ResponseType]], data: Any, id_namespace: Any) ‑> Optional[~ResponseType]</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@staticmethod
-def init_response_object(constructor: Optional[Callable[..., ResponseType]], data: Any, id_namespace: Any) -&gt; Optional[ResponseType]:
-    if data and constructor:
+    def init_response_object(constructor: Callable[..., ResponseType], data: Any, id_namespace: Any) -&gt; ResponseType:
         if type(constructor) is ModelMetaclass:
             return constructor(**data)
         elif type(constructor) is EnumMeta:
@@ -583,15 +544,41 @@ def init_response_object(constructor: Optional[Callable[..., ResponseType]], dat
         elif type(constructor) == Instance:
             return constructor(data, id_namespace)
         else:
-            return constructor(data)
-    return None</code></pre>
+            return constructor(data)</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>typing.Generic</li>
+</ul>
+<h3>Static methods</h3>
+<dl>
+<dt id="kg_core.response.ResponseObjectConstructor.init_response_object"><code class="name flex">
+<span>def <span class="ident">init_response_object</span></span>(<span>constructor: Callable[..., ResponseType], data: Any, id_namespace: Any) ‑> ~ResponseType</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@staticmethod
+def init_response_object(constructor: Callable[..., ResponseType], data: Any, id_namespace: Any) -&gt; ResponseType:
+    if type(constructor) is ModelMetaclass:
+        return constructor(**data)
+    elif type(constructor) is EnumMeta:
+        # Not pretty but works for now
+        return constructor[data] # type: ignore 
+    elif type(constructor) == Instance:
+        return constructor(data, id_namespace)
+    else:
+        return constructor(data)</code></pre>
 </details>
 </dd>
 </dl>
 </dd>
 <dt id="kg_core.response.Result"><code class="flex name class">
 <span>class <span class="ident">Result</span></span>
-<span>(</span><span>response: KGRequestWithResponseContext, constructor: Optional[Callable[..., ResponseType]])</span>
+<span>(</span><span>response: KGRequestWithResponseContext, constructor: Callable[..., ResponseType])</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Helper class that provides a standard way to create an ABC using
@@ -602,7 +589,7 @@ inheritance.</p></div>
 </summary>
 <pre><code class="python">class Result(_AbstractResult, Generic[ResponseType]):
 
-    def __init__(self, response: KGRequestWithResponseContext, constructor: Optional[Callable[..., ResponseType]]):
+    def __init__(self, response: KGRequestWithResponseContext, constructor: Callable[..., ResponseType]):
         super(Result, self).__init__(response)
         self.data: Optional[ResponseType] = ResponseObjectConstructor.init_response_object(constructor, response.content[&#34;data&#34;], response.id_namespace) if response.content and &#34;data&#34; in response.content and response.content[&#34;data&#34;] else None
 
@@ -618,7 +605,7 @@ inheritance.</p></div>
 </dd>
 <dt id="kg_core.response.ResultPage"><code class="flex name class">
 <span>class <span class="ident">ResultPage</span></span>
-<span>(</span><span>response: KGRequestWithResponseContext, constructor: Optional[Callable[..., ResponseType]])</span>
+<span>(</span><span>response: KGRequestWithResponseContext, constructor: Callable[..., ResponseType])</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Helper class that provides a standard way to create an ABC using
@@ -629,9 +616,9 @@ inheritance.</p></div>
 </summary>
 <pre><code class="python">class ResultPage(_AbstractResultPage, Generic[ResponseType]):
 
-    def __init__(self, response: KGRequestWithResponseContext, constructor: Optional[Callable[..., ResponseType]]):
+    def __init__(self, response: KGRequestWithResponseContext, constructor: Callable[..., ResponseType]):
         super(ResultPage, self).__init__(response)
-        self.data: Optional[ResponseType] = [ResponseObjectConstructor.init_response_object(constructor, r, response.id_namespace) for r in response.content[&#34;data&#34;]] if response.content and &#34;data&#34; in response.content else None
+        self.data: Optional[List[ResponseType]] = [ResponseObjectConstructor.init_response_object(constructor, r, response.id_namespace) for r in response.content[&#34;data&#34;]] if response.content and &#34;data&#34; in response.content else None
         self._original_response = response
         self._original_constructor = constructor
 
@@ -759,7 +746,7 @@ return default</p></div>
 </dd>
 <dt id="kg_core.response.ResultsById"><code class="flex name class">
 <span>class <span class="ident">ResultsById</span></span>
-<span>(</span><span>response: KGRequestWithResponseContext, constructor: Optional[Callable[..., ResponseType]])</span>
+<span>(</span><span>response: KGRequestWithResponseContext, constructor: Callable[..., ResponseType])</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Helper class that provides a standard way to create an ABC using
@@ -770,7 +757,7 @@ inheritance.</p></div>
 </summary>
 <pre><code class="python">class ResultsById(_AbstractResult, Generic[ResponseType]):
 
-    def __init__(self, response: KGRequestWithResponseContext, constructor: Optional[Callable[..., ResponseType]]):
+    def __init__(self, response: KGRequestWithResponseContext, constructor: Callable[..., ResponseType]):
         super(ResultsById, self).__init__(response)
         self.data: Optional[Dict[str, Result[ResponseType]]] = {k: Result[ResponseType](KGRequestWithResponseContext(r, None, None, None, response.id_namespace), constructor) for k, r in response.content[&#34;data&#34;].items()} if response.content and &#34;data&#34; in response.content and response.content[&#34;data&#34;] else None
 
