@@ -36,7 +36,7 @@ class TokenHandler(ABC):
         self._token = None
         self._lock = threading.Lock()
 
-    def get_token(self, force_fetch: bool=False) -> Optional[str]:
+    def get_token(self, force_fetch: bool = False) -> Optional[str]:
         if not self._token or force_fetch:
             with self._lock:
                 self._token = self._fetch_token()
@@ -57,7 +57,7 @@ class TokenHandler(ABC):
 
 class KGConfig(object):
 
-    def __init__(self, endpoint: str, token_handler: TokenHandler, client_token_handler: Optional[TokenHandler], id_namespace:str):
+    def __init__(self, endpoint: str, token_handler: TokenHandler, client_token_handler: Optional[TokenHandler], id_namespace: str):
         self.endpoint = endpoint
         self.token_handler = token_handler
         self.client_token_handler = client_token_handler
@@ -66,7 +66,7 @@ class KGConfig(object):
 
 class KGRequestWithResponseContext(object):
 
-    def __init__(self, content: Optional[Dict[str, Any]], request_arguments: Optional[Dict[str, Any]], request_payload:Optional[Any], status_code:Optional[int], kg_config: KGConfig):
+    def __init__(self, content: Optional[Dict[str, Any]], request_arguments: Optional[Dict[str, Any]], request_payload: Optional[Any], status_code: Optional[int], kg_config: KGConfig):
         self.content = content
         self._request_arguments: Dict[str, Any] = request_arguments or {}
         self._request_payload = request_payload
@@ -74,7 +74,10 @@ class KGRequestWithResponseContext(object):
         self.id_namespace = kg_config.id_namespace
         self._kg_config = kg_config
 
-    def next_page(self, original_start_from: int, original_size:int) -> KGRequestWithResponseContext:
+    def copy_context(self, content: dict):
+        return KGRequestWithResponseContext(content, None, None, None, self._kg_config)
+
+    def next_page(self, original_start_from: int, original_size: int) -> KGRequestWithResponseContext:
         return GenericRequests(self._kg_config).request(self._define_arguments_for_next_page(original_start_from+original_size, original_size), self._request_payload)
 
     def _define_arguments_for_next_page(self, new_start_from: int, new_size: int) -> Dict[str, Any]:
@@ -147,7 +150,7 @@ class RequestsWithTokenHandler(ABC):
 
 
 class GenericRequests(RequestsWithTokenHandler):
-    def __init__(self, config:KGConfig):
+    def __init__(self, config: KGConfig):
         super(GenericRequests, self).__init__(config)
 
     def request(self, request_arguments: Dict[str, Any], request_payload: Optional[Any]):

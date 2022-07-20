@@ -40,28 +40,33 @@ class ReleaseStatus(str, Enum):
 
 
 class JsonLdDocument(Dict[str, Any]):
-    def __init__(self, seq: Iterable[List[str]]=(), **kwargs: Any):
+    def __init__(self, seq: Iterable[List[str]] = (), id_namespace: Optional[str] = None, **kwargs: Any):
         super(JsonLdDocument, self).__init__(seq, **kwargs)
+        self._id_namespace = id_namespace
+
+    def to_uuid(self, value) -> Optional[UUID]:
+        if value and value.startswith(self._id_namespace):
+            return uuid.UUID(value[len(self._id_namespace):])
+        else:
+            return None
 
 
 class ListOfJsonLdDocuments(List[JsonLdDocument]):
-    def __init__(self, seq: Iterable[JsonLdDocument]=()):
+    def __init__(self, seq: Iterable[JsonLdDocument] = ()):
         super(ListOfJsonLdDocuments, self).__init__(seq)
 
 
 class Instance(JsonLdDocument):
     uuid: Optional[UUID] = None
-    def __init__(self, seq: Iterable[List[str]]=(), id_namespace:Optional[str]=None, **kwargs: Any):
-        super(Instance, self).__init__(seq, **kwargs)
-        self.__id_namespace = id_namespace
+
+    def __init__(self, seq: Iterable[List[str]] = (), id_namespace: Optional[str] = None, **kwargs: Any):
+        super(Instance, self).__init__(seq, id_namespace, **kwargs)
         self.instance_id = self["@id"] if "@id" in self else None
-        if self.instance_id and self.instance_id.startswith(self.__id_namespace):
-            self.uuid = uuid.UUID(self.instance_id[0 if self.__id_namespace is None else len(self.__id_namespace):])
-        else:
-            self.uuid = None
+        self.uuid = self.to_uuid(self.instance_id)
 
     def __str__(self):
         return f"Instance {self.uuid if self.uuid else 'unknown'}"
+
 
 class TermsOfUse(BaseModel):
     accepted: bool = False
@@ -150,8 +155,8 @@ class UserWithRoles(BaseModel):
     client_roles: Optional[List[str]] = None
     user_roles: Optional[List[str]] = None
     invitations: Optional[List[str]] = None
-    client_id : Optional[str] = None
-    #permissions
+    client_id: Optional[str] = None
+    # permissions
 
     class Config:
         fields = {
@@ -187,7 +192,6 @@ class _AbstractResultPage(_AbstractResult):
         self.start_from: Optional[int] = response.content["from"] if response.content and "from" in response.content else None
 
 
-
 class ResponseObjectConstructor(Generic[ResponseType]):
     @staticmethod
     def init_response_object(constructor: Callable[..., ResponseType], data: Any, id_namespace: Any) -> ResponseType:
@@ -195,11 +199,12 @@ class ResponseObjectConstructor(Generic[ResponseType]):
             return constructor(**data)
         elif type(constructor) is EnumMeta:
             # Not pretty but works for now
-            return constructor[data] # type: ignore 
-        elif type(constructor) == Instance:
+            return constructor[data]  # type: ignore
+        elif type(constructor) == JsonLdDocument or type(constructor) == Instance:
             return constructor(data, id_namespace)
         else:
             return constructor(data)
+
 
 class ResultPageIterator(Generic[ResponseType]):
 
@@ -264,7 +269,7 @@ class ResultsById(_AbstractResult, Generic[ResponseType]):
 
     def __init__(self, response: KGRequestWithResponseContext, constructor: Callable[..., ResponseType]):
         super(ResultsById, self).__init__(response)
-        self.data: Optional[Dict[str, Result[ResponseType]]] = {k: Result[ResponseType](KGRequestWithResponseContext(r, None, None, None, response.id_namespace), constructor) for k, r in response.content["data"].items()} if response.content and "data" in response.content and response.content["data"] else None
+        self.data: Optional[Dict[str, Result[ResponseType]]] = {k: Result[ResponseType](response.copy_context(r), constructor) for k, r in response.content["data"].items()} if response.content and "data" in response.content and response.content["data"] else None
 
     def __str__(self):
         return f"{super.__str__(self)} - status: {self.error.code if self.error else 'success'}"

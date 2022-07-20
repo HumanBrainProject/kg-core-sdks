@@ -22,7 +22,7 @@
 from __future__ import annotations
 import os
 import requests
-from typing import List, Optional
+from typing import List, Optional, Dict, Any
 from uuid import UUID
 
 from kg_core.__communication import TokenHandler, RequestsWithTokenHandler, KGConfig
