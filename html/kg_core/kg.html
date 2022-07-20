@@ -409,7 +409,7 @@ class Queries(RequestsWithTokenHandler):
     def __init__(self, config: KGConfig):
         super(Queries, self).__init__(config)
 
-    def execute_query_by_id(self, query_id: UUID, all_request_params: dict = {}, instance_id: Optional[UUID] = None, restrict_to_spaces: Optional[List[str]] = None, stage: Stage = Stage.RELEASED, pagination: Pagination = Pagination()) -&gt; ResultPage[JsonLdDocument]:
+    def execute_query_by_id(self, query_id: UUID, all_request_params: Dict[str, Any] = {}, instance_id: Optional[UUID] = None, restrict_to_spaces: Optional[List[str]] = None, stage: Stage = Stage.RELEASED, pagination: Pagination = Pagination()) -&gt; ResultPage[JsonLdDocument]:
         &#34;&#34;&#34;Execute a stored query to receive the instances&#34;&#34;&#34;
         result = self._get(path=f&#34;queries/{query_id}/instances&#34;, params={ 
             &#34;from&#34;: pagination.start,
@@ -448,7 +448,7 @@ class Queries(RequestsWithTokenHandler):
         })
         return Result[Instance](response=result, constructor=Instance)
 
-    def test_query(self, payload: dict, all_request_params: dict = {}, instance_id: Optional[UUID] = None, restrict_to_spaces: Optional[List[str]] = None, stage: Stage = Stage.RELEASED, pagination: Pagination = Pagination()) -&gt; ResultPage[JsonLdDocument]:
+    def test_query(self, payload: dict, all_request_params: Dict[str, Any] = {}, instance_id: Optional[UUID] = None, restrict_to_spaces: Optional[List[str]] = None, stage: Stage = Stage.RELEASED, pagination: Pagination = Pagination()) -&gt; ResultPage[JsonLdDocument]:
         &#34;&#34;&#34;Execute the query in the payload in test mode (e.g. for execution before saving with the KG QueryBuilder)&#34;&#34;&#34;
         result = self._post(path=&#34;queries&#34;, payload=payload, params={ 
             &#34;from&#34;: pagination.start,
@@ -588,7 +588,7 @@ class ClientBuilder(object):
         return Admin(_create_kg_config(self._host_name, self._resolve_token_handler(), self._resolve_client_token_handler()))
 
 
-def kg(host: str = &#34;core.kg-ppd.ebrains.eu&#34;) -&gt; ClientBuilder:
+def kg(host: str = &#34;core.kg.ebrains.eu&#34;) -&gt; ClientBuilder:
     return ClientBuilder(host)</code></pre>
 </details>
 </section>
@@ -600,7 +600,7 @@ def kg(host: str = &#34;core.kg-ppd.ebrains.eu&#34;) -&gt; ClientBuilder:
 <h2 class="section-title" id="header-functions">Functions</h2>
 <dl>
 <dt id="kg_core.kg.kg"><code class="name flex">
-<span>def <span class="ident">kg</span></span>(<span>host: str = 'core.kg-ppd.ebrains.eu') ‑> <a title="kg_core.kg.ClientBuilder" href="#kg_core.kg.ClientBuilder">ClientBuilder</a></span>
+<span>def <span class="ident">kg</span></span>(<span>host: str = 'core.kg.ebrains.eu') ‑> <a title="kg_core.kg.ClientBuilder" href="#kg_core.kg.ClientBuilder">ClientBuilder</a></span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -608,7 +608,7 @@ def kg(host: str = &#34;core.kg-ppd.ebrains.eu&#34;) -&gt; ClientBuilder:
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def kg(host: str = &#34;core.kg-ppd.ebrains.eu&#34;) -&gt; ClientBuilder:
+<pre><code class="python">def kg(host: str = &#34;core.kg.ebrains.eu&#34;) -&gt; ClientBuilder:
     return ClientBuilder(host)</code></pre>
 </details>
 </dd>
@@ -622,7 +622,8 @@ def kg(host: str = &#34;core.kg-ppd.ebrains.eu&#34;) -&gt; ClientBuilder:
 <span>(</span><span>config: KGConfig)</span>
 </code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>Helper class that provides a standard way to create an ABC using
+inheritance.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -751,6 +752,7 @@ def kg(host: str = &#34;core.kg-ppd.ebrains.eu&#34;) -&gt; ClientBuilder:
 <h3>Ancestors</h3>
 <ul class="hlist">
 <li>kg_core.__communication.RequestsWithTokenHandler</li>
+<li>abc.ABC</li>
 </ul>
 <h3>Methods</h3>
 <dl>
@@ -1233,7 +1235,8 @@ def kg(host: str = &#34;core.kg-ppd.ebrains.eu&#34;) -&gt; ClientBuilder:
 <span>(</span><span>config: KGConfig)</span>
 </code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>Helper class that provides a standard way to create an ABC using
+inheritance.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -1430,6 +1433,7 @@ def kg(host: str = &#34;core.kg-ppd.ebrains.eu&#34;) -&gt; ClientBuilder:
 <h3>Ancestors</h3>
 <ul class="hlist">
 <li>kg_core.__communication.RequestsWithTokenHandler</li>
+<li>abc.ABC</li>
 </ul>
 <h3>Methods</h3>
 <dl>
@@ -1815,7 +1819,8 @@ def kg(host: str = &#34;core.kg-ppd.ebrains.eu&#34;) -&gt; ClientBuilder:
 <span>(</span><span>config: KGConfig)</span>
 </code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>Helper class that provides a standard way to create an ABC using
+inheritance.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -1832,6 +1837,7 @@ def kg(host: str = &#34;core.kg-ppd.ebrains.eu&#34;) -&gt; ClientBuilder:
 <h3>Ancestors</h3>
 <ul class="hlist">
 <li>kg_core.__communication.RequestsWithTokenHandler</li>
+<li>abc.ABC</li>
 </ul>
 <h3>Methods</h3>
 <dl>
@@ -1857,7 +1863,8 @@ def kg(host: str = &#34;core.kg-ppd.ebrains.eu&#34;) -&gt; ClientBuilder:
 <span>(</span><span>config: KGConfig)</span>
 </code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>Helper class that provides a standard way to create an ABC using
+inheritance.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -1866,7 +1873,7 @@ def kg(host: str = &#34;core.kg-ppd.ebrains.eu&#34;) -&gt; ClientBuilder:
     def __init__(self, config: KGConfig):
         super(Queries, self).__init__(config)
 
-    def execute_query_by_id(self, query_id: UUID, all_request_params: dict = {}, instance_id: Optional[UUID] = None, restrict_to_spaces: Optional[List[str]] = None, stage: Stage = Stage.RELEASED, pagination: Pagination = Pagination()) -&gt; ResultPage[JsonLdDocument]:
+    def execute_query_by_id(self, query_id: UUID, all_request_params: Dict[str, Any] = {}, instance_id: Optional[UUID] = None, restrict_to_spaces: Optional[List[str]] = None, stage: Stage = Stage.RELEASED, pagination: Pagination = Pagination()) -&gt; ResultPage[JsonLdDocument]:
         &#34;&#34;&#34;Execute a stored query to receive the instances&#34;&#34;&#34;
         result = self._get(path=f&#34;queries/{query_id}/instances&#34;, params={ 
             &#34;from&#34;: pagination.start,
@@ -1905,7 +1912,7 @@ def kg(host: str = &#34;core.kg-ppd.ebrains.eu&#34;) -&gt; ClientBuilder:
         })
         return Result[Instance](response=result, constructor=Instance)
 
-    def test_query(self, payload: dict, all_request_params: dict = {}, instance_id: Optional[UUID] = None, restrict_to_spaces: Optional[List[str]] = None, stage: Stage = Stage.RELEASED, pagination: Pagination = Pagination()) -&gt; ResultPage[JsonLdDocument]:
+    def test_query(self, payload: dict, all_request_params: Dict[str, Any] = {}, instance_id: Optional[UUID] = None, restrict_to_spaces: Optional[List[str]] = None, stage: Stage = Stage.RELEASED, pagination: Pagination = Pagination()) -&gt; ResultPage[JsonLdDocument]:
         &#34;&#34;&#34;Execute the query in the payload in test mode (e.g. for execution before saving with the KG QueryBuilder)&#34;&#34;&#34;
         result = self._post(path=&#34;queries&#34;, payload=payload, params={ 
             &#34;from&#34;: pagination.start,
@@ -1920,11 +1927,12 @@ def kg(host: str = &#34;core.kg-ppd.ebrains.eu&#34;) -&gt; ClientBuilder:
 <h3>Ancestors</h3>
 <ul class="hlist">
 <li>kg_core.__communication.RequestsWithTokenHandler</li>
+<li>abc.ABC</li>
 </ul>
 <h3>Methods</h3>
 <dl>
 <dt id="kg_core.kg.Queries.execute_query_by_id"><code class="name flex">
-<span>def <span class="ident">execute_query_by_id</span></span>(<span>self, query_id: UUID, all_request_params: dict = {}, instance_id: Optional[UUID] = None, restrict_to_spaces: Optional[List[str]] = None, stage: Stage = 'RELEASED', pagination: Pagination = &lt;kg_core.request.Pagination object&gt;) ‑> <a title="kg_core.response.ResultPage" href="response.html#kg_core.response.ResultPage">ResultPage</a>[<a title="kg_core.response.JsonLdDocument" href="response.html#kg_core.response.JsonLdDocument">JsonLdDocument</a>]</span>
+<span>def <span class="ident">execute_query_by_id</span></span>(<span>self, query_id: UUID, all_request_params: Dict[str, Any] = {}, instance_id: Optional[UUID] = None, restrict_to_spaces: Optional[List[str]] = None, stage: Stage = 'RELEASED', pagination: Pagination = &lt;kg_core.request.Pagination object&gt;) ‑> ResultPage[JsonLdDocument]</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Execute a stored query to receive the instances</p></div>
@@ -1932,7 +1940,7 @@ def kg(host: str = &#34;core.kg-ppd.ebrains.eu&#34;) -&gt; ClientBuilder:
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def execute_query_by_id(self, query_id: UUID, all_request_params: dict = {}, instance_id: Optional[UUID] = None, restrict_to_spaces: Optional[List[str]] = None, stage: Stage = Stage.RELEASED, pagination: Pagination = Pagination()) -&gt; ResultPage[JsonLdDocument]:
+<pre><code class="python">def execute_query_by_id(self, query_id: UUID, all_request_params: Dict[str, Any] = {}, instance_id: Optional[UUID] = None, restrict_to_spaces: Optional[List[str]] = None, stage: Stage = Stage.RELEASED, pagination: Pagination = Pagination()) -&gt; ResultPage[JsonLdDocument]:
     &#34;&#34;&#34;Execute a stored query to receive the instances&#34;&#34;&#34;
     result = self._get(path=f&#34;queries/{query_id}/instances&#34;, params={ 
         &#34;from&#34;: pagination.start,
@@ -2013,7 +2021,7 @@ def kg(host: str = &#34;core.kg-ppd.ebrains.eu&#34;) -&gt; ClientBuilder:
 </details>
 </dd>
 <dt id="kg_core.kg.Queries.test_query"><code class="name flex">
-<span>def <span class="ident">test_query</span></span>(<span>self, payload: dict, all_request_params: dict = {}, instance_id: Optional[UUID] = None, restrict_to_spaces: Optional[List[str]] = None, stage: Stage = 'RELEASED', pagination: Pagination = &lt;kg_core.request.Pagination object&gt;) ‑> <a title="kg_core.response.ResultPage" href="response.html#kg_core.response.ResultPage">ResultPage</a>[<a title="kg_core.response.JsonLdDocument" href="response.html#kg_core.response.JsonLdDocument">JsonLdDocument</a>]</span>
+<span>def <span class="ident">test_query</span></span>(<span>self, payload: dict, all_request_params: Dict[str, Any] = {}, instance_id: Optional[UUID] = None, restrict_to_spaces: Optional[List[str]] = None, stage: Stage = 'RELEASED', pagination: Pagination = &lt;kg_core.request.Pagination object&gt;) ‑> ResultPage[JsonLdDocument]</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Execute the query in the payload in test mode (e.g. for execution before saving with the KG QueryBuilder)</p></div>
@@ -2021,7 +2029,7 @@ def kg(host: str = &#34;core.kg-ppd.ebrains.eu&#34;) -&gt; ClientBuilder:
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def test_query(self, payload: dict, all_request_params: dict = {}, instance_id: Optional[UUID] = None, restrict_to_spaces: Optional[List[str]] = None, stage: Stage = Stage.RELEASED, pagination: Pagination = Pagination()) -&gt; ResultPage[JsonLdDocument]:
+<pre><code class="python">def test_query(self, payload: dict, all_request_params: Dict[str, Any] = {}, instance_id: Optional[UUID] = None, restrict_to_spaces: Optional[List[str]] = None, stage: Stage = Stage.RELEASED, pagination: Pagination = Pagination()) -&gt; ResultPage[JsonLdDocument]:
     &#34;&#34;&#34;Execute the query in the payload in test mode (e.g. for execution before saving with the KG QueryBuilder)&#34;&#34;&#34;
     result = self._post(path=&#34;queries&#34;, payload=payload, params={ 
         &#34;from&#34;: pagination.start,
@@ -2041,7 +2049,8 @@ def kg(host: str = &#34;core.kg-ppd.ebrains.eu&#34;) -&gt; ClientBuilder:
 <span>(</span><span>config: KGConfig)</span>
 </code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>Helper class that provides a standard way to create an ABC using
+inheritance.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -2067,6 +2076,7 @@ def kg(host: str = &#34;core.kg-ppd.ebrains.eu&#34;) -&gt; ClientBuilder:
 <h3>Ancestors</h3>
 <ul class="hlist">
 <li>kg_core.__communication.RequestsWithTokenHandler</li>
+<li>abc.ABC</li>
 </ul>
 <h3>Methods</h3>
 <dl>
@@ -2111,7 +2121,8 @@ def kg(host: str = &#34;core.kg-ppd.ebrains.eu&#34;) -&gt; ClientBuilder:
 <span>(</span><span>config: KGConfig)</span>
 </code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>Helper class that provides a standard way to create an ABC using
+inheritance.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -2145,6 +2156,7 @@ def kg(host: str = &#34;core.kg-ppd.ebrains.eu&#34;) -&gt; ClientBuilder:
 <h3>Ancestors</h3>
 <ul class="hlist">
 <li>kg_core.__communication.RequestsWithTokenHandler</li>
+<li>abc.ABC</li>
 </ul>
 <h3>Methods</h3>
 <dl>
@@ -2197,7 +2209,8 @@ def kg(host: str = &#34;core.kg-ppd.ebrains.eu&#34;) -&gt; ClientBuilder:
 <span>(</span><span>config: KGConfig)</span>
 </code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>Helper class that provides a standard way to create an ABC using
+inheritance.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -2229,6 +2242,7 @@ def kg(host: str = &#34;core.kg-ppd.ebrains.eu&#34;) -&gt; ClientBuilder:
 <h3>Ancestors</h3>
 <ul class="hlist">
 <li>kg_core.__communication.RequestsWithTokenHandler</li>
+<li>abc.ABC</li>
 </ul>
 <h3>Methods</h3>
 <dl>

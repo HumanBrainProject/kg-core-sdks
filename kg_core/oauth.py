@@ -20,7 +20,7 @@
 
 
 import time
-from typing import Optional
+from typing import Any, Dict, Optional
 
 import requests
 from kg_core.__communication import TokenHandler
@@ -32,7 +32,7 @@ class SimpleToken(TokenHandler):
         super(SimpleToken, self).__init__()
         self.__simple_token = token
 
-    def _fetch_token(self):
+    def _fetch_token(self) -> str:
         return self.__simple_token
 
 
@@ -43,7 +43,7 @@ class ClientCredentials(TokenHandler):
         self.__client_id = client_id
         self.__client_secret = client_secret
 
-    def _fetch_token(self):
+    def _fetch_token(self) -> Optional[str]:
         if self._auth_endpoint and self.__client_id and self.__client_secret:
             token_response = requests.post(self._auth_endpoint, data={
                 "grant_type": "client_credentials",
@@ -54,7 +54,7 @@ class ClientCredentials(TokenHandler):
                 token = token_response.json()
                 if token and "access_token" in token:
                     return token["access_token"]
-            return None
+        return None
 
 
 class DeviceAuthenticationFlow(TokenHandler):
@@ -68,7 +68,7 @@ class DeviceAuthenticationFlow(TokenHandler):
         self.__token_endpoint = well_known_config["token_endpoint"]
         self.__refresh_token = None
 
-    def _poll_for_token(self, device_code) -> Optional[dict]:
+    def _poll_for_token(self, device_code: str) -> Optional[Dict[str, Any]]:
         response = requests.post(data={"grant_type": "urn:ietf:params:oauth:grant-type:device_code", "client_id": self.__client_id, "device_code": device_code},
                                  url=self.__token_endpoint)
         if response.status_code == 400:
@@ -86,7 +86,7 @@ class DeviceAuthenticationFlow(TokenHandler):
         else:
             return None
 
-    def _get_token_by_refresh_token(self) -> Optional[dict]:
+    def _get_token_by_refresh_token(self) -> Optional[Dict[str, Any]]:
         response = requests.post(data={"grant_type": "refresh_token", "client_id": self.__client_id, "refresh_token": self.__refresh_token}, url=self.__token_endpoint)
         if response.status_code == 200:
             return response.json()
@@ -96,7 +96,7 @@ class DeviceAuthenticationFlow(TokenHandler):
                 self.__refresh_token = None
             return None
 
-    def _device_flow(self) -> Optional[dict]:
+    def _device_flow(self) -> Optional[Dict[str, Any]]:
         response = requests.post(data={"client_id": self.__client_id}, url=self.__device_auth_endpoint).json()
         verification_code = response["verification_uri_complete"]
         device_code = response["device_code"]
@@ -105,7 +105,7 @@ class DeviceAuthenticationFlow(TokenHandler):
         print("*************************************************************************")
         return self._poll_for_token(device_code=device_code)
 
-    def _find_tokens(self):
+    def _find_tokens(self) -> Dict[str, Any]:
         result = None
         if self.__refresh_token:
             result = self._get_token_by_refresh_token()
@@ -123,7 +123,7 @@ class DeviceAuthenticationFlow(TokenHandler):
             result = self._find_tokens()
         return result
 
-    def _fetch_token(self):
+    def _fetch_token(self) -> Optional[str]:
         result = self._find_tokens()
         if result:
             self.__refresh_token = result["refresh_token"]
