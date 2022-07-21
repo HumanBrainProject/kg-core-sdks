@@ -26,6 +26,9 @@ setup(
     name='ebrains_kg_core',
     version='0.9.0',
     packages=['kg_core'],
+    package_data = {
+        'kg_core': ['py.typed'],
+    },
     install_requires=['requests', 'pydantic'],
     author='EBRAINS',
     scripts=[],
