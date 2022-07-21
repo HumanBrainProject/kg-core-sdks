@@ -35,18 +35,18 @@ def _calculate_base_url(host: str):
     return f"http{'s' if not host.startswith('localhost') else ''}://{host}/v3-beta/"
 
 
-def _create_kg_config(host: str, token_handler: TokenHandler, client_token_handler: Optional[TokenHandler] = None) -> KGConfig:
-    return KGConfig(_calculate_base_url(host), token_handler, client_token_handler, "https://kg.ebrains.eu/api/instances/")
+def _create_kg_config(host: str, enable_profiling: bool, token_handler: TokenHandler, client_token_handler: Optional[TokenHandler] = None) -> KGConfig:
+    return KGConfig(_calculate_base_url(host), token_handler, client_token_handler, "https://kg.ebrains.eu/api/instances/", enable_profiling)
 
 
 class Client(object):
 
-    def __init__(self, host: str, token_handler: TokenHandler, client_token_handler: Optional[TokenHandler] = None):
+    def __init__(self, host: str, enable_profiling: bool, token_handler: TokenHandler, client_token_handler: Optional[TokenHandler] = None):
         if not host:
             raise ValueError("No hostname specified")
         elif not token_handler:
             raise ValueError("No token provided")
-        kg_config = _create_kg_config(host, token_handler, client_token_handler)
+        kg_config = _create_kg_config(host, enable_profiling, token_handler, client_token_handler)
         self.instances = Instances(kg_config)
         self.jsonld = Jsonld(kg_config)
         self.queries = Queries(kg_config)
@@ -282,7 +282,8 @@ class Instances(RequestsWithTokenHandler):
             "property": property_name,
             "type": target_type,
             "from": pagination.start,
-            "size": pagination.size
+            "size": pagination.size,
+            "returnTotalResults": pagination.return_total_results
         })
         return ResultPage[Instance](response=result, constructor=Instance)
 
@@ -328,7 +329,8 @@ class Instances(RequestsWithTokenHandler):
             "returnAlternatives": response_configuration.return_alternatives,
             "returnEmbedded": response_configuration.return_embedded,
             "from": pagination.start,
-            "size": pagination.size
+            "size": pagination.size,
+            "returnTotalResults": pagination.return_total_results
         })
         return ResultPage[Instance](response=result, constructor=Instance)
 
@@ -386,6 +388,7 @@ class Queries(RequestsWithTokenHandler):
         result = self._get(path=f"queries/{query_id}/instances", params={ 
             "from": pagination.start,
             "size": pagination.size,
+            "returnTotalResults": pagination.return_total_results,
             "stage": stage,
             "instanceId": instance_id,
             "restrictToSpaces": restrict_to_spaces,
@@ -403,6 +406,7 @@ class Queries(RequestsWithTokenHandler):
         result = self._get(path="queries", params={ 
             "from": pagination.start,
             "size": pagination.size,
+            "returnTotalResults": pagination.return_total_results,
             "type": target_type,
             "search": search
         })
@@ -425,6 +429,7 @@ class Queries(RequestsWithTokenHandler):
         result = self._post(path="queries", payload=payload, params={ 
             "from": pagination.start,
             "size": pagination.size,
+            "returnTotalResults": pagination.return_total_results,
             "stage": stage,
             "instanceId": instance_id,
             "restrictToSpaces": restrict_to_spaces,
@@ -447,6 +452,7 @@ class Spaces(RequestsWithTokenHandler):
         result = self._get(path="spaces", params={ 
             "from": pagination.start,
             "size": pagination.size,
+            "returnTotalResults": pagination.return_total_results,
             "permissions": permissions
         })
         return ResultPage[SpaceInformation](response=result, constructor=SpaceInformation)
@@ -474,7 +480,8 @@ class Types(RequestsWithTokenHandler):
             "withProperties": with_properties,
             "withIncomingLinks": with_incoming_links,
             "from": pagination.start,
-            "size": pagination.size
+            "size": pagination.size,
+            "returnTotalResults": pagination.return_total_results
         })
         return ResultPage[TypeInformation](response=result, constructor=TypeInformation)
 
@@ -506,10 +513,11 @@ class Users(RequestsWithTokenHandler):
 
 class ClientBuilder(object):
 
-    def __init__(self, host_name: str):
+    def __init__(self, host_name: str, enable_profiling: bool):
         self._host_name = host_name
         self._token_handler: Optional[TokenHandler] = None
         self._client_token_handler: Optional[TokenHandler] = None
+        self._enable_profiling = enable_profiling
 
     def _resolve_token_handler(self) -> TokenHandler:
         if not self._token_handler:
@@ -554,11 +562,11 @@ class ClientBuilder(object):
         return self
 
     def build(self) -> Client:
-        return Client(self._host_name, self._resolve_token_handler(), self._resolve_client_token_handler())
+        return Client(self._host_name, self._enable_profiling, self._resolve_token_handler(), self._resolve_client_token_handler())
 
     def build_admin(self) -> Admin:
-        return Admin(_create_kg_config(self._host_name, self._resolve_token_handler(), self._resolve_client_token_handler()))
+        return Admin(_create_kg_config(self._host_name, self._enable_profiling, self._resolve_token_handler(), self._resolve_client_token_handler()))
 
 
-def kg(host: str = "core.kg.ebrains.eu") -> ClientBuilder:
-    return ClientBuilder(host)
+def kg(host: str = "core.kg.ebrains.eu", enable_profiling: bool = False) -> ClientBuilder:
+    return ClientBuilder(host, enable_profiling)

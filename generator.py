@@ -286,9 +286,11 @@ class ClientGenerator(object):
 
 if __name__ == "__main__":
     localhost = ClientGenerator("localhost:8000", "v3/api-docs/", "https://kg.ebrains.eu/api/instances/", "kg-core-python")
+    dev = ClientGenerator("core.kg-dev.ebrains.eu", "v3/api-docs/", "https://kg.ebrains.eu/api/instances/", "kg-core-python")
     ppd = ClientGenerator("core.kg-ppd.ebrains.eu", "v3/api-docs/", "https://kg.ebrains.eu/api/instances/", "kg-core-python")
     prod = ClientGenerator("core.kg.ebrains.eu", "v3/api-docs/", "https://kg.ebrains.eu/api/instances/", "kg-core-python")
 
     # localhost.generate()
-    #ppd.generate()
+    # dev.generate()
+    # ppd.generate()
     prod.generate()

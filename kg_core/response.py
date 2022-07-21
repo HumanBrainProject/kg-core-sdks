@@ -200,7 +200,7 @@ class ResponseObjectConstructor(Generic[ResponseType]):
         elif type(constructor) is EnumMeta:
             # Not pretty but works for now
             return constructor[data]  # type: ignore
-        elif type(constructor) == JsonLdDocument or type(constructor) == Instance:
+        elif constructor == JsonLdDocument or constructor == Instance:
             return constructor(data, id_namespace)
         else:
             return constructor(data)
@@ -220,12 +220,13 @@ class ResultPageIterator(Generic[ResponseType]):
             if self._result_page.error:
                 raise ValueError(self._result_page.error.message)
             elif self._result_page.data:
-                if self.n < self._result_page.total:
-                    if self.n >= self._result_page.start_from+self._result_page.size and self._result_page.has_next_page():
+                if self._result_page.total is None or (self._result_page.total and self.n < self._result_page.total):
+                    if self.n >= self._result_page.start_from+self._result_page.size and (self._result_page.has_next_page() is None or self._result_page.has_next_page()):
                         self._result_page = self._result_page.next_page()
-                    result = self._result_page.data[self.n-self._result_page.start_from]
-                    self.n += 1
-                    return result
+                    if self._result_page:
+                        result = self._result_page.data[self.n-self._result_page.start_from]
+                        self.n += 1
+                        return result
         raise StopIteration
 
 
@@ -241,17 +242,27 @@ class ResultPage(_AbstractResultPage, Generic[ResponseType]):
         return f"{super.__str__(self)} - status: {self.error.code if self.error else 'success'}"
 
     def next_page(self) -> Optional[ResultPage[ResponseType]]:
-        if self.has_next_page():
+        """ returns the next page of this result if there is one - otherwise returns None """
+        next_page = self.has_next_page()
+        if next_page is None or next_page: #next page can be
             result = self._original_response.next_page(self.start_from, self.size)
-            return ResultPage[ResponseType](response=result, constructor=self._original_constructor) if result else None
+            result_page = ResultPage[ResponseType](response=result, constructor=self._original_constructor) if result else None
+            if result_page and result_page.data:
+                return result_page
+            else:
+                return None
         return None
 
-    def has_next_page(self) -> bool:
-        if self.total is not None and self.start_from is not None and self.size is not None:
-            return self.start_from+self.size < self.total
-        return False
+    def has_next_page(self) -> Optional[bool]:
+        """ returns True if a next page exists. Returns None if the original request has been executed without "full count" (by setting the "returnTotalResults" to false). """
+        if self.total:
+            if self.total is not None and self.start_from is not None and self.size is not None:
+                return self.start_from+self.size < self.total
+            return False
+        return None
 
     def items(self) -> ResultPageIterator[ResponseType]:
+        """ returns an iterator to be used e.g. within a for loop. Attention: Do not manipulate the underlying data structure within the loop! The resolution of pages is lazy and manipulations while iterating can lead to unexpected results."""
         return ResultPageIterator(self)
 
 

@@ -21,12 +21,14 @@
 
 
 from __future__ import annotations
+
 import threading
 from abc import ABC, abstractmethod
 from copy import deepcopy
 from typing import Any, Dict, Optional
 
 import requests
+from datetime import datetime
 
 
 class TokenHandler(ABC):
@@ -57,11 +59,12 @@ class TokenHandler(ABC):
 
 class KGConfig(object):
 
-    def __init__(self, endpoint: str, token_handler: TokenHandler, client_token_handler: Optional[TokenHandler], id_namespace: str):
+    def __init__(self, endpoint: str, token_handler: TokenHandler, client_token_handler: Optional[TokenHandler], id_namespace: str, enable_profiling: bool):
         self.endpoint = endpoint
         self.token_handler = token_handler
         self.client_token_handler = client_token_handler
         self.id_namespace = id_namespace
+        self.enable_profiling = enable_profiling
 
 
 class KGRequestWithResponseContext(object):
@@ -121,10 +124,17 @@ class RequestsWithTokenHandler(ABC):
         self._set_headers(args, False)
         if payload is not None:
             args['json'] = payload
+        start = datetime.timestamp(datetime.now())
         r = requests.request(**args)
+        end = datetime.timestamp(datetime.now())
         if r.status_code == 401:
             self._set_headers(args, True)
+            start = datetime.timestamp(datetime.now())
             r = requests.request(**args)
+            end = datetime.timestamp(datetime.now())
+        if self._kg_config.enable_profiling:
+            duration = end-start
+            print(f"Request was running for {duration}s")
         args_clone = deepcopy(args)
         del args_clone["headers"]
         try:

@@ -33,9 +33,10 @@ class ReleaseTreeScope(str):
 
 
 class Pagination(object):
-    def __init__(self, start: int = 0, size: int = 50):
+    def __init__(self, start: int = 0, size: int = 50, return_total_results: bool = True):
         self.start = start
         self.size = size
+        self.return_total_results = return_total_results
 
 
 class ResponseConfiguration(object):

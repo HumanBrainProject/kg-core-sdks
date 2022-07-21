@@ -35,18 +35,18 @@ def _calculate_base_url(host: str):
     return f"http{'s' if not host.startswith('localhost') else ''}://{host}/{{api_version}}/"
 
 
-def _create_kg_config(host: str, token_handler: TokenHandler, client_token_handler: Optional[TokenHandler] = None) -> KGConfig:
-    return KGConfig(_calculate_base_url(host), token_handler, client_token_handler, "{{id_namespace}}")
+def _create_kg_config(host: str, enable_profiling: bool, token_handler: TokenHandler, client_token_handler: Optional[TokenHandler] = None) -> KGConfig:
+    return KGConfig(_calculate_base_url(host), token_handler, client_token_handler, "{{id_namespace}}", enable_profiling)
 
 
 class Client(object):
 
-    def __init__(self, host: str, token_handler: TokenHandler, client_token_handler: Optional[TokenHandler] = None):
+    def __init__(self, host: str, enable_profiling: bool, token_handler: TokenHandler, client_token_handler: Optional[TokenHandler] = None):
         if not host:
             raise ValueError("No hostname specified")
         elif not token_handler:
             raise ValueError("No token provided")
-        kg_config = _create_kg_config(host, token_handler, client_token_handler)
+        kg_config = _create_kg_config(host, enable_profiling, token_handler, client_token_handler)
         {% for category, methods in methods_by_category %}{% if category != 'admin' %}self.{{category}} = {{category.capitalize()}}(kg_config)
         {% endif %}{% endfor %}
 {% for category, methods in methods_by_category %}
@@ -64,10 +64,11 @@ class {{category.capitalize()}}(RequestsWithTokenHandler):
 {% endfor %}
 class ClientBuilder(object):
 
-    def __init__(self, host_name: str):
+    def __init__(self, host_name: str, enable_profiling: bool):
         self._host_name = host_name
         self._token_handler: Optional[TokenHandler] = None
         self._client_token_handler: Optional[TokenHandler] = None
+        self._enable_profiling = enable_profiling
 
     def _resolve_token_handler(self) -> TokenHandler:
         if not self._token_handler:
@@ -112,12 +113,12 @@ class ClientBuilder(object):
         return self
 
     def build(self) -> Client:
-        return Client(self._host_name, self._resolve_token_handler(), self._resolve_client_token_handler())
+        return Client(self._host_name, self._enable_profiling, self._resolve_token_handler(), self._resolve_client_token_handler())
 
     def build_admin(self) -> Admin:
-        return Admin(_create_kg_config(self._host_name, self._resolve_token_handler(), self._resolve_client_token_handler()))
+        return Admin(_create_kg_config(self._host_name, self._enable_profiling, self._resolve_token_handler(), self._resolve_client_token_handler()))
 
 
-def kg(host: str = "{{ default_kg_root }}") -> ClientBuilder:
-    return ClientBuilder(host)
+def kg(host: str = "{{ default_kg_root }}", enable_profiling: bool = False) -> ClientBuilder:
+    return ClientBuilder(host, enable_profiling)
 
