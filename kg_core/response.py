@@ -131,6 +131,19 @@ class TypeInformation(BaseModel):
         }
 
 
+class RestrictedUserInformation(BaseModel):
+    alternate_name: Optional[str] = None
+    name: Optional[str] = None
+    instance_id: Optional[UUID] = None
+
+    class Config:
+        fields = {
+            "alternate_name": "http://schema.org/alternateName",
+            "name": "http://schema.org/name",
+            "instance_id": "@id"
+        }
+
+
 class User(BaseModel):
     alternate_name: Optional[str] = None
     name: Optional[str] = None

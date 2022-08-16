@@ -238,6 +238,8 @@ class ClientGenerator(object):
                 return "Result[ReleaseStatus]"
             elif response_reference == "#/components/schemas/ResultMapUUIDResultReleaseStatus":
                 return "ResultsById[ReleaseStatus]"
+            elif response_reference == "#/components/schemas/ResultListReducedUserInformation":
+                return "ResultPage[RestrictedUserInformation]"
             elif response_reference == "#/components/schemas/ResultUser":
                 return "Result[User]"
             elif response_reference == "#/components/schemas/ResultUserWithRoles":
