@@ -288,7 +288,7 @@ class Result(_AbstractResult, Generic[ResponseType]):
 
     def __init__(self, response: KGRequestWithResponseContext, constructor: Callable[..., ResponseType]):
         super(Result, self).__init__(response)
-        self.data: Optional[ResponseType] = ResponseObjectConstructor.init_response_object(constructor, response.content["data"], response.id_namespace) if response.content and "data" in response.content and response.content["data"] else None
+        self.data: Optional[ResponseType] = ResponseObjectConstructor.init_response_object(constructor, response.content["data"], response.id_namespace) if response.content and "data" in response.content and response.content["data"] is not None else None
 
     def __str__(self):
         return f"{super.__str__(self)} - status: {str(self.error.code)+' ('+self.error.message+')' if self.error is not None else 'success'}"
