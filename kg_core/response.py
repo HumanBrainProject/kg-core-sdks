@@ -77,16 +77,16 @@ class TermsOfUse(BaseModel):
 class Error(BaseModel):
     code: int
     message: Optional[str] = None
-    instance_id: Optional[UUID] = None
+    uuid: Optional[UUID] = None
 
     class Config:
         fields = {
-            "instance_id": "instanceId"
+            "uuid": "instanceId"
         }
 
 
 class Scope(BaseModel):
-    instance_id: Optional[UUID] = None
+    uuid: Optional[UUID] = None
     label: Optional[str] = None
     space: Optional[str] = None
     types: Optional[List[str]] = None
@@ -95,7 +95,7 @@ class Scope(BaseModel):
 
     class Config:
         fields = {
-            "instance_id": "id"
+            "uuid": "id"
         }
 
 
@@ -131,17 +131,22 @@ class TypeInformation(BaseModel):
         }
 
 
-class RestrictedUserInformation(BaseModel):
+class ReducedUserInformation(BaseModel):
     alternate_name: Optional[str] = None
     name: Optional[str] = None
-    instance_id: Optional[UUID] = None
+    uuid: Optional[UUID] = None
 
     class Config:
         fields = {
             "alternate_name": "http://schema.org/alternateName",
             "name": "http://schema.org/name",
-            "instance_id": "@id"
+            "uuid": "@id"
         }
+
+
+class ListOfReducedUserInformation(List[ReducedUserInformation]):
+    def __init__(self, seq: Iterable[ReducedUserInformation] = ()):
+        super(ListOfReducedUserInformation, self).__init__([ReducedUserInformation(**s) for s in seq])
 
 
 class User(BaseModel):

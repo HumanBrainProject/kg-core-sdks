@@ -28,7 +28,7 @@ from uuid import UUID
 from kg_core.__communication import TokenHandler, RequestsWithTokenHandler, KGConfig
 from kg_core.request import ResponseConfiguration, ExtendedResponseConfiguration, Pagination, Stage, ReleaseTreeScope
 from kg_core.oauth import SimpleToken, ClientCredentials, DeviceAuthenticationFlow
-from kg_core.response import Result, Instance, JsonLdDocument, ResultsById, ResultPage, ReleaseStatus, Error, translate_error, User, Scope, SpaceInformation, TypeInformation, TermsOfUse, RestrictedUserInformation
+from kg_core.response import Result, Instance, JsonLdDocument, ResultsById, ResultPage, ReleaseStatus, Error, translate_error, User, Scope, SpaceInformation, TypeInformation, TermsOfUse, ListOfReducedUserInformation
 
 
 def _calculate_base_url(host: str):
@@ -334,10 +334,10 @@ class Instances(RequestsWithTokenHandler):
         })
         return ResultPage[Instance](response=result, constructor=Instance)
 
-    def list_invitations(self, instance_id: UUID) -> ResultPage[RestrictedUserInformation]:
+    def list_invitations(self, instance_id: UUID) -> Result[ListOfReducedUserInformation]:
         """List invitations for review for the given instance"""
         result = self._get(path=f"instances/{instance_id}/invitedUsers", params={})
-        return ResultPage[RestrictedUserInformation](response=result, constructor=RestrictedUserInformation)
+        return Result[ListOfReducedUserInformation](response=result, constructor=ListOfReducedUserInformation)
 
     def move(self, instance_id: UUID, space: str, extended_response_configuration: ExtendedResponseConfiguration = ExtendedResponseConfiguration()) -> Result[Instance]:
         """Move an instance to another space"""

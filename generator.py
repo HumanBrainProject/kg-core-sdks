@@ -239,7 +239,7 @@ class ClientGenerator(object):
             elif response_reference == "#/components/schemas/ResultMapUUIDResultReleaseStatus":
                 return "ResultsById[ReleaseStatus]"
             elif response_reference == "#/components/schemas/ResultListReducedUserInformation":
-                return "ResultPage[RestrictedUserInformation]"
+                return "Result[ListOfReducedUserInformation]"
             elif response_reference == "#/components/schemas/ResultUser":
                 return "Result[User]"
             elif response_reference == "#/components/schemas/ResultUserWithRoles":
@@ -260,6 +260,8 @@ class ClientGenerator(object):
                 return "Optional[TermsOfUse]"
             # elif response_reference == "#/components/schemas/JsonLdDoc":
             #     return "ListOfJsonLdDocuments" if is_list else "JsonLdDocument"
+            else:
+                print(f"Unknown response reference: {response_reference}")
         return None
 
     def consolidate_request_objects(self, request_object: object, method_parameters: List[Dict[str, Any]], method_param_names: List[Optional[str]], query_parameters: List[Dict[str, Any]]):
