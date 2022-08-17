@@ -61,9 +61,10 @@ class ReleaseTreeScope(str):
 
 
 class Pagination(object):
-    def __init__(self, start: int = 0, size: int = 50):
+    def __init__(self, start: int = 0, size: int = 50, return_total_results: bool = True):
         self.start = start
         self.size = size
+        self.return_total_results = return_total_results
 
 
 class ResponseConfiguration(object):
@@ -116,7 +117,7 @@ class ExtendedResponseConfiguration(ResponseConfiguration):
 </dd>
 <dt id="kg_core.request.Pagination"><code class="flex name class">
 <span>class <span class="ident">Pagination</span></span>
-<span>(</span><span>start: int = 0, size: int = 50)</span>
+<span>(</span><span>start: int = 0, size: int = 50, return_total_results: bool = True)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -125,9 +126,10 @@ class ExtendedResponseConfiguration(ResponseConfiguration):
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class Pagination(object):
-    def __init__(self, start: int = 0, size: int = 50):
+    def __init__(self, start: int = 0, size: int = 50, return_total_results: bool = True):
         self.start = start
-        self.size = size</code></pre>
+        self.size = size
+        self.return_total_results = return_total_results</code></pre>
 </details>
 </dd>
 <dt id="kg_core.request.ReleaseTreeScope"><code class="flex name class">

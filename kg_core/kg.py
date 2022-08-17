@@ -28,7 +28,7 @@ from uuid import UUID
 from kg_core.__communication import TokenHandler, RequestsWithTokenHandler, KGConfig
 from kg_core.request import ResponseConfiguration, ExtendedResponseConfiguration, Pagination, Stage, ReleaseTreeScope
 from kg_core.oauth import SimpleToken, ClientCredentials, DeviceAuthenticationFlow
-from kg_core.response import Result, Instance, JsonLdDocument, ResultsById, ResultPage, ReleaseStatus, Error, translate_error, User, Scope, SpaceInformation, TypeInformation, TermsOfUse, ListOfReducedUserInformation
+from kg_core.response import Result, Instance, JsonLdDocument, ResultsById, ResultPage, ReleaseStatus, Error, translate_error, User, Scope, SpaceInformation, TypeInformation, TermsOfUse, ListOfUUID, ListOfReducedUserInformation
 
 
 def _calculate_base_url(host: str):
@@ -68,7 +68,7 @@ class Admin(RequestsWithTokenHandler):
 
     def calculate_instance_invitation_scope(self, instance_id: UUID) -> Optional[Error]:
         """Update invitation scope for this instance"""
-        result = self._get(path=f"instances/{instance_id}/invitationScope", params={})
+        result = self._put(path=f"instances/{instance_id}/invitationScope", payload=None, params={})
         return translate_error(result)
 
     def create_space_definition(self, space: str, autorelease: bool = False, client_space: bool = False, defer_cache: bool = False) -> Optional[Error]:
@@ -131,6 +131,11 @@ class Admin(RequestsWithTokenHandler):
             "space": space
         })
         return translate_error(result)
+
+    def list_instances_with_invitations(self) -> Result[ListOfUUID]:
+        """List instances with invitations"""
+        result = self._get(path="instancesWithInvitations", params={})
+        return Result[ListOfUUID](response=result, constructor=ListOfUUID)
 
     def register_terms_of_use(self, payload: dict) -> Optional[Error]:
         result = self._put(path="setup/termsOfUse", payload=payload, params={})

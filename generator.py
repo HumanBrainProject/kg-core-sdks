@@ -234,6 +234,8 @@ class ClientGenerator(object):
                 return "ResultPage[Instance]"
             elif response_reference == "#/components/schemas/PaginatedStreamResultJsonLdDoc":
                 return "ResultPage[JsonLdDocument]"
+            elif response_reference == "#/components/schemas/ResultListUUID":
+                return "Result[ListOfUUID]"
             elif response_reference == "#/components/schemas/ResultReleaseStatus":
                 return "Result[ReleaseStatus]"
             elif response_reference == "#/components/schemas/ResultMapUUIDResultReleaseStatus":

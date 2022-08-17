@@ -24,7 +24,7 @@ long_description = "KG core python is a client library to access the EBRAINS KG 
 
 setup(
     name='ebrains_kg_core',
-    version='0.9.4',
+    version='0.9.5',
     packages=['kg_core'],
     package_data = {
         'kg_core': ['py.typed'],

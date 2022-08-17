@@ -56,25 +56,25 @@ from uuid import UUID
 from kg_core.__communication import TokenHandler, RequestsWithTokenHandler, KGConfig
 from kg_core.request import ResponseConfiguration, ExtendedResponseConfiguration, Pagination, Stage, ReleaseTreeScope
 from kg_core.oauth import SimpleToken, ClientCredentials, DeviceAuthenticationFlow
-from kg_core.response import Result, Instance, JsonLdDocument, ResultsById, ResultPage, ReleaseStatus, Error, translate_error, User, Scope, SpaceInformation, TypeInformation, TermsOfUse
+from kg_core.response import Result, Instance, JsonLdDocument, ResultsById, ResultPage, ReleaseStatus, Error, translate_error, User, Scope, SpaceInformation, TypeInformation, TermsOfUse, ListOfUUID, ListOfReducedUserInformation
 
 
 def _calculate_base_url(host: str):
     return f&#34;http{&#39;s&#39; if not host.startswith(&#39;localhost&#39;) else &#39;&#39;}://{host}/v3-beta/&#34;
 
 
-def _create_kg_config(host: str, token_handler: TokenHandler, client_token_handler: Optional[TokenHandler] = None) -&gt; KGConfig:
-    return KGConfig(_calculate_base_url(host), token_handler, client_token_handler, &#34;https://kg.ebrains.eu/api/instances/&#34;)
+def _create_kg_config(host: str, enable_profiling: bool, token_handler: TokenHandler, client_token_handler: Optional[TokenHandler] = None) -&gt; KGConfig:
+    return KGConfig(_calculate_base_url(host), token_handler, client_token_handler, &#34;https://kg.ebrains.eu/api/instances/&#34;, enable_profiling)
 
 
 class Client(object):
 
-    def __init__(self, host: str, token_handler: TokenHandler, client_token_handler: Optional[TokenHandler] = None):
+    def __init__(self, host: str, enable_profiling: bool, token_handler: TokenHandler, client_token_handler: Optional[TokenHandler] = None):
         if not host:
             raise ValueError(&#34;No hostname specified&#34;)
         elif not token_handler:
             raise ValueError(&#34;No token provided&#34;)
-        kg_config = _create_kg_config(host, token_handler, client_token_handler)
+        kg_config = _create_kg_config(host, enable_profiling, token_handler, client_token_handler)
         self.instances = Instances(kg_config)
         self.jsonld = Jsonld(kg_config)
         self.queries = Queries(kg_config)
@@ -96,7 +96,7 @@ class Admin(RequestsWithTokenHandler):
 
     def calculate_instance_invitation_scope(self, instance_id: UUID) -&gt; Optional[Error]:
         &#34;&#34;&#34;Update invitation scope for this instance&#34;&#34;&#34;
-        result = self._get(path=f&#34;instances/{instance_id}/invitationScope&#34;, params={})
+        result = self._put(path=f&#34;instances/{instance_id}/invitationScope&#34;, payload=None, params={})
         return translate_error(result)
 
     def create_space_definition(self, space: str, autorelease: bool = False, client_space: bool = False, defer_cache: bool = False) -&gt; Optional[Error]:
@@ -159,6 +159,11 @@ class Admin(RequestsWithTokenHandler):
             &#34;space&#34;: space
         })
         return translate_error(result)
+
+    def list_instances_with_invitations(self) -&gt; Result[ListOfUUID]:
+        &#34;&#34;&#34;List instances with invitations&#34;&#34;&#34;
+        result = self._get(path=&#34;instancesWithInvitations&#34;, params={})
+        return Result[ListOfUUID](response=result, constructor=ListOfUUID)
 
     def register_terms_of_use(self, payload: dict) -&gt; Optional[Error]:
         result = self._put(path=&#34;setup/termsOfUse&#34;, payload=payload, params={})
@@ -310,7 +315,8 @@ class Instances(RequestsWithTokenHandler):
             &#34;property&#34;: property_name,
             &#34;type&#34;: target_type,
             &#34;from&#34;: pagination.start,
-            &#34;size&#34;: pagination.size
+            &#34;size&#34;: pagination.size,
+            &#34;returnTotalResults&#34;: pagination.return_total_results
         })
         return ResultPage[Instance](response=result, constructor=Instance)
 
@@ -356,14 +362,15 @@ class Instances(RequestsWithTokenHandler):
             &#34;returnAlternatives&#34;: response_configuration.return_alternatives,
             &#34;returnEmbedded&#34;: response_configuration.return_embedded,
             &#34;from&#34;: pagination.start,
-            &#34;size&#34;: pagination.size
+            &#34;size&#34;: pagination.size,
+            &#34;returnTotalResults&#34;: pagination.return_total_results
         })
         return ResultPage[Instance](response=result, constructor=Instance)
 
-    def list_invitations(self, instance_id: UUID) -&gt; Optional[Error]:
+    def list_invitations(self, instance_id: UUID) -&gt; Result[ListOfReducedUserInformation]:
         &#34;&#34;&#34;List invitations for review for the given instance&#34;&#34;&#34;
         result = self._get(path=f&#34;instances/{instance_id}/invitedUsers&#34;, params={})
-        return translate_error(result)
+        return Result[ListOfReducedUserInformation](response=result, constructor=ListOfReducedUserInformation)
 
     def move(self, instance_id: UUID, space: str, extended_response_configuration: ExtendedResponseConfiguration = ExtendedResponseConfiguration()) -&gt; Result[Instance]:
         &#34;&#34;&#34;Move an instance to another space&#34;&#34;&#34;
@@ -414,6 +421,7 @@ class Queries(RequestsWithTokenHandler):
         result = self._get(path=f&#34;queries/{query_id}/instances&#34;, params={ 
             &#34;from&#34;: pagination.start,
             &#34;size&#34;: pagination.size,
+            &#34;returnTotalResults&#34;: pagination.return_total_results,
             &#34;stage&#34;: stage,
             &#34;instanceId&#34;: instance_id,
             &#34;restrictToSpaces&#34;: restrict_to_spaces,
@@ -431,6 +439,7 @@ class Queries(RequestsWithTokenHandler):
         result = self._get(path=&#34;queries&#34;, params={ 
             &#34;from&#34;: pagination.start,
             &#34;size&#34;: pagination.size,
+            &#34;returnTotalResults&#34;: pagination.return_total_results,
             &#34;type&#34;: target_type,
             &#34;search&#34;: search
         })
@@ -453,6 +462,7 @@ class Queries(RequestsWithTokenHandler):
         result = self._post(path=&#34;queries&#34;, payload=payload, params={ 
             &#34;from&#34;: pagination.start,
             &#34;size&#34;: pagination.size,
+            &#34;returnTotalResults&#34;: pagination.return_total_results,
             &#34;stage&#34;: stage,
             &#34;instanceId&#34;: instance_id,
             &#34;restrictToSpaces&#34;: restrict_to_spaces,
@@ -475,6 +485,7 @@ class Spaces(RequestsWithTokenHandler):
         result = self._get(path=&#34;spaces&#34;, params={ 
             &#34;from&#34;: pagination.start,
             &#34;size&#34;: pagination.size,
+            &#34;returnTotalResults&#34;: pagination.return_total_results,
             &#34;permissions&#34;: permissions
         })
         return ResultPage[SpaceInformation](response=result, constructor=SpaceInformation)
@@ -502,7 +513,8 @@ class Types(RequestsWithTokenHandler):
             &#34;withProperties&#34;: with_properties,
             &#34;withIncomingLinks&#34;: with_incoming_links,
             &#34;from&#34;: pagination.start,
-            &#34;size&#34;: pagination.size
+            &#34;size&#34;: pagination.size,
+            &#34;returnTotalResults&#34;: pagination.return_total_results
         })
         return ResultPage[TypeInformation](response=result, constructor=TypeInformation)
 
@@ -534,10 +546,11 @@ class Users(RequestsWithTokenHandler):
 
 class ClientBuilder(object):
 
-    def __init__(self, host_name: str):
+    def __init__(self, host_name: str, enable_profiling: bool):
         self._host_name = host_name
         self._token_handler: Optional[TokenHandler] = None
         self._client_token_handler: Optional[TokenHandler] = None
+        self._enable_profiling = enable_profiling
 
     def _resolve_token_handler(self) -&gt; TokenHandler:
         if not self._token_handler:
@@ -582,14 +595,14 @@ class ClientBuilder(object):
         return self
 
     def build(self) -&gt; Client:
-        return Client(self._host_name, self._resolve_token_handler(), self._resolve_client_token_handler())
+        return Client(self._host_name, self._enable_profiling, self._resolve_token_handler(), self._resolve_client_token_handler())
 
     def build_admin(self) -&gt; Admin:
-        return Admin(_create_kg_config(self._host_name, self._resolve_token_handler(), self._resolve_client_token_handler()))
+        return Admin(_create_kg_config(self._host_name, self._enable_profiling, self._resolve_token_handler(), self._resolve_client_token_handler()))
 
 
-def kg(host: str = &#34;core.kg.ebrains.eu&#34;) -&gt; ClientBuilder:
-    return ClientBuilder(host)</code></pre>
+def kg(host: str = &#34;core.kg.ebrains.eu&#34;, enable_profiling: bool = False) -&gt; ClientBuilder:
+    return ClientBuilder(host, enable_profiling)</code></pre>
 </details>
 </section>
 <section>
@@ -600,7 +613,7 @@ def kg(host: str = &#34;core.kg.ebrains.eu&#34;) -&gt; ClientBuilder:
 <h2 class="section-title" id="header-functions">Functions</h2>
 <dl>
 <dt id="kg_core.kg.kg"><code class="name flex">
-<span>def <span class="ident">kg</span></span>(<span>host: str = 'core.kg.ebrains.eu') ‑> <a title="kg_core.kg.ClientBuilder" href="#kg_core.kg.ClientBuilder">ClientBuilder</a></span>
+<span>def <span class="ident">kg</span></span>(<span>host: str = 'core.kg.ebrains.eu', enable_profiling: bool = False) ‑> <a title="kg_core.kg.ClientBuilder" href="#kg_core.kg.ClientBuilder">ClientBuilder</a></span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -608,8 +621,8 @@ def kg(host: str = &#34;core.kg.ebrains.eu&#34;) -&gt; ClientBuilder:
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def kg(host: str = &#34;core.kg.ebrains.eu&#34;) -&gt; ClientBuilder:
-    return ClientBuilder(host)</code></pre>
+<pre><code class="python">def kg(host: str = &#34;core.kg.ebrains.eu&#34;, enable_profiling: bool = False) -&gt; ClientBuilder:
+    return ClientBuilder(host, enable_profiling)</code></pre>
 </details>
 </dd>
 </dl>
@@ -641,7 +654,7 @@ inheritance.</p></div>
 
     def calculate_instance_invitation_scope(self, instance_id: UUID) -&gt; Optional[Error]:
         &#34;&#34;&#34;Update invitation scope for this instance&#34;&#34;&#34;
-        result = self._get(path=f&#34;instances/{instance_id}/invitationScope&#34;, params={})
+        result = self._put(path=f&#34;instances/{instance_id}/invitationScope&#34;, payload=None, params={})
         return translate_error(result)
 
     def create_space_definition(self, space: str, autorelease: bool = False, client_space: bool = False, defer_cache: bool = False) -&gt; Optional[Error]:
@@ -704,6 +717,11 @@ inheritance.</p></div>
             &#34;space&#34;: space
         })
         return translate_error(result)
+
+    def list_instances_with_invitations(self) -&gt; Result[ListOfUUID]:
+        &#34;&#34;&#34;List instances with invitations&#34;&#34;&#34;
+        result = self._get(path=&#34;instancesWithInvitations&#34;, params={})
+        return Result[ListOfUUID](response=result, constructor=ListOfUUID)
 
     def register_terms_of_use(self, payload: dict) -&gt; Optional[Error]:
         result = self._put(path=&#34;setup/termsOfUse&#34;, payload=payload, params={})
@@ -784,7 +802,7 @@ inheritance.</p></div>
 </summary>
 <pre><code class="python">def calculate_instance_invitation_scope(self, instance_id: UUID) -&gt; Optional[Error]:
     &#34;&#34;&#34;Update invitation scope for this instance&#34;&#34;&#34;
-    result = self._get(path=f&#34;instances/{instance_id}/invitationScope&#34;, params={})
+    result = self._put(path=f&#34;instances/{instance_id}/invitationScope&#34;, payload=None, params={})
     return translate_error(result)</code></pre>
 </details>
 </dd>
@@ -929,6 +947,21 @@ inheritance.</p></div>
     return translate_error(result)</code></pre>
 </details>
 </dd>
+<dt id="kg_core.kg.Admin.list_instances_with_invitations"><code class="name flex">
+<span>def <span class="ident">list_instances_with_invitations</span></span>(<span>self) ‑> <a title="kg_core.response.Result" href="response.html#kg_core.response.Result">Result</a>[<a title="kg_core.response.ListOfUUID" href="response.html#kg_core.response.ListOfUUID">ListOfUUID</a>]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>List instances with invitations</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def list_instances_with_invitations(self) -&gt; Result[ListOfUUID]:
+    &#34;&#34;&#34;List instances with invitations&#34;&#34;&#34;
+    result = self._get(path=&#34;instancesWithInvitations&#34;, params={})
+    return Result[ListOfUUID](response=result, constructor=ListOfUUID)</code></pre>
+</details>
+</dd>
 <dt id="kg_core.kg.Admin.register_terms_of_use"><code class="name flex">
 <span>def <span class="ident">register_terms_of_use</span></span>(<span>self, payload: dict) ‑> Optional[<a title="kg_core.response.Error" href="response.html#kg_core.response.Error">Error</a>]</span>
 </code></dt>
@@ -1047,7 +1080,7 @@ inheritance.</p></div>
 </dd>
 <dt id="kg_core.kg.Client"><code class="flex name class">
 <span>class <span class="ident">Client</span></span>
-<span>(</span><span>host: str, token_handler: TokenHandler, client_token_handler: Optional[TokenHandler] = None)</span>
+<span>(</span><span>host: str, enable_profiling: bool, token_handler: TokenHandler, client_token_handler: Optional[TokenHandler] = None)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -1057,12 +1090,12 @@ inheritance.</p></div>
 </summary>
 <pre><code class="python">class Client(object):
 
-    def __init__(self, host: str, token_handler: TokenHandler, client_token_handler: Optional[TokenHandler] = None):
+    def __init__(self, host: str, enable_profiling: bool, token_handler: TokenHandler, client_token_handler: Optional[TokenHandler] = None):
         if not host:
             raise ValueError(&#34;No hostname specified&#34;)
         elif not token_handler:
             raise ValueError(&#34;No token provided&#34;)
-        kg_config = _create_kg_config(host, token_handler, client_token_handler)
+        kg_config = _create_kg_config(host, enable_profiling, token_handler, client_token_handler)
         self.instances = Instances(kg_config)
         self.jsonld = Jsonld(kg_config)
         self.queries = Queries(kg_config)
@@ -1073,7 +1106,7 @@ inheritance.</p></div>
 </dd>
 <dt id="kg_core.kg.ClientBuilder"><code class="flex name class">
 <span>class <span class="ident">ClientBuilder</span></span>
-<span>(</span><span>host_name: str)</span>
+<span>(</span><span>host_name: str, enable_profiling: bool)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -1083,10 +1116,11 @@ inheritance.</p></div>
 </summary>
 <pre><code class="python">class ClientBuilder(object):
 
-    def __init__(self, host_name: str):
+    def __init__(self, host_name: str, enable_profiling: bool):
         self._host_name = host_name
         self._token_handler: Optional[TokenHandler] = None
         self._client_token_handler: Optional[TokenHandler] = None
+        self._enable_profiling = enable_profiling
 
     def _resolve_token_handler(self) -&gt; TokenHandler:
         if not self._token_handler:
@@ -1131,10 +1165,10 @@ inheritance.</p></div>
         return self
 
     def build(self) -&gt; Client:
-        return Client(self._host_name, self._resolve_token_handler(), self._resolve_client_token_handler())
+        return Client(self._host_name, self._enable_profiling, self._resolve_token_handler(), self._resolve_client_token_handler())
 
     def build_admin(self) -&gt; Admin:
-        return Admin(_create_kg_config(self._host_name, self._resolve_token_handler(), self._resolve_client_token_handler()))</code></pre>
+        return Admin(_create_kg_config(self._host_name, self._enable_profiling, self._resolve_token_handler(), self._resolve_client_token_handler()))</code></pre>
 </details>
 <h3>Methods</h3>
 <dl>
@@ -1162,7 +1196,7 @@ inheritance.</p></div>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def build(self) -&gt; Client:
-    return Client(self._host_name, self._resolve_token_handler(), self._resolve_client_token_handler())</code></pre>
+    return Client(self._host_name, self._enable_profiling, self._resolve_token_handler(), self._resolve_client_token_handler())</code></pre>
 </details>
 </dd>
 <dt id="kg_core.kg.ClientBuilder.build_admin"><code class="name flex">
@@ -1175,7 +1209,7 @@ inheritance.</p></div>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def build_admin(self) -&gt; Admin:
-    return Admin(_create_kg_config(self._host_name, self._resolve_token_handler(), self._resolve_client_token_handler()))</code></pre>
+    return Admin(_create_kg_config(self._host_name, self._enable_profiling, self._resolve_token_handler(), self._resolve_client_token_handler()))</code></pre>
 </details>
 </dd>
 <dt id="kg_core.kg.ClientBuilder.with_credentials"><code class="name flex">
@@ -1346,7 +1380,8 @@ inheritance.</p></div>
             &#34;property&#34;: property_name,
             &#34;type&#34;: target_type,
             &#34;from&#34;: pagination.start,
-            &#34;size&#34;: pagination.size
+            &#34;size&#34;: pagination.size,
+            &#34;returnTotalResults&#34;: pagination.return_total_results
         })
         return ResultPage[Instance](response=result, constructor=Instance)
 
@@ -1392,14 +1427,15 @@ inheritance.</p></div>
             &#34;returnAlternatives&#34;: response_configuration.return_alternatives,
             &#34;returnEmbedded&#34;: response_configuration.return_embedded,
             &#34;from&#34;: pagination.start,
-            &#34;size&#34;: pagination.size
+            &#34;size&#34;: pagination.size,
+            &#34;returnTotalResults&#34;: pagination.return_total_results
         })
         return ResultPage[Instance](response=result, constructor=Instance)
 
-    def list_invitations(self, instance_id: UUID) -&gt; Optional[Error]:
+    def list_invitations(self, instance_id: UUID) -&gt; Result[ListOfReducedUserInformation]:
         &#34;&#34;&#34;List invitations for review for the given instance&#34;&#34;&#34;
         result = self._get(path=f&#34;instances/{instance_id}/invitedUsers&#34;, params={})
-        return translate_error(result)
+        return Result[ListOfReducedUserInformation](response=result, constructor=ListOfReducedUserInformation)
 
     def move(self, instance_id: UUID, space: str, extended_response_configuration: ExtendedResponseConfiguration = ExtendedResponseConfiguration()) -&gt; Result[Instance]:
         &#34;&#34;&#34;Move an instance to another space&#34;&#34;&#34;
@@ -1627,7 +1663,8 @@ inheritance.</p></div>
         &#34;property&#34;: property_name,
         &#34;type&#34;: target_type,
         &#34;from&#34;: pagination.start,
-        &#34;size&#34;: pagination.size
+        &#34;size&#34;: pagination.size,
+        &#34;returnTotalResults&#34;: pagination.return_total_results
     })
     return ResultPage[Instance](response=result, constructor=Instance)</code></pre>
 </details>
@@ -1723,13 +1760,14 @@ inheritance.</p></div>
         &#34;returnAlternatives&#34;: response_configuration.return_alternatives,
         &#34;returnEmbedded&#34;: response_configuration.return_embedded,
         &#34;from&#34;: pagination.start,
-        &#34;size&#34;: pagination.size
+        &#34;size&#34;: pagination.size,
+        &#34;returnTotalResults&#34;: pagination.return_total_results
     })
     return ResultPage[Instance](response=result, constructor=Instance)</code></pre>
 </details>
 </dd>
 <dt id="kg_core.kg.Instances.list_invitations"><code class="name flex">
-<span>def <span class="ident">list_invitations</span></span>(<span>self, instance_id: UUID) ‑> Optional[<a title="kg_core.response.Error" href="response.html#kg_core.response.Error">Error</a>]</span>
+<span>def <span class="ident">list_invitations</span></span>(<span>self, instance_id: UUID) ‑> <a title="kg_core.response.Result" href="response.html#kg_core.response.Result">Result</a>[<a title="kg_core.response.ListOfReducedUserInformation" href="response.html#kg_core.response.ListOfReducedUserInformation">ListOfReducedUserInformation</a>]</span>
 </code></dt>
 <dd>
 <div class="desc"><p>List invitations for review for the given instance</p></div>
@@ -1737,10 +1775,10 @@ inheritance.</p></div>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def list_invitations(self, instance_id: UUID) -&gt; Optional[Error]:
+<pre><code class="python">def list_invitations(self, instance_id: UUID) -&gt; Result[ListOfReducedUserInformation]:
     &#34;&#34;&#34;List invitations for review for the given instance&#34;&#34;&#34;
     result = self._get(path=f&#34;instances/{instance_id}/invitedUsers&#34;, params={})
-    return translate_error(result)</code></pre>
+    return Result[ListOfReducedUserInformation](response=result, constructor=ListOfReducedUserInformation)</code></pre>
 </details>
 </dd>
 <dt id="kg_core.kg.Instances.move"><code class="name flex">
@@ -1878,6 +1916,7 @@ inheritance.</p></div>
         result = self._get(path=f&#34;queries/{query_id}/instances&#34;, params={ 
             &#34;from&#34;: pagination.start,
             &#34;size&#34;: pagination.size,
+            &#34;returnTotalResults&#34;: pagination.return_total_results,
             &#34;stage&#34;: stage,
             &#34;instanceId&#34;: instance_id,
             &#34;restrictToSpaces&#34;: restrict_to_spaces,
@@ -1895,6 +1934,7 @@ inheritance.</p></div>
         result = self._get(path=&#34;queries&#34;, params={ 
             &#34;from&#34;: pagination.start,
             &#34;size&#34;: pagination.size,
+            &#34;returnTotalResults&#34;: pagination.return_total_results,
             &#34;type&#34;: target_type,
             &#34;search&#34;: search
         })
@@ -1917,6 +1957,7 @@ inheritance.</p></div>
         result = self._post(path=&#34;queries&#34;, payload=payload, params={ 
             &#34;from&#34;: pagination.start,
             &#34;size&#34;: pagination.size,
+            &#34;returnTotalResults&#34;: pagination.return_total_results,
             &#34;stage&#34;: stage,
             &#34;instanceId&#34;: instance_id,
             &#34;restrictToSpaces&#34;: restrict_to_spaces,
@@ -1945,6 +1986,7 @@ inheritance.</p></div>
     result = self._get(path=f&#34;queries/{query_id}/instances&#34;, params={ 
         &#34;from&#34;: pagination.start,
         &#34;size&#34;: pagination.size,
+        &#34;returnTotalResults&#34;: pagination.return_total_results,
         &#34;stage&#34;: stage,
         &#34;instanceId&#34;: instance_id,
         &#34;restrictToSpaces&#34;: restrict_to_spaces,
@@ -1982,6 +2024,7 @@ inheritance.</p></div>
     result = self._get(path=&#34;queries&#34;, params={ 
         &#34;from&#34;: pagination.start,
         &#34;size&#34;: pagination.size,
+        &#34;returnTotalResults&#34;: pagination.return_total_results,
         &#34;type&#34;: target_type,
         &#34;search&#34;: search
     })
@@ -2034,6 +2077,7 @@ inheritance.</p></div>
     result = self._post(path=&#34;queries&#34;, payload=payload, params={ 
         &#34;from&#34;: pagination.start,
         &#34;size&#34;: pagination.size,
+        &#34;returnTotalResults&#34;: pagination.return_total_results,
         &#34;stage&#34;: stage,
         &#34;instanceId&#34;: instance_id,
         &#34;restrictToSpaces&#34;: restrict_to_spaces,
@@ -2069,6 +2113,7 @@ inheritance.</p></div>
         result = self._get(path=&#34;spaces&#34;, params={ 
             &#34;from&#34;: pagination.start,
             &#34;size&#34;: pagination.size,
+            &#34;returnTotalResults&#34;: pagination.return_total_results,
             &#34;permissions&#34;: permissions
         })
         return ResultPage[SpaceInformation](response=result, constructor=SpaceInformation)</code></pre>
@@ -2109,6 +2154,7 @@ inheritance.</p></div>
     result = self._get(path=&#34;spaces&#34;, params={ 
         &#34;from&#34;: pagination.start,
         &#34;size&#34;: pagination.size,
+        &#34;returnTotalResults&#34;: pagination.return_total_results,
         &#34;permissions&#34;: permissions
     })
     return ResultPage[SpaceInformation](response=result, constructor=SpaceInformation)</code></pre>
@@ -2149,7 +2195,8 @@ inheritance.</p></div>
             &#34;withProperties&#34;: with_properties,
             &#34;withIncomingLinks&#34;: with_incoming_links,
             &#34;from&#34;: pagination.start,
-            &#34;size&#34;: pagination.size
+            &#34;size&#34;: pagination.size,
+            &#34;returnTotalResults&#34;: pagination.return_total_results
         })
         return ResultPage[TypeInformation](response=result, constructor=TypeInformation)</code></pre>
 </details>
@@ -2197,7 +2244,8 @@ inheritance.</p></div>
         &#34;withProperties&#34;: with_properties,
         &#34;withIncomingLinks&#34;: with_incoming_links,
         &#34;from&#34;: pagination.start,
-        &#34;size&#34;: pagination.size
+        &#34;size&#34;: pagination.size,
+        &#34;returnTotalResults&#34;: pagination.return_total_results
     })
     return ResultPage[TypeInformation](response=result, constructor=TypeInformation)</code></pre>
 </details>
@@ -2342,6 +2390,7 @@ inheritance.</p></div>
 <li><code><a title="kg_core.kg.Admin.deprecate_property_for_type" href="#kg_core.kg.Admin.deprecate_property_for_type">deprecate_property_for_type</a></code></li>
 <li><code><a title="kg_core.kg.Admin.get_all_role_definitions" href="#kg_core.kg.Admin.get_all_role_definitions">get_all_role_definitions</a></code></li>
 <li><code><a title="kg_core.kg.Admin.get_claim_for_role" href="#kg_core.kg.Admin.get_claim_for_role">get_claim_for_role</a></code></li>
+<li><code><a title="kg_core.kg.Admin.list_instances_with_invitations" href="#kg_core.kg.Admin.list_instances_with_invitations">list_instances_with_invitations</a></code></li>
 <li><code><a title="kg_core.kg.Admin.register_terms_of_use" href="#kg_core.kg.Admin.register_terms_of_use">register_terms_of_use</a></code></li>
 <li><code><a title="kg_core.kg.Admin.remove_space_definition" href="#kg_core.kg.Admin.remove_space_definition">remove_space_definition</a></code></li>
 <li><code><a title="kg_core.kg.Admin.remove_type_definition" href="#kg_core.kg.Admin.remove_type_definition">remove_type_definition</a></code></li>

@@ -119,6 +119,7 @@ class TypeInformation(BaseModel):
     name: Optional[str] = None
     # TODO incoming_links
     occurrences: Optional[int] = None
+
     # TODO properties
     # TODO spaces
 
@@ -142,6 +143,11 @@ class ReducedUserInformation(BaseModel):
             "name": "http://schema.org/name",
             "uuid": "@id"
         }
+
+
+class ListOfUUID(List[UUID]):
+    def __init__(self, seq: Iterable[UUID] = ()):
+        super(ListOfUUID, self).__init__([UUID(**s) for s in seq])
 
 
 class ListOfReducedUserInformation(List[ReducedUserInformation]):
@@ -174,6 +180,7 @@ class UserWithRoles(BaseModel):
     user_roles: Optional[List[str]] = None
     invitations: Optional[List[str]] = None
     client_id: Optional[str] = None
+
     # permissions
 
     class Config:
@@ -188,26 +195,34 @@ ResponseType = TypeVar("ResponseType")
 
 
 def translate_error(response: KGRequestWithResponseContext) -> Optional[Error]:
-    return Error(**response.content["error"]) if response.content and "error" in response.content and response.content["error"] \
-        else Error(code=response.status_code, message=http.client.responses[response.status_code]) if response.status_code and response.status_code >= 400 else None
+    return Error(**response.content["error"]) if response.content and "error" in response.content and response.content[
+        "error"] \
+        else Error(code=response.status_code, message=http.client.responses[
+        response.status_code]) if response.status_code and response.status_code >= 400 else None
 
 
 class _AbstractResult(ABC):
 
     def __init__(self, response: KGRequestWithResponseContext):
-        self.message: Optional[str] = response.content["message"] if response.content and "message" in response.content else None
-        self.start_time: Optional[int] = response.content["startTime"] if response.content and "startTime" in response.content else None
-        self.duration_in_ms: Optional[int] = response.content["durationInMs"] if response.content and "durationInMs" in response.content else None
-        self.transaction_id: Optional[int] = response.content["transactionId"] if response.content and "transactionId" in response.content else None
+        self.message: Optional[str] = response.content[
+            "message"] if response.content and "message" in response.content else None
+        self.start_time: Optional[int] = response.content[
+            "startTime"] if response.content and "startTime" in response.content else None
+        self.duration_in_ms: Optional[int] = response.content[
+            "durationInMs"] if response.content and "durationInMs" in response.content else None
+        self.transaction_id: Optional[int] = response.content[
+            "transactionId"] if response.content and "transactionId" in response.content else None
         self.error: Optional[Error] = translate_error(response)
 
 
 class _AbstractResultPage(_AbstractResult):
     def __init__(self, response: KGRequestWithResponseContext):
         super(_AbstractResultPage, self).__init__(response)
-        self.total: Optional[int] = response.content["total"] if response.content and "total" in response.content else None
+        self.total: Optional[int] = response.content[
+            "total"] if response.content and "total" in response.content else None
         self.size: Optional[int] = response.content["size"] if response.content and "size" in response.content else None
-        self.start_from: Optional[int] = response.content["from"] if response.content and "from" in response.content else None
+        self.start_from: Optional[int] = response.content[
+            "from"] if response.content and "from" in response.content else None
 
 
 class ResponseObjectConstructor(Generic[ResponseType]):
@@ -239,10 +254,11 @@ class ResultPageIterator(Generic[ResponseType]):
                 raise ValueError(self._result_page.error.message)
             elif self._result_page.data:
                 if self._result_page.total is None or (self._result_page.total and self.n < self._result_page.total):
-                    if self.n >= self._result_page.start_from+self._result_page.size and (self._result_page.has_next_page() is None or self._result_page.has_next_page()):
+                    if self.n >= self._result_page.start_from + self._result_page.size and (
+                            self._result_page.has_next_page() is None or self._result_page.has_next_page()):
                         self._result_page = self._result_page.next_page()
                     if self._result_page:
-                        result = self._result_page.data[self.n-self._result_page.start_from]
+                        result = self._result_page.data[self.n - self._result_page.start_from]
                         self.n += 1
                         return result
         raise StopIteration
@@ -252,7 +268,9 @@ class ResultPage(_AbstractResultPage, Generic[ResponseType]):
 
     def __init__(self, response: KGRequestWithResponseContext, constructor: Callable[..., ResponseType]):
         super(ResultPage, self).__init__(response)
-        self.data: Optional[List[ResponseType]] = [ResponseObjectConstructor.init_response_object(constructor, r, response.id_namespace) for r in response.content["data"]] if response.content and "data" in response.content else None
+        self.data: Optional[List[ResponseType]] = [
+            ResponseObjectConstructor.init_response_object(constructor, r, response.id_namespace) for r in
+            response.content["data"]] if response.content and "data" in response.content else None
         self._original_response = response
         self._original_constructor = constructor
 
@@ -262,9 +280,10 @@ class ResultPage(_AbstractResultPage, Generic[ResponseType]):
     def next_page(self) -> Optional[ResultPage[ResponseType]]:
         """ returns the next page of this result if there is one - otherwise returns None """
         next_page = self.has_next_page()
-        if next_page is None or next_page: #next page can be
+        if next_page is None or next_page:  # next page can be
             result = self._original_response.next_page(self.start_from, self.size)
-            result_page = ResultPage[ResponseType](response=result, constructor=self._original_constructor) if result else None
+            result_page = ResultPage[ResponseType](response=result,
+                                                   constructor=self._original_constructor) if result else None
             if result_page and result_page.data:
                 return result_page
             else:
@@ -275,7 +294,7 @@ class ResultPage(_AbstractResultPage, Generic[ResponseType]):
         """ returns True if a next page exists. Returns None if the original request has been executed without "full count" (by setting the "returnTotalResults" to false). """
         if self.total:
             if self.total is not None and self.start_from is not None and self.size is not None:
-                return self.start_from+self.size < self.total
+                return self.start_from + self.size < self.total
             return False
         return None
 
@@ -288,17 +307,24 @@ class Result(_AbstractResult, Generic[ResponseType]):
 
     def __init__(self, response: KGRequestWithResponseContext, constructor: Callable[..., ResponseType]):
         super(Result, self).__init__(response)
-        self.data: Optional[ResponseType] = ResponseObjectConstructor.init_response_object(constructor, response.content["data"], response.id_namespace) if response.content and "data" in response.content and response.content["data"] is not None else None
+        self.data: Optional[ResponseType] = ResponseObjectConstructor.init_response_object(constructor,
+                                                                                           response.content["data"],
+                                                                                           response.id_namespace) if response.content and "data" in response.content and \
+                                                                                                                     response.content[
+                                                                                                                         "data"] is not None else None
 
     def __str__(self):
-        return f"{super.__str__(self)} - status: {str(self.error.code)+' ('+self.error.message+')' if self.error is not None else 'success'}"
+        return f"{super.__str__(self)} - status: {str(self.error.code) + ' (' + self.error.message + ')' if self.error is not None else 'success'}"
 
 
 class ResultsById(_AbstractResult, Generic[ResponseType]):
 
     def __init__(self, response: KGRequestWithResponseContext, constructor: Callable[..., ResponseType]):
         super(ResultsById, self).__init__(response)
-        self.data: Optional[Dict[str, Result[ResponseType]]] = {k: Result[ResponseType](response.copy_context(r), constructor) for k, r in response.content["data"].items()} if response.content and "data" in response.content and response.content["data"] else None
+        self.data: Optional[Dict[str, Result[ResponseType]]] = {
+            k: Result[ResponseType](response.copy_context(r), constructor) for k, r in
+            response.content["data"].items()} if response.content and "data" in response.content and response.content[
+            "data"] else None
 
     def __str__(self):
         return f"{super.__str__(self)} - status: {self.error.code if self.error else 'success'}"
