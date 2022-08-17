@@ -147,7 +147,7 @@ class ReducedUserInformation(BaseModel):
 
 class ListOfUUID(List[UUID]):
     def __init__(self, seq: Iterable[UUID] = ()):
-        super(ListOfUUID, self).__init__([UUID(**s) for s in seq])
+        super(ListOfUUID, self).__init__([UUID(s) for s in seq])
 
 
 class ListOfReducedUserInformation(List[ReducedUserInformation]):
