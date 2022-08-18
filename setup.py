@@ -20,7 +20,7 @@
 
 from setuptools import setup
 
-long_description = "KG core python is a client library to access the EBRAINS KG core API."
+long_description = "This is a client library to access the EBRAINS KG core API via python."
 
 setup(
     name='ebrains_kg_core',
