@@ -1,0 +1,2490 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<meta name="generator" content="pdoc 0.10.0" />
+<title>kg_core.kg API documentation</title>
+<meta name="description" content="" />
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
+<link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
+<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js" integrity="sha256-Uv3H6lx7dJmRfRvH8TH6kJD1TSK1aFcwgx+mdg3epi8=" crossorigin></script>
+<script>window.addEventListener('DOMContentLoaded', () => hljs.initHighlighting())</script>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>kg_core.kg</code></h1>
+</header>
+<section id="section-intro">
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">#  Copyright 2022 EBRAINS AISBL
+#
+#  Licensed under the Apache License, Version 2.0 (the &#34;License&#34;);
+#  you may not use this file except in compliance with the License.
+#  You may obtain a copy of the License at
+#
+#  http://www.apache.org/licenses/LICENSE-2.0.
+#
+#  Unless required by applicable law or agreed to in writing, software
+#  distributed under the License is distributed on an &#34;AS IS&#34; BASIS,
+#  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#  See the License for the specific language governing permissions and
+#  limitations under the License.
+#
+#  This open source software code was developed in part or in whole in the
+#  Human Brain Project, funded from the European Union&#39;s Horizon 2020
+#  Framework Programme for Research and Innovation under
+#  Specific Grant Agreements No. 720270, No. 785907, and No. 945539
+#  (Human Brain Project SGA1, SGA2 and SGA3).
+#
+
+from __future__ import annotations
+import os
+import requests
+from typing import List, Optional, Dict, Any
+from uuid import UUID
+
+from kg_core.__communication import TokenHandler, RequestsWithTokenHandler, KGConfig
+from kg_core.request import ResponseConfiguration, ExtendedResponseConfiguration, Pagination, Stage, ReleaseTreeScope
+from kg_core.oauth import SimpleToken, ClientCredentials, DeviceAuthenticationFlow
+from kg_core.response import Result, Instance, JsonLdDocument, ResultsById, ResultPage, ReleaseStatus, Error, translate_error, User, Scope, SpaceInformation, TypeInformation, TermsOfUse, ListOfUUID, ListOfReducedUserInformation
+
+
+def _calculate_base_url(host: str):
+    return f&#34;http{&#39;s&#39; if not host.startswith(&#39;localhost&#39;) else &#39;&#39;}://{host}/v3-beta/&#34;
+
+
+def _create_kg_config(host: str, enable_profiling: bool, token_handler: TokenHandler, client_token_handler: Optional[TokenHandler] = None) -&gt; KGConfig:
+    return KGConfig(_calculate_base_url(host), token_handler, client_token_handler, &#34;https://kg.ebrains.eu/api/instances/&#34;, enable_profiling)
+
+
+class Client(object):
+
+    def __init__(self, host: str, enable_profiling: bool, token_handler: TokenHandler, client_token_handler: Optional[TokenHandler] = None):
+        if not host:
+            raise ValueError(&#34;No hostname specified&#34;)
+        elif not token_handler:
+            raise ValueError(&#34;No token provided&#34;)
+        kg_config = _create_kg_config(host, enable_profiling, token_handler, client_token_handler)
+        self.instances = Instances(kg_config)
+        self.jsonld = Jsonld(kg_config)
+        self.queries = Queries(kg_config)
+        self.spaces = Spaces(kg_config)
+        self.types = Types(kg_config)
+        self.users = Users(kg_config)
+        
+
+class Admin(RequestsWithTokenHandler):
+    def __init__(self, config: KGConfig):
+        super(Admin, self).__init__(config)
+
+    def assign_type_to_space(self, space: str, target_type: str) -&gt; Optional[Error]:
+        &#34;&#34;&#34;Assign a type to a space&#34;&#34;&#34;
+        result = self._put(path=f&#34;spaces/{space}/types&#34;, payload=None, params={ 
+            &#34;type&#34;: target_type
+        })
+        return translate_error(result)
+
+    def calculate_instance_invitation_scope(self, instance_id: UUID) -&gt; Optional[Error]:
+        &#34;&#34;&#34;Update invitation scope for this instance&#34;&#34;&#34;
+        result = self._put(path=f&#34;instances/{instance_id}/invitationScope&#34;, payload=None, params={})
+        return translate_error(result)
+
+    def create_space_definition(self, space: str, autorelease: bool = False, client_space: bool = False, defer_cache: bool = False) -&gt; Optional[Error]:
+        &#34;&#34;&#34;Explicitly specify a space&#34;&#34;&#34;
+        result = self._put(path=f&#34;spaces/{space}/specification&#34;, payload=None, params={ 
+            &#34;autorelease&#34;: autorelease,
+            &#34;clientSpace&#34;: client_space,
+            &#34;deferCache&#34;: defer_cache
+        })
+        return translate_error(result)
+
+    def create_type_definition(self, payload: dict, target_type: str, is_global: Optional[bool] = None) -&gt; Optional[Error]:
+        &#34;&#34;&#34;Specify a type&#34;&#34;&#34;
+        result = self._put(path=&#34;types/specification&#34;, payload=payload, params={ 
+            &#34;global&#34;: is_global,
+            &#34;type&#34;: target_type
+        })
+        return translate_error(result)
+
+    def define_property(self, payload: dict, property_name: str, is_global: Optional[bool] = None) -&gt; Optional[Error]:
+        &#34;&#34;&#34;Upload a property specification either globally or for the requesting client&#34;&#34;&#34;
+        result = self._put(path=&#34;properties&#34;, payload=payload, params={ 
+            &#34;global&#34;: is_global,
+            &#34;property&#34;: property_name
+        })
+        return translate_error(result)
+
+    def define_property_for_type(self, payload: dict, property_name: str, target_type: str, is_global: Optional[bool] = None) -&gt; Optional[Error]:
+        &#34;&#34;&#34;Define a property specification either globally for the requesting client&#34;&#34;&#34;
+        result = self._put(path=&#34;propertiesForType&#34;, payload=payload, params={ 
+            &#34;global&#34;: is_global,
+            &#34;property&#34;: property_name,
+            &#34;type&#34;: target_type
+        })
+        return translate_error(result)
+
+    def deprecate_property(self, property_name: str, is_global: Optional[bool] = None) -&gt; Optional[Error]:
+        &#34;&#34;&#34;Upload a property specification either globally or for the requesting client&#34;&#34;&#34;
+        result = self._delete(path=&#34;properties&#34;, params={ 
+            &#34;global&#34;: is_global,
+            &#34;property&#34;: property_name
+        })
+        return translate_error(result)
+
+    def deprecate_property_for_type(self, property_name: str, target_type: str, is_global: Optional[bool] = None) -&gt; Optional[Error]:
+        &#34;&#34;&#34;Deprecate a property specification for a specific type either globally or for the requesting client&#34;&#34;&#34;
+        result = self._delete(path=&#34;propertiesForType&#34;, params={ 
+            &#34;global&#34;: is_global,
+            &#34;property&#34;: property_name,
+            &#34;type&#34;: target_type
+        })
+        return translate_error(result)
+
+    def get_all_role_definitions(self) -&gt; Optional[Error]:
+        result = self._get(path=&#34;setup/permissions&#34;, params={})
+        return translate_error(result)
+
+    def get_claim_for_role(self, role: str, space: Optional[str] = None) -&gt; Optional[Error]:
+        result = self._get(path=f&#34;setup/permissions/{role}&#34;, params={ 
+            &#34;space&#34;: space
+        })
+        return translate_error(result)
+
+    def list_instances_with_invitations(self) -&gt; Result[ListOfUUID]:
+        &#34;&#34;&#34;List instances with invitations&#34;&#34;&#34;
+        result = self._get(path=&#34;instancesWithInvitations&#34;, params={})
+        return Result[ListOfUUID](response=result, constructor=ListOfUUID)
+
+    def register_terms_of_use(self, payload: dict) -&gt; Optional[Error]:
+        result = self._put(path=&#34;setup/termsOfUse&#34;, payload=payload, params={})
+        return translate_error(result)
+
+    def remove_space_definition(self, space: str) -&gt; Optional[Error]:
+        &#34;&#34;&#34;Remove a space definition&#34;&#34;&#34;
+        result = self._delete(path=f&#34;spaces/{space}/specification&#34;, params={})
+        return translate_error(result)
+
+    def remove_type_definition(self, is_global: Optional[bool] = None, target_type: Optional[str] = None) -&gt; Optional[Error]:
+        &#34;&#34;&#34;Remove a type definition&#34;&#34;&#34;
+        result = self._delete(path=&#34;types/specification&#34;, params={ 
+            &#34;type&#34;: target_type,
+            &#34;global&#34;: is_global
+        })
+        return translate_error(result)
+
+    def remove_type_from_space(self, space: str, target_type: str) -&gt; Optional[Error]:
+        &#34;&#34;&#34;Remove a type in space definition&#34;&#34;&#34;
+        result = self._delete(path=f&#34;spaces/{space}/types&#34;, params={ 
+            &#34;type&#34;: target_type
+        })
+        return translate_error(result)
+
+    def rerun_events(self, space: str) -&gt; Optional[Error]:
+        &#34;&#34;&#34;Trigger a rerun of the events of this space&#34;&#34;&#34;
+        result = self._put(path=f&#34;spaces/{space}/eventHistory&#34;, payload=None, params={})
+        return translate_error(result)
+
+    def trigger_inference(self, space: str, identifier: Optional[str] = None, is_async: bool = False) -&gt; Optional[Error]:
+        &#34;&#34;&#34;Triggers the inference of all documents of the given space&#34;&#34;&#34;
+        result = self._post(path=f&#34;spaces/{space}/inference&#34;, payload=None, params={ 
+            &#34;identifier&#34;: identifier,
+            &#34;async&#34;: is_async
+        })
+        return translate_error(result)
+
+    def update_claim_for_role(self, payload: dict, remove: bool, role: str, space: Optional[str] = None) -&gt; Optional[Error]:
+        result = self._patch(path=f&#34;setup/permissions/{role}&#34;, payload=payload, params={ 
+            &#34;space&#34;: space,
+            &#34;remove&#34;: remove
+        })
+        return translate_error(result)
+
+
+class Instances(RequestsWithTokenHandler):
+    def __init__(self, config: KGConfig):
+        super(Instances, self).__init__(config)
+
+    def contribute_to_full_replacement(self, payload: dict, instance_id: UUID, extended_response_configuration: ExtendedResponseConfiguration = ExtendedResponseConfiguration()) -&gt; Result[Instance]:
+        &#34;&#34;&#34;Replace contribution to an existing instance&#34;&#34;&#34;
+        result = self._put(path=f&#34;instances/{instance_id}&#34;, payload=payload, params={ 
+            &#34;returnIncomingLinks&#34;: extended_response_configuration.return_incoming_links,
+            &#34;incomingLinksPageSize&#34;: extended_response_configuration.incoming_links_page_size,
+            &#34;returnPayload&#34;: extended_response_configuration.return_payload,
+            &#34;returnPermissions&#34;: extended_response_configuration.return_permissions,
+            &#34;returnAlternatives&#34;: extended_response_configuration.return_alternatives,
+            &#34;returnEmbedded&#34;: extended_response_configuration.return_embedded
+        })
+        return Result[Instance](response=result, constructor=Instance)
+
+    def contribute_to_partial_replacement(self, payload: dict, instance_id: UUID, extended_response_configuration: ExtendedResponseConfiguration = ExtendedResponseConfiguration()) -&gt; Result[Instance]:
+        &#34;&#34;&#34;Partially update contribution to an existing instance&#34;&#34;&#34;
+        result = self._patch(path=f&#34;instances/{instance_id}&#34;, payload=payload, params={ 
+            &#34;returnIncomingLinks&#34;: extended_response_configuration.return_incoming_links,
+            &#34;incomingLinksPageSize&#34;: extended_response_configuration.incoming_links_page_size,
+            &#34;returnPayload&#34;: extended_response_configuration.return_payload,
+            &#34;returnPermissions&#34;: extended_response_configuration.return_permissions,
+            &#34;returnAlternatives&#34;: extended_response_configuration.return_alternatives,
+            &#34;returnEmbedded&#34;: extended_response_configuration.return_embedded
+        })
+        return Result[Instance](response=result, constructor=Instance)
+
+    def create_new(self, payload: dict, space: str, extended_response_configuration: ExtendedResponseConfiguration = ExtendedResponseConfiguration()) -&gt; Result[Instance]:
+        &#34;&#34;&#34;Create new instance with a system generated id&#34;&#34;&#34;
+        result = self._post(path=&#34;instances&#34;, payload=payload, params={ 
+            &#34;space&#34;: space,
+            &#34;returnIncomingLinks&#34;: extended_response_configuration.return_incoming_links,
+            &#34;incomingLinksPageSize&#34;: extended_response_configuration.incoming_links_page_size,
+            &#34;returnPayload&#34;: extended_response_configuration.return_payload,
+            &#34;returnPermissions&#34;: extended_response_configuration.return_permissions,
+            &#34;returnAlternatives&#34;: extended_response_configuration.return_alternatives,
+            &#34;returnEmbedded&#34;: extended_response_configuration.return_embedded
+        })
+        return Result[Instance](response=result, constructor=Instance)
+
+    def create_new_with_id(self, payload: dict, instance_id: UUID, space: str, extended_response_configuration: ExtendedResponseConfiguration = ExtendedResponseConfiguration()) -&gt; Result[Instance]:
+        &#34;&#34;&#34;Create new instance with a client defined id&#34;&#34;&#34;
+        result = self._post(path=f&#34;instances/{instance_id}&#34;, payload=payload, params={ 
+            &#34;space&#34;: space,
+            &#34;returnIncomingLinks&#34;: extended_response_configuration.return_incoming_links,
+            &#34;incomingLinksPageSize&#34;: extended_response_configuration.incoming_links_page_size,
+            &#34;returnPayload&#34;: extended_response_configuration.return_payload,
+            &#34;returnPermissions&#34;: extended_response_configuration.return_permissions,
+            &#34;returnAlternatives&#34;: extended_response_configuration.return_alternatives,
+            &#34;returnEmbedded&#34;: extended_response_configuration.return_embedded
+        })
+        return Result[Instance](response=result, constructor=Instance)
+
+    def delete(self, instance_id: UUID) -&gt; Optional[Error]:
+        &#34;&#34;&#34;Delete an instance&#34;&#34;&#34;
+        result = self._delete(path=f&#34;instances/{instance_id}&#34;, params={})
+        return translate_error(result)
+
+    def get_by_id(self, instance_id: UUID, stage: Stage = Stage.RELEASED, extended_response_configuration: ExtendedResponseConfiguration = ExtendedResponseConfiguration()) -&gt; Result[Instance]:
+        &#34;&#34;&#34;Get the instance&#34;&#34;&#34;
+        result = self._get(path=f&#34;instances/{instance_id}&#34;, params={ 
+            &#34;stage&#34;: stage,
+            &#34;returnIncomingLinks&#34;: extended_response_configuration.return_incoming_links,
+            &#34;incomingLinksPageSize&#34;: extended_response_configuration.incoming_links_page_size,
+            &#34;returnPayload&#34;: extended_response_configuration.return_payload,
+            &#34;returnPermissions&#34;: extended_response_configuration.return_permissions,
+            &#34;returnAlternatives&#34;: extended_response_configuration.return_alternatives,
+            &#34;returnEmbedded&#34;: extended_response_configuration.return_embedded
+        })
+        return Result[Instance](response=result, constructor=Instance)
+
+    def get_by_identifiers(self, payload: dict, stage: Stage = Stage.RELEASED, extended_response_configuration: ExtendedResponseConfiguration = ExtendedResponseConfiguration()) -&gt; ResultsById[Instance]:
+        &#34;&#34;&#34;Read instances by the given list of (external) identifiers&#34;&#34;&#34;
+        result = self._post(path=&#34;instancesByIdentifiers&#34;, payload=payload, params={ 
+            &#34;stage&#34;: stage,
+            &#34;returnIncomingLinks&#34;: extended_response_configuration.return_incoming_links,
+            &#34;incomingLinksPageSize&#34;: extended_response_configuration.incoming_links_page_size,
+            &#34;returnPayload&#34;: extended_response_configuration.return_payload,
+            &#34;returnPermissions&#34;: extended_response_configuration.return_permissions,
+            &#34;returnAlternatives&#34;: extended_response_configuration.return_alternatives,
+            &#34;returnEmbedded&#34;: extended_response_configuration.return_embedded
+        })
+        return ResultsById[Instance](response=result, constructor=Instance)
+
+    def get_by_ids(self, payload: dict, stage: Stage = Stage.RELEASED, extended_response_configuration: ExtendedResponseConfiguration = ExtendedResponseConfiguration()) -&gt; ResultsById[Instance]:
+        &#34;&#34;&#34;Bulk operation of /instances/{id} to read instances by their UUIDs&#34;&#34;&#34;
+        result = self._post(path=&#34;instancesByIds&#34;, payload=payload, params={ 
+            &#34;stage&#34;: stage,
+            &#34;returnIncomingLinks&#34;: extended_response_configuration.return_incoming_links,
+            &#34;incomingLinksPageSize&#34;: extended_response_configuration.incoming_links_page_size,
+            &#34;returnPayload&#34;: extended_response_configuration.return_payload,
+            &#34;returnPermissions&#34;: extended_response_configuration.return_permissions,
+            &#34;returnAlternatives&#34;: extended_response_configuration.return_alternatives,
+            &#34;returnEmbedded&#34;: extended_response_configuration.return_embedded
+        })
+        return ResultsById[Instance](response=result, constructor=Instance)
+
+    def get_incoming_links(self, instance_id: UUID, property_name: str, target_type: str, stage: Stage = Stage.RELEASED, pagination: Pagination = Pagination()) -&gt; ResultPage[Instance]:
+        &#34;&#34;&#34;Get incoming links for a specific instance (paginated)&#34;&#34;&#34;
+        result = self._get(path=f&#34;instances/{instance_id}/incomingLinks&#34;, params={ 
+            &#34;stage&#34;: stage,
+            &#34;property&#34;: property_name,
+            &#34;type&#34;: target_type,
+            &#34;from&#34;: pagination.start,
+            &#34;size&#34;: pagination.size,
+            &#34;returnTotalResults&#34;: pagination.return_total_results
+        })
+        return ResultPage[Instance](response=result, constructor=Instance)
+
+    def get_release_status(self, instance_id: UUID, release_tree_scope: ReleaseTreeScope) -&gt; Result[ReleaseStatus]:
+        &#34;&#34;&#34;Get the release status for an instance&#34;&#34;&#34;
+        result = self._get(path=f&#34;instances/{instance_id}/release/status&#34;, params={ 
+            &#34;releaseTreeScope&#34;: release_tree_scope
+        })
+        return Result[ReleaseStatus](response=result, constructor=ReleaseStatus)
+
+    def get_release_status_by_ids(self, payload: dict, release_tree_scope: ReleaseTreeScope) -&gt; ResultsById[ReleaseStatus]:
+        &#34;&#34;&#34;Get the release status for multiple instances&#34;&#34;&#34;
+        result = self._post(path=&#34;instancesByIds/release/status&#34;, payload=payload, params={ 
+            &#34;releaseTreeScope&#34;: release_tree_scope
+        })
+        return ResultsById[ReleaseStatus](response=result, constructor=ReleaseStatus)
+
+    def get_scope(self, instance_id: UUID, apply_restrictions: bool = False, return_permissions: bool = False, stage: Stage = Stage.RELEASED) -&gt; Result[Scope]:
+        &#34;&#34;&#34;Get the scope for the instance by its KG-internal ID&#34;&#34;&#34;
+        result = self._get(path=f&#34;instances/{instance_id}/scope&#34;, params={ 
+            &#34;stage&#34;: stage,
+            &#34;returnPermissions&#34;: return_permissions,
+            &#34;applyRestrictions&#34;: apply_restrictions
+        })
+        return Result[Scope](response=result, constructor=Scope)
+
+    def invite_user_for(self, instance_id: UUID, user_id: UUID) -&gt; Optional[Error]:
+        &#34;&#34;&#34;Create or update an invitation for the given user to review the given instance&#34;&#34;&#34;
+        result = self._put(path=f&#34;instances/{instance_id}/invitedUsers/{user_id}&#34;, payload=None, params={})
+        return translate_error(result)
+
+    def list(self, target_type: str, filter_property: Optional[str] = None, filter_value: Optional[str] = None, search_by_label: Optional[str] = None, space: Optional[str] = None, stage: Stage = Stage.RELEASED, response_configuration: ResponseConfiguration = ResponseConfiguration(), pagination: Pagination = Pagination()) -&gt; ResultPage[Instance]:
+        &#34;&#34;&#34;Returns a list of instances according to their types&#34;&#34;&#34;
+        result = self._get(path=&#34;instances&#34;, params={ 
+            &#34;stage&#34;: stage,
+            &#34;type&#34;: target_type,
+            &#34;space&#34;: space,
+            &#34;searchByLabel&#34;: search_by_label,
+            &#34;filterProperty&#34;: filter_property,
+            &#34;filterValue&#34;: filter_value,
+            &#34;returnPayload&#34;: response_configuration.return_payload,
+            &#34;returnPermissions&#34;: response_configuration.return_permissions,
+            &#34;returnAlternatives&#34;: response_configuration.return_alternatives,
+            &#34;returnEmbedded&#34;: response_configuration.return_embedded,
+            &#34;from&#34;: pagination.start,
+            &#34;size&#34;: pagination.size,
+            &#34;returnTotalResults&#34;: pagination.return_total_results
+        })
+        return ResultPage[Instance](response=result, constructor=Instance)
+
+    def list_invitations(self, instance_id: UUID) -&gt; Result[ListOfReducedUserInformation]:
+        &#34;&#34;&#34;List invitations for review for the given instance&#34;&#34;&#34;
+        result = self._get(path=f&#34;instances/{instance_id}/invitedUsers&#34;, params={})
+        return Result[ListOfReducedUserInformation](response=result, constructor=ListOfReducedUserInformation)
+
+    def move(self, instance_id: UUID, space: str, extended_response_configuration: ExtendedResponseConfiguration = ExtendedResponseConfiguration()) -&gt; Result[Instance]:
+        &#34;&#34;&#34;Move an instance to another space&#34;&#34;&#34;
+        result = self._put(path=f&#34;instances/{instance_id}/spaces/{space}&#34;, payload=None, params={ 
+            &#34;returnIncomingLinks&#34;: extended_response_configuration.return_incoming_links,
+            &#34;incomingLinksPageSize&#34;: extended_response_configuration.incoming_links_page_size,
+            &#34;returnPayload&#34;: extended_response_configuration.return_payload,
+            &#34;returnPermissions&#34;: extended_response_configuration.return_permissions,
+            &#34;returnAlternatives&#34;: extended_response_configuration.return_alternatives,
+            &#34;returnEmbedded&#34;: extended_response_configuration.return_embedded
+        })
+        return Result[Instance](response=result, constructor=Instance)
+
+    def release(self, instance_id: UUID, revision: Optional[str] = None) -&gt; Optional[Error]:
+        &#34;&#34;&#34;Release or re-release an instance&#34;&#34;&#34;
+        result = self._put(path=f&#34;instances/{instance_id}/release&#34;, payload=None, params={ 
+            &#34;revision&#34;: revision
+        })
+        return translate_error(result)
+
+    def revoke_user_invitation(self, instance_id: UUID, user_id: UUID) -&gt; Optional[Error]:
+        &#34;&#34;&#34;Revoke an invitation for the given user to review the given instance&#34;&#34;&#34;
+        result = self._delete(path=f&#34;instances/{instance_id}/invitedUsers/{user_id}&#34;, params={})
+        return translate_error(result)
+
+    def unrelease(self, instance_id: UUID) -&gt; Optional[Error]:
+        &#34;&#34;&#34;Unrelease an instance&#34;&#34;&#34;
+        result = self._delete(path=f&#34;instances/{instance_id}/release&#34;, params={})
+        return translate_error(result)
+
+
+class Jsonld(RequestsWithTokenHandler):
+    def __init__(self, config: KGConfig):
+        super(Jsonld, self).__init__(config)
+
+    def normalize_payload(self, payload: dict) -&gt; Optional[Error]:
+        &#34;&#34;&#34;Normalizes the passed payload according to the EBRAINS KG conventions&#34;&#34;&#34;
+        result = self._post(path=&#34;jsonld/normalizedPayload&#34;, payload=payload, params={})
+        return translate_error(result)
+
+
+class Queries(RequestsWithTokenHandler):
+    def __init__(self, config: KGConfig):
+        super(Queries, self).__init__(config)
+
+    def execute_query_by_id(self, query_id: UUID, all_request_params: Dict[str, Any] = {}, instance_id: Optional[UUID] = None, restrict_to_spaces: Optional[List[str]] = None, stage: Stage = Stage.RELEASED, pagination: Pagination = Pagination()) -&gt; ResultPage[JsonLdDocument]:
+        &#34;&#34;&#34;Execute a stored query to receive the instances&#34;&#34;&#34;
+        result = self._get(path=f&#34;queries/{query_id}/instances&#34;, params={ 
+            &#34;from&#34;: pagination.start,
+            &#34;size&#34;: pagination.size,
+            &#34;returnTotalResults&#34;: pagination.return_total_results,
+            &#34;stage&#34;: stage,
+            &#34;instanceId&#34;: instance_id,
+            &#34;restrictToSpaces&#34;: restrict_to_spaces,
+            &#34;allRequestParams&#34;: all_request_params
+        })
+        return ResultPage[JsonLdDocument](response=result, constructor=JsonLdDocument)
+
+    def get_query_specification(self, query_id: UUID) -&gt; Result[Instance]:
+        &#34;&#34;&#34;Get the query specification with the given query id in a specific space&#34;&#34;&#34;
+        result = self._get(path=f&#34;queries/{query_id}&#34;, params={})
+        return Result[Instance](response=result, constructor=Instance)
+
+    def list_per_root_type(self, search: Optional[str] = None, target_type: Optional[str] = None, pagination: Pagination = Pagination()) -&gt; ResultPage[Instance]:
+        &#34;&#34;&#34;List the queries and filter them by root type and/or text in the label, name or description&#34;&#34;&#34;
+        result = self._get(path=&#34;queries&#34;, params={ 
+            &#34;from&#34;: pagination.start,
+            &#34;size&#34;: pagination.size,
+            &#34;returnTotalResults&#34;: pagination.return_total_results,
+            &#34;type&#34;: target_type,
+            &#34;search&#34;: search
+        })
+        return ResultPage[Instance](response=result, constructor=Instance)
+
+    def remove_query(self, query_id: UUID) -&gt; Optional[Error]:
+        &#34;&#34;&#34;Remove a query specification&#34;&#34;&#34;
+        result = self._delete(path=f&#34;queries/{query_id}&#34;, params={})
+        return translate_error(result)
+
+    def save_query(self, payload: dict, query_id: UUID, space: Optional[str] = None) -&gt; Result[Instance]:
+        &#34;&#34;&#34;Create or save a query specification&#34;&#34;&#34;
+        result = self._put(path=f&#34;queries/{query_id}&#34;, payload=payload, params={ 
+            &#34;space&#34;: space
+        })
+        return Result[Instance](response=result, constructor=Instance)
+
+    def test_query(self, payload: dict, all_request_params: Dict[str, Any] = {}, instance_id: Optional[UUID] = None, restrict_to_spaces: Optional[List[str]] = None, stage: Stage = Stage.RELEASED, pagination: Pagination = Pagination()) -&gt; ResultPage[JsonLdDocument]:
+        &#34;&#34;&#34;Execute the query in the payload in test mode (e.g. for execution before saving with the KG QueryBuilder)&#34;&#34;&#34;
+        result = self._post(path=&#34;queries&#34;, payload=payload, params={ 
+            &#34;from&#34;: pagination.start,
+            &#34;size&#34;: pagination.size,
+            &#34;returnTotalResults&#34;: pagination.return_total_results,
+            &#34;stage&#34;: stage,
+            &#34;instanceId&#34;: instance_id,
+            &#34;restrictToSpaces&#34;: restrict_to_spaces,
+            &#34;allRequestParams&#34;: all_request_params
+        })
+        return ResultPage[JsonLdDocument](response=result, constructor=JsonLdDocument)
+
+
+class Spaces(RequestsWithTokenHandler):
+    def __init__(self, config: KGConfig):
+        super(Spaces, self).__init__(config)
+
+    def get(self, space: str, permissions: bool = False) -&gt; Result[SpaceInformation]:
+        result = self._get(path=f&#34;spaces/{space}&#34;, params={ 
+            &#34;permissions&#34;: permissions
+        })
+        return Result[SpaceInformation](response=result, constructor=SpaceInformation)
+
+    def list(self, permissions: bool = False, pagination: Pagination = Pagination()) -&gt; ResultPage[SpaceInformation]:
+        result = self._get(path=&#34;spaces&#34;, params={ 
+            &#34;from&#34;: pagination.start,
+            &#34;size&#34;: pagination.size,
+            &#34;returnTotalResults&#34;: pagination.return_total_results,
+            &#34;permissions&#34;: permissions
+        })
+        return ResultPage[SpaceInformation](response=result, constructor=SpaceInformation)
+
+
+class Types(RequestsWithTokenHandler):
+    def __init__(self, config: KGConfig):
+        super(Types, self).__init__(config)
+
+    def get_by_name(self, payload: dict, space: Optional[str] = None, stage: Stage = Stage.RELEASED, with_incoming_links: bool = False, with_properties: bool = False) -&gt; ResultsById[TypeInformation]:
+        &#34;&#34;&#34;Returns the types according to the list of names - either with property information or without&#34;&#34;&#34;
+        result = self._post(path=&#34;typesByName&#34;, payload=payload, params={ 
+            &#34;stage&#34;: stage,
+            &#34;withProperties&#34;: with_properties,
+            &#34;withIncomingLinks&#34;: with_incoming_links,
+            &#34;space&#34;: space
+        })
+        return ResultsById[TypeInformation](response=result, constructor=TypeInformation)
+
+    def list(self, space: Optional[str] = None, stage: Stage = Stage.RELEASED, with_incoming_links: bool = False, with_properties: bool = False, pagination: Pagination = Pagination()) -&gt; ResultPage[TypeInformation]:
+        &#34;&#34;&#34;Returns the types available - either with property information or without&#34;&#34;&#34;
+        result = self._get(path=&#34;types&#34;, params={ 
+            &#34;stage&#34;: stage,
+            &#34;space&#34;: space,
+            &#34;withProperties&#34;: with_properties,
+            &#34;withIncomingLinks&#34;: with_incoming_links,
+            &#34;from&#34;: pagination.start,
+            &#34;size&#34;: pagination.size,
+            &#34;returnTotalResults&#34;: pagination.return_total_results
+        })
+        return ResultPage[TypeInformation](response=result, constructor=TypeInformation)
+
+
+class Users(RequestsWithTokenHandler):
+    def __init__(self, config: KGConfig):
+        super(Users, self).__init__(config)
+
+    def accept_terms_of_use(self, version: str) -&gt; Optional[Error]:
+        &#34;&#34;&#34;Accept the terms of use in the given version&#34;&#34;&#34;
+        result = self._post(path=f&#34;users/termsOfUse/{version}/accept&#34;, payload=None, params={})
+        return translate_error(result)
+
+    def get_open_id_config_url(self) -&gt; Result[JsonLdDocument]:
+        &#34;&#34;&#34;Get the endpoint of the openid configuration&#34;&#34;&#34;
+        result = self._get(path=&#34;users/authorization/config&#34;, params={})
+        return Result[JsonLdDocument](response=result, constructor=JsonLdDocument)
+
+    def get_terms_of_use(self) -&gt; Optional[TermsOfUse]:
+        &#34;&#34;&#34;Get the current terms of use&#34;&#34;&#34;
+        result = self._get(path=&#34;users/termsOfUse&#34;, params={})
+        return None if not result.content else TermsOfUse(**result.content)
+
+    def my_info(self) -&gt; Result[User]:
+        &#34;&#34;&#34;Retrieve user information from the passed token (including detailed information such as e-mail address)&#34;&#34;&#34;
+        result = self._get(path=&#34;users/me&#34;, params={})
+        return Result[User](response=result, constructor=User)
+
+
+class ClientBuilder(object):
+
+    def __init__(self, host_name: str, enable_profiling: bool):
+        self._host_name = host_name
+        self._token_handler: Optional[TokenHandler] = None
+        self._client_token_handler: Optional[TokenHandler] = None
+        self._enable_profiling = enable_profiling
+
+    def _resolve_token_handler(self) -&gt; TokenHandler:
+        if not self._token_handler:
+            self.with_device_flow()  # We fall back to device flow if there is no explicitly stated token handler and no environment variables are specified
+            return self._token_handler
+        else:
+            return self._token_handler
+
+    def _resolve_client_token_handler(self) -&gt; Optional[TokenHandler]:
+        if not self._client_token_handler:
+            if &#34;KG_CLIENT_ID&#34; in os.environ and &#34;KG_CLIENT_SECRET&#34; in os.environ:
+                return ClientCredentials(os.environ[&#34;KG_CLIENT_ID&#34;], os.environ[&#34;KG_CLIENT_SECRET&#34;])
+            elif &#34;KG_CLIENT_TOKEN&#34; in os.environ:
+                return SimpleToken(os.environ[&#34;KG_CLIENT_TOKEN&#34;])
+            else:
+                return None
+        else:
+            return self._client_token_handler
+
+    def with_device_flow(self, client_id: str = &#34;kg-core-python&#34;, open_id_configuration_url: Optional[str] = None) -&gt; ClientBuilder:
+        if not open_id_configuration_url:
+            auth_endpoint = requests.get(f&#34;{_calculate_base_url(self._host_name)}users/authorization/config&#34;).json()
+            if auth_endpoint and &#34;data&#34; in auth_endpoint and auth_endpoint[&#34;data&#34;] and &#34;endpoint&#34; in auth_endpoint[&#34;data&#34;]:
+                config = auth_endpoint[&#34;data&#34;][&#34;endpoint&#34;]
+            else:
+                raise ValueError(&#34;Was not able to determine the authentication endpoint. This could be caused by a temporary downtime or a misconfiguration of the host name&#34;)
+        else:
+            config = open_id_configuration_url
+        self._token_handler = DeviceAuthenticationFlow(config, client_id)
+        return self
+
+    def with_token(self, token: Optional[str] = None) -&gt; ClientBuilder:
+        self._token_handler = SimpleToken(token if token else os.environ[&#34;KG_TOKEN&#34;])
+        return self
+
+    def with_credentials(self, client_id: Optional[str] = None, client_secret: Optional[str] = None) -&gt; ClientBuilder:
+        self._token_handler = ClientCredentials(client_id if client_id else os.environ[&#34;KG_CLIENT_ID&#34;], client_secret if client_secret else os.environ[&#34;KG_CLIENT_SECRET&#34;])
+        return self
+
+    def add_client_authentication(self, client_id: Optional[str] = None, client_secret: Optional[str] = None) -&gt; ClientBuilder:
+        self._client_token_handler = ClientCredentials(client_id if client_id else os.environ[&#34;KG_CLIENT_ID&#34;], client_secret if client_secret else os.environ[&#34;KG_CLIENT_SECRET&#34;])
+        return self
+
+    def build(self) -&gt; Client:
+        return Client(self._host_name, self._enable_profiling, self._resolve_token_handler(), self._resolve_client_token_handler())
+
+    def build_admin(self) -&gt; Admin:
+        return Admin(_create_kg_config(self._host_name, self._enable_profiling, self._resolve_token_handler(), self._resolve_client_token_handler()))
+
+
+def kg(host: str = &#34;core.kg.ebrains.eu&#34;, enable_profiling: bool = False) -&gt; ClientBuilder:
+    return ClientBuilder(host, enable_profiling)</code></pre>
+</details>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-functions">Functions</h2>
+<dl>
+<dt id="kg_core.kg.kg"><code class="name flex">
+<span>def <span class="ident">kg</span></span>(<span>host: str = 'core.kg.ebrains.eu', enable_profiling: bool = False) ‑> <a title="kg_core.kg.ClientBuilder" href="#kg_core.kg.ClientBuilder">ClientBuilder</a></span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def kg(host: str = &#34;core.kg.ebrains.eu&#34;, enable_profiling: bool = False) -&gt; ClientBuilder:
+    return ClientBuilder(host, enable_profiling)</code></pre>
+</details>
+</dd>
+</dl>
+</section>
+<section>
+<h2 class="section-title" id="header-classes">Classes</h2>
+<dl>
+<dt id="kg_core.kg.Admin"><code class="flex name class">
+<span>class <span class="ident">Admin</span></span>
+<span>(</span><span>config: KGConfig)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Helper class that provides a standard way to create an ABC using
+inheritance.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Admin(RequestsWithTokenHandler):
+    def __init__(self, config: KGConfig):
+        super(Admin, self).__init__(config)
+
+    def assign_type_to_space(self, space: str, target_type: str) -&gt; Optional[Error]:
+        &#34;&#34;&#34;Assign a type to a space&#34;&#34;&#34;
+        result = self._put(path=f&#34;spaces/{space}/types&#34;, payload=None, params={ 
+            &#34;type&#34;: target_type
+        })
+        return translate_error(result)
+
+    def calculate_instance_invitation_scope(self, instance_id: UUID) -&gt; Optional[Error]:
+        &#34;&#34;&#34;Update invitation scope for this instance&#34;&#34;&#34;
+        result = self._put(path=f&#34;instances/{instance_id}/invitationScope&#34;, payload=None, params={})
+        return translate_error(result)
+
+    def create_space_definition(self, space: str, autorelease: bool = False, client_space: bool = False, defer_cache: bool = False) -&gt; Optional[Error]:
+        &#34;&#34;&#34;Explicitly specify a space&#34;&#34;&#34;
+        result = self._put(path=f&#34;spaces/{space}/specification&#34;, payload=None, params={ 
+            &#34;autorelease&#34;: autorelease,
+            &#34;clientSpace&#34;: client_space,
+            &#34;deferCache&#34;: defer_cache
+        })
+        return translate_error(result)
+
+    def create_type_definition(self, payload: dict, target_type: str, is_global: Optional[bool] = None) -&gt; Optional[Error]:
+        &#34;&#34;&#34;Specify a type&#34;&#34;&#34;
+        result = self._put(path=&#34;types/specification&#34;, payload=payload, params={ 
+            &#34;global&#34;: is_global,
+            &#34;type&#34;: target_type
+        })
+        return translate_error(result)
+
+    def define_property(self, payload: dict, property_name: str, is_global: Optional[bool] = None) -&gt; Optional[Error]:
+        &#34;&#34;&#34;Upload a property specification either globally or for the requesting client&#34;&#34;&#34;
+        result = self._put(path=&#34;properties&#34;, payload=payload, params={ 
+            &#34;global&#34;: is_global,
+            &#34;property&#34;: property_name
+        })
+        return translate_error(result)
+
+    def define_property_for_type(self, payload: dict, property_name: str, target_type: str, is_global: Optional[bool] = None) -&gt; Optional[Error]:
+        &#34;&#34;&#34;Define a property specification either globally for the requesting client&#34;&#34;&#34;
+        result = self._put(path=&#34;propertiesForType&#34;, payload=payload, params={ 
+            &#34;global&#34;: is_global,
+            &#34;property&#34;: property_name,
+            &#34;type&#34;: target_type
+        })
+        return translate_error(result)
+
+    def deprecate_property(self, property_name: str, is_global: Optional[bool] = None) -&gt; Optional[Error]:
+        &#34;&#34;&#34;Upload a property specification either globally or for the requesting client&#34;&#34;&#34;
+        result = self._delete(path=&#34;properties&#34;, params={ 
+            &#34;global&#34;: is_global,
+            &#34;property&#34;: property_name
+        })
+        return translate_error(result)
+
+    def deprecate_property_for_type(self, property_name: str, target_type: str, is_global: Optional[bool] = None) -&gt; Optional[Error]:
+        &#34;&#34;&#34;Deprecate a property specification for a specific type either globally or for the requesting client&#34;&#34;&#34;
+        result = self._delete(path=&#34;propertiesForType&#34;, params={ 
+            &#34;global&#34;: is_global,
+            &#34;property&#34;: property_name,
+            &#34;type&#34;: target_type
+        })
+        return translate_error(result)
+
+    def get_all_role_definitions(self) -&gt; Optional[Error]:
+        result = self._get(path=&#34;setup/permissions&#34;, params={})
+        return translate_error(result)
+
+    def get_claim_for_role(self, role: str, space: Optional[str] = None) -&gt; Optional[Error]:
+        result = self._get(path=f&#34;setup/permissions/{role}&#34;, params={ 
+            &#34;space&#34;: space
+        })
+        return translate_error(result)
+
+    def list_instances_with_invitations(self) -&gt; Result[ListOfUUID]:
+        &#34;&#34;&#34;List instances with invitations&#34;&#34;&#34;
+        result = self._get(path=&#34;instancesWithInvitations&#34;, params={})
+        return Result[ListOfUUID](response=result, constructor=ListOfUUID)
+
+    def register_terms_of_use(self, payload: dict) -&gt; Optional[Error]:
+        result = self._put(path=&#34;setup/termsOfUse&#34;, payload=payload, params={})
+        return translate_error(result)
+
+    def remove_space_definition(self, space: str) -&gt; Optional[Error]:
+        &#34;&#34;&#34;Remove a space definition&#34;&#34;&#34;
+        result = self._delete(path=f&#34;spaces/{space}/specification&#34;, params={})
+        return translate_error(result)
+
+    def remove_type_definition(self, is_global: Optional[bool] = None, target_type: Optional[str] = None) -&gt; Optional[Error]:
+        &#34;&#34;&#34;Remove a type definition&#34;&#34;&#34;
+        result = self._delete(path=&#34;types/specification&#34;, params={ 
+            &#34;type&#34;: target_type,
+            &#34;global&#34;: is_global
+        })
+        return translate_error(result)
+
+    def remove_type_from_space(self, space: str, target_type: str) -&gt; Optional[Error]:
+        &#34;&#34;&#34;Remove a type in space definition&#34;&#34;&#34;
+        result = self._delete(path=f&#34;spaces/{space}/types&#34;, params={ 
+            &#34;type&#34;: target_type
+        })
+        return translate_error(result)
+
+    def rerun_events(self, space: str) -&gt; Optional[Error]:
+        &#34;&#34;&#34;Trigger a rerun of the events of this space&#34;&#34;&#34;
+        result = self._put(path=f&#34;spaces/{space}/eventHistory&#34;, payload=None, params={})
+        return translate_error(result)
+
+    def trigger_inference(self, space: str, identifier: Optional[str] = None, is_async: bool = False) -&gt; Optional[Error]:
+        &#34;&#34;&#34;Triggers the inference of all documents of the given space&#34;&#34;&#34;
+        result = self._post(path=f&#34;spaces/{space}/inference&#34;, payload=None, params={ 
+            &#34;identifier&#34;: identifier,
+            &#34;async&#34;: is_async
+        })
+        return translate_error(result)
+
+    def update_claim_for_role(self, payload: dict, remove: bool, role: str, space: Optional[str] = None) -&gt; Optional[Error]:
+        result = self._patch(path=f&#34;setup/permissions/{role}&#34;, payload=payload, params={ 
+            &#34;space&#34;: space,
+            &#34;remove&#34;: remove
+        })
+        return translate_error(result)</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>kg_core.__communication.RequestsWithTokenHandler</li>
+<li>abc.ABC</li>
+</ul>
+<h3>Methods</h3>
+<dl>
+<dt id="kg_core.kg.Admin.assign_type_to_space"><code class="name flex">
+<span>def <span class="ident">assign_type_to_space</span></span>(<span>self, space: str, target_type: str) ‑> Optional[<a title="kg_core.response.Error" href="response.html#kg_core.response.Error">Error</a>]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Assign a type to a space</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def assign_type_to_space(self, space: str, target_type: str) -&gt; Optional[Error]:
+    &#34;&#34;&#34;Assign a type to a space&#34;&#34;&#34;
+    result = self._put(path=f&#34;spaces/{space}/types&#34;, payload=None, params={ 
+        &#34;type&#34;: target_type
+    })
+    return translate_error(result)</code></pre>
+</details>
+</dd>
+<dt id="kg_core.kg.Admin.calculate_instance_invitation_scope"><code class="name flex">
+<span>def <span class="ident">calculate_instance_invitation_scope</span></span>(<span>self, instance_id: UUID) ‑> Optional[<a title="kg_core.response.Error" href="response.html#kg_core.response.Error">Error</a>]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Update invitation scope for this instance</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def calculate_instance_invitation_scope(self, instance_id: UUID) -&gt; Optional[Error]:
+    &#34;&#34;&#34;Update invitation scope for this instance&#34;&#34;&#34;
+    result = self._put(path=f&#34;instances/{instance_id}/invitationScope&#34;, payload=None, params={})
+    return translate_error(result)</code></pre>
+</details>
+</dd>
+<dt id="kg_core.kg.Admin.create_space_definition"><code class="name flex">
+<span>def <span class="ident">create_space_definition</span></span>(<span>self, space: str, autorelease: bool = False, client_space: bool = False, defer_cache: bool = False) ‑> Optional[<a title="kg_core.response.Error" href="response.html#kg_core.response.Error">Error</a>]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Explicitly specify a space</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def create_space_definition(self, space: str, autorelease: bool = False, client_space: bool = False, defer_cache: bool = False) -&gt; Optional[Error]:
+    &#34;&#34;&#34;Explicitly specify a space&#34;&#34;&#34;
+    result = self._put(path=f&#34;spaces/{space}/specification&#34;, payload=None, params={ 
+        &#34;autorelease&#34;: autorelease,
+        &#34;clientSpace&#34;: client_space,
+        &#34;deferCache&#34;: defer_cache
+    })
+    return translate_error(result)</code></pre>
+</details>
+</dd>
+<dt id="kg_core.kg.Admin.create_type_definition"><code class="name flex">
+<span>def <span class="ident">create_type_definition</span></span>(<span>self, payload: dict, target_type: str, is_global: Optional[bool] = None) ‑> Optional[<a title="kg_core.response.Error" href="response.html#kg_core.response.Error">Error</a>]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Specify a type</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def create_type_definition(self, payload: dict, target_type: str, is_global: Optional[bool] = None) -&gt; Optional[Error]:
+    &#34;&#34;&#34;Specify a type&#34;&#34;&#34;
+    result = self._put(path=&#34;types/specification&#34;, payload=payload, params={ 
+        &#34;global&#34;: is_global,
+        &#34;type&#34;: target_type
+    })
+    return translate_error(result)</code></pre>
+</details>
+</dd>
+<dt id="kg_core.kg.Admin.define_property"><code class="name flex">
+<span>def <span class="ident">define_property</span></span>(<span>self, payload: dict, property_name: str, is_global: Optional[bool] = None) ‑> Optional[<a title="kg_core.response.Error" href="response.html#kg_core.response.Error">Error</a>]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Upload a property specification either globally or for the requesting client</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def define_property(self, payload: dict, property_name: str, is_global: Optional[bool] = None) -&gt; Optional[Error]:
+    &#34;&#34;&#34;Upload a property specification either globally or for the requesting client&#34;&#34;&#34;
+    result = self._put(path=&#34;properties&#34;, payload=payload, params={ 
+        &#34;global&#34;: is_global,
+        &#34;property&#34;: property_name
+    })
+    return translate_error(result)</code></pre>
+</details>
+</dd>
+<dt id="kg_core.kg.Admin.define_property_for_type"><code class="name flex">
+<span>def <span class="ident">define_property_for_type</span></span>(<span>self, payload: dict, property_name: str, target_type: str, is_global: Optional[bool] = None) ‑> Optional[<a title="kg_core.response.Error" href="response.html#kg_core.response.Error">Error</a>]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Define a property specification either globally for the requesting client</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def define_property_for_type(self, payload: dict, property_name: str, target_type: str, is_global: Optional[bool] = None) -&gt; Optional[Error]:
+    &#34;&#34;&#34;Define a property specification either globally for the requesting client&#34;&#34;&#34;
+    result = self._put(path=&#34;propertiesForType&#34;, payload=payload, params={ 
+        &#34;global&#34;: is_global,
+        &#34;property&#34;: property_name,
+        &#34;type&#34;: target_type
+    })
+    return translate_error(result)</code></pre>
+</details>
+</dd>
+<dt id="kg_core.kg.Admin.deprecate_property"><code class="name flex">
+<span>def <span class="ident">deprecate_property</span></span>(<span>self, property_name: str, is_global: Optional[bool] = None) ‑> Optional[<a title="kg_core.response.Error" href="response.html#kg_core.response.Error">Error</a>]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Upload a property specification either globally or for the requesting client</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def deprecate_property(self, property_name: str, is_global: Optional[bool] = None) -&gt; Optional[Error]:
+    &#34;&#34;&#34;Upload a property specification either globally or for the requesting client&#34;&#34;&#34;
+    result = self._delete(path=&#34;properties&#34;, params={ 
+        &#34;global&#34;: is_global,
+        &#34;property&#34;: property_name
+    })
+    return translate_error(result)</code></pre>
+</details>
+</dd>
+<dt id="kg_core.kg.Admin.deprecate_property_for_type"><code class="name flex">
+<span>def <span class="ident">deprecate_property_for_type</span></span>(<span>self, property_name: str, target_type: str, is_global: Optional[bool] = None) ‑> Optional[<a title="kg_core.response.Error" href="response.html#kg_core.response.Error">Error</a>]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Deprecate a property specification for a specific type either globally or for the requesting client</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def deprecate_property_for_type(self, property_name: str, target_type: str, is_global: Optional[bool] = None) -&gt; Optional[Error]:
+    &#34;&#34;&#34;Deprecate a property specification for a specific type either globally or for the requesting client&#34;&#34;&#34;
+    result = self._delete(path=&#34;propertiesForType&#34;, params={ 
+        &#34;global&#34;: is_global,
+        &#34;property&#34;: property_name,
+        &#34;type&#34;: target_type
+    })
+    return translate_error(result)</code></pre>
+</details>
+</dd>
+<dt id="kg_core.kg.Admin.get_all_role_definitions"><code class="name flex">
+<span>def <span class="ident">get_all_role_definitions</span></span>(<span>self) ‑> Optional[<a title="kg_core.response.Error" href="response.html#kg_core.response.Error">Error</a>]</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_all_role_definitions(self) -&gt; Optional[Error]:
+    result = self._get(path=&#34;setup/permissions&#34;, params={})
+    return translate_error(result)</code></pre>
+</details>
+</dd>
+<dt id="kg_core.kg.Admin.get_claim_for_role"><code class="name flex">
+<span>def <span class="ident">get_claim_for_role</span></span>(<span>self, role: str, space: Optional[str] = None) ‑> Optional[<a title="kg_core.response.Error" href="response.html#kg_core.response.Error">Error</a>]</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_claim_for_role(self, role: str, space: Optional[str] = None) -&gt; Optional[Error]:
+    result = self._get(path=f&#34;setup/permissions/{role}&#34;, params={ 
+        &#34;space&#34;: space
+    })
+    return translate_error(result)</code></pre>
+</details>
+</dd>
+<dt id="kg_core.kg.Admin.list_instances_with_invitations"><code class="name flex">
+<span>def <span class="ident">list_instances_with_invitations</span></span>(<span>self) ‑> <a title="kg_core.response.Result" href="response.html#kg_core.response.Result">Result</a>[<a title="kg_core.response.ListOfUUID" href="response.html#kg_core.response.ListOfUUID">ListOfUUID</a>]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>List instances with invitations</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def list_instances_with_invitations(self) -&gt; Result[ListOfUUID]:
+    &#34;&#34;&#34;List instances with invitations&#34;&#34;&#34;
+    result = self._get(path=&#34;instancesWithInvitations&#34;, params={})
+    return Result[ListOfUUID](response=result, constructor=ListOfUUID)</code></pre>
+</details>
+</dd>
+<dt id="kg_core.kg.Admin.register_terms_of_use"><code class="name flex">
+<span>def <span class="ident">register_terms_of_use</span></span>(<span>self, payload: dict) ‑> Optional[<a title="kg_core.response.Error" href="response.html#kg_core.response.Error">Error</a>]</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def register_terms_of_use(self, payload: dict) -&gt; Optional[Error]:
+    result = self._put(path=&#34;setup/termsOfUse&#34;, payload=payload, params={})
+    return translate_error(result)</code></pre>
+</details>
+</dd>
+<dt id="kg_core.kg.Admin.remove_space_definition"><code class="name flex">
+<span>def <span class="ident">remove_space_definition</span></span>(<span>self, space: str) ‑> Optional[<a title="kg_core.response.Error" href="response.html#kg_core.response.Error">Error</a>]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Remove a space definition</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def remove_space_definition(self, space: str) -&gt; Optional[Error]:
+    &#34;&#34;&#34;Remove a space definition&#34;&#34;&#34;
+    result = self._delete(path=f&#34;spaces/{space}/specification&#34;, params={})
+    return translate_error(result)</code></pre>
+</details>
+</dd>
+<dt id="kg_core.kg.Admin.remove_type_definition"><code class="name flex">
+<span>def <span class="ident">remove_type_definition</span></span>(<span>self, is_global: Optional[bool] = None, target_type: Optional[str] = None) ‑> Optional[<a title="kg_core.response.Error" href="response.html#kg_core.response.Error">Error</a>]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Remove a type definition</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def remove_type_definition(self, is_global: Optional[bool] = None, target_type: Optional[str] = None) -&gt; Optional[Error]:
+    &#34;&#34;&#34;Remove a type definition&#34;&#34;&#34;
+    result = self._delete(path=&#34;types/specification&#34;, params={ 
+        &#34;type&#34;: target_type,
+        &#34;global&#34;: is_global
+    })
+    return translate_error(result)</code></pre>
+</details>
+</dd>
+<dt id="kg_core.kg.Admin.remove_type_from_space"><code class="name flex">
+<span>def <span class="ident">remove_type_from_space</span></span>(<span>self, space: str, target_type: str) ‑> Optional[<a title="kg_core.response.Error" href="response.html#kg_core.response.Error">Error</a>]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Remove a type in space definition</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def remove_type_from_space(self, space: str, target_type: str) -&gt; Optional[Error]:
+    &#34;&#34;&#34;Remove a type in space definition&#34;&#34;&#34;
+    result = self._delete(path=f&#34;spaces/{space}/types&#34;, params={ 
+        &#34;type&#34;: target_type
+    })
+    return translate_error(result)</code></pre>
+</details>
+</dd>
+<dt id="kg_core.kg.Admin.rerun_events"><code class="name flex">
+<span>def <span class="ident">rerun_events</span></span>(<span>self, space: str) ‑> Optional[<a title="kg_core.response.Error" href="response.html#kg_core.response.Error">Error</a>]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Trigger a rerun of the events of this space</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def rerun_events(self, space: str) -&gt; Optional[Error]:
+    &#34;&#34;&#34;Trigger a rerun of the events of this space&#34;&#34;&#34;
+    result = self._put(path=f&#34;spaces/{space}/eventHistory&#34;, payload=None, params={})
+    return translate_error(result)</code></pre>
+</details>
+</dd>
+<dt id="kg_core.kg.Admin.trigger_inference"><code class="name flex">
+<span>def <span class="ident">trigger_inference</span></span>(<span>self, space: str, identifier: Optional[str] = None, is_async: bool = False) ‑> Optional[<a title="kg_core.response.Error" href="response.html#kg_core.response.Error">Error</a>]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Triggers the inference of all documents of the given space</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def trigger_inference(self, space: str, identifier: Optional[str] = None, is_async: bool = False) -&gt; Optional[Error]:
+    &#34;&#34;&#34;Triggers the inference of all documents of the given space&#34;&#34;&#34;
+    result = self._post(path=f&#34;spaces/{space}/inference&#34;, payload=None, params={ 
+        &#34;identifier&#34;: identifier,
+        &#34;async&#34;: is_async
+    })
+    return translate_error(result)</code></pre>
+</details>
+</dd>
+<dt id="kg_core.kg.Admin.update_claim_for_role"><code class="name flex">
+<span>def <span class="ident">update_claim_for_role</span></span>(<span>self, payload: dict, remove: bool, role: str, space: Optional[str] = None) ‑> Optional[<a title="kg_core.response.Error" href="response.html#kg_core.response.Error">Error</a>]</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def update_claim_for_role(self, payload: dict, remove: bool, role: str, space: Optional[str] = None) -&gt; Optional[Error]:
+    result = self._patch(path=f&#34;setup/permissions/{role}&#34;, payload=payload, params={ 
+        &#34;space&#34;: space,
+        &#34;remove&#34;: remove
+    })
+    return translate_error(result)</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="kg_core.kg.Client"><code class="flex name class">
+<span>class <span class="ident">Client</span></span>
+<span>(</span><span>host: str, enable_profiling: bool, token_handler: TokenHandler, client_token_handler: Optional[TokenHandler] = None)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Client(object):
+
+    def __init__(self, host: str, enable_profiling: bool, token_handler: TokenHandler, client_token_handler: Optional[TokenHandler] = None):
+        if not host:
+            raise ValueError(&#34;No hostname specified&#34;)
+        elif not token_handler:
+            raise ValueError(&#34;No token provided&#34;)
+        kg_config = _create_kg_config(host, enable_profiling, token_handler, client_token_handler)
+        self.instances = Instances(kg_config)
+        self.jsonld = Jsonld(kg_config)
+        self.queries = Queries(kg_config)
+        self.spaces = Spaces(kg_config)
+        self.types = Types(kg_config)
+        self.users = Users(kg_config)</code></pre>
+</details>
+</dd>
+<dt id="kg_core.kg.ClientBuilder"><code class="flex name class">
+<span>class <span class="ident">ClientBuilder</span></span>
+<span>(</span><span>host_name: str, enable_profiling: bool)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class ClientBuilder(object):
+
+    def __init__(self, host_name: str, enable_profiling: bool):
+        self._host_name = host_name
+        self._token_handler: Optional[TokenHandler] = None
+        self._client_token_handler: Optional[TokenHandler] = None
+        self._enable_profiling = enable_profiling
+
+    def _resolve_token_handler(self) -&gt; TokenHandler:
+        if not self._token_handler:
+            self.with_device_flow()  # We fall back to device flow if there is no explicitly stated token handler and no environment variables are specified
+            return self._token_handler
+        else:
+            return self._token_handler
+
+    def _resolve_client_token_handler(self) -&gt; Optional[TokenHandler]:
+        if not self._client_token_handler:
+            if &#34;KG_CLIENT_ID&#34; in os.environ and &#34;KG_CLIENT_SECRET&#34; in os.environ:
+                return ClientCredentials(os.environ[&#34;KG_CLIENT_ID&#34;], os.environ[&#34;KG_CLIENT_SECRET&#34;])
+            elif &#34;KG_CLIENT_TOKEN&#34; in os.environ:
+                return SimpleToken(os.environ[&#34;KG_CLIENT_TOKEN&#34;])
+            else:
+                return None
+        else:
+            return self._client_token_handler
+
+    def with_device_flow(self, client_id: str = &#34;kg-core-python&#34;, open_id_configuration_url: Optional[str] = None) -&gt; ClientBuilder:
+        if not open_id_configuration_url:
+            auth_endpoint = requests.get(f&#34;{_calculate_base_url(self._host_name)}users/authorization/config&#34;).json()
+            if auth_endpoint and &#34;data&#34; in auth_endpoint and auth_endpoint[&#34;data&#34;] and &#34;endpoint&#34; in auth_endpoint[&#34;data&#34;]:
+                config = auth_endpoint[&#34;data&#34;][&#34;endpoint&#34;]
+            else:
+                raise ValueError(&#34;Was not able to determine the authentication endpoint. This could be caused by a temporary downtime or a misconfiguration of the host name&#34;)
+        else:
+            config = open_id_configuration_url
+        self._token_handler = DeviceAuthenticationFlow(config, client_id)
+        return self
+
+    def with_token(self, token: Optional[str] = None) -&gt; ClientBuilder:
+        self._token_handler = SimpleToken(token if token else os.environ[&#34;KG_TOKEN&#34;])
+        return self
+
+    def with_credentials(self, client_id: Optional[str] = None, client_secret: Optional[str] = None) -&gt; ClientBuilder:
+        self._token_handler = ClientCredentials(client_id if client_id else os.environ[&#34;KG_CLIENT_ID&#34;], client_secret if client_secret else os.environ[&#34;KG_CLIENT_SECRET&#34;])
+        return self
+
+    def add_client_authentication(self, client_id: Optional[str] = None, client_secret: Optional[str] = None) -&gt; ClientBuilder:
+        self._client_token_handler = ClientCredentials(client_id if client_id else os.environ[&#34;KG_CLIENT_ID&#34;], client_secret if client_secret else os.environ[&#34;KG_CLIENT_SECRET&#34;])
+        return self
+
+    def build(self) -&gt; Client:
+        return Client(self._host_name, self._enable_profiling, self._resolve_token_handler(), self._resolve_client_token_handler())
+
+    def build_admin(self) -&gt; Admin:
+        return Admin(_create_kg_config(self._host_name, self._enable_profiling, self._resolve_token_handler(), self._resolve_client_token_handler()))</code></pre>
+</details>
+<h3>Methods</h3>
+<dl>
+<dt id="kg_core.kg.ClientBuilder.add_client_authentication"><code class="name flex">
+<span>def <span class="ident">add_client_authentication</span></span>(<span>self, client_id: Optional[str] = None, client_secret: Optional[str] = None) ‑> <a title="kg_core.kg.ClientBuilder" href="#kg_core.kg.ClientBuilder">ClientBuilder</a></span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def add_client_authentication(self, client_id: Optional[str] = None, client_secret: Optional[str] = None) -&gt; ClientBuilder:
+    self._client_token_handler = ClientCredentials(client_id if client_id else os.environ[&#34;KG_CLIENT_ID&#34;], client_secret if client_secret else os.environ[&#34;KG_CLIENT_SECRET&#34;])
+    return self</code></pre>
+</details>
+</dd>
+<dt id="kg_core.kg.ClientBuilder.build"><code class="name flex">
+<span>def <span class="ident">build</span></span>(<span>self) ‑> <a title="kg_core.kg.Client" href="#kg_core.kg.Client">Client</a></span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def build(self) -&gt; Client:
+    return Client(self._host_name, self._enable_profiling, self._resolve_token_handler(), self._resolve_client_token_handler())</code></pre>
+</details>
+</dd>
+<dt id="kg_core.kg.ClientBuilder.build_admin"><code class="name flex">
+<span>def <span class="ident">build_admin</span></span>(<span>self) ‑> <a title="kg_core.kg.Admin" href="#kg_core.kg.Admin">Admin</a></span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def build_admin(self) -&gt; Admin:
+    return Admin(_create_kg_config(self._host_name, self._enable_profiling, self._resolve_token_handler(), self._resolve_client_token_handler()))</code></pre>
+</details>
+</dd>
+<dt id="kg_core.kg.ClientBuilder.with_credentials"><code class="name flex">
+<span>def <span class="ident">with_credentials</span></span>(<span>self, client_id: Optional[str] = None, client_secret: Optional[str] = None) ‑> <a title="kg_core.kg.ClientBuilder" href="#kg_core.kg.ClientBuilder">ClientBuilder</a></span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def with_credentials(self, client_id: Optional[str] = None, client_secret: Optional[str] = None) -&gt; ClientBuilder:
+    self._token_handler = ClientCredentials(client_id if client_id else os.environ[&#34;KG_CLIENT_ID&#34;], client_secret if client_secret else os.environ[&#34;KG_CLIENT_SECRET&#34;])
+    return self</code></pre>
+</details>
+</dd>
+<dt id="kg_core.kg.ClientBuilder.with_device_flow"><code class="name flex">
+<span>def <span class="ident">with_device_flow</span></span>(<span>self, client_id: str = 'kg-core-python', open_id_configuration_url: Optional[str] = None) ‑> <a title="kg_core.kg.ClientBuilder" href="#kg_core.kg.ClientBuilder">ClientBuilder</a></span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def with_device_flow(self, client_id: str = &#34;kg-core-python&#34;, open_id_configuration_url: Optional[str] = None) -&gt; ClientBuilder:
+    if not open_id_configuration_url:
+        auth_endpoint = requests.get(f&#34;{_calculate_base_url(self._host_name)}users/authorization/config&#34;).json()
+        if auth_endpoint and &#34;data&#34; in auth_endpoint and auth_endpoint[&#34;data&#34;] and &#34;endpoint&#34; in auth_endpoint[&#34;data&#34;]:
+            config = auth_endpoint[&#34;data&#34;][&#34;endpoint&#34;]
+        else:
+            raise ValueError(&#34;Was not able to determine the authentication endpoint. This could be caused by a temporary downtime or a misconfiguration of the host name&#34;)
+    else:
+        config = open_id_configuration_url
+    self._token_handler = DeviceAuthenticationFlow(config, client_id)
+    return self</code></pre>
+</details>
+</dd>
+<dt id="kg_core.kg.ClientBuilder.with_token"><code class="name flex">
+<span>def <span class="ident">with_token</span></span>(<span>self, token: Optional[str] = None) ‑> <a title="kg_core.kg.ClientBuilder" href="#kg_core.kg.ClientBuilder">ClientBuilder</a></span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def with_token(self, token: Optional[str] = None) -&gt; ClientBuilder:
+    self._token_handler = SimpleToken(token if token else os.environ[&#34;KG_TOKEN&#34;])
+    return self</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="kg_core.kg.Instances"><code class="flex name class">
+<span>class <span class="ident">Instances</span></span>
+<span>(</span><span>config: KGConfig)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Helper class that provides a standard way to create an ABC using
+inheritance.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Instances(RequestsWithTokenHandler):
+    def __init__(self, config: KGConfig):
+        super(Instances, self).__init__(config)
+
+    def contribute_to_full_replacement(self, payload: dict, instance_id: UUID, extended_response_configuration: ExtendedResponseConfiguration = ExtendedResponseConfiguration()) -&gt; Result[Instance]:
+        &#34;&#34;&#34;Replace contribution to an existing instance&#34;&#34;&#34;
+        result = self._put(path=f&#34;instances/{instance_id}&#34;, payload=payload, params={ 
+            &#34;returnIncomingLinks&#34;: extended_response_configuration.return_incoming_links,
+            &#34;incomingLinksPageSize&#34;: extended_response_configuration.incoming_links_page_size,
+            &#34;returnPayload&#34;: extended_response_configuration.return_payload,
+            &#34;returnPermissions&#34;: extended_response_configuration.return_permissions,
+            &#34;returnAlternatives&#34;: extended_response_configuration.return_alternatives,
+            &#34;returnEmbedded&#34;: extended_response_configuration.return_embedded
+        })
+        return Result[Instance](response=result, constructor=Instance)
+
+    def contribute_to_partial_replacement(self, payload: dict, instance_id: UUID, extended_response_configuration: ExtendedResponseConfiguration = ExtendedResponseConfiguration()) -&gt; Result[Instance]:
+        &#34;&#34;&#34;Partially update contribution to an existing instance&#34;&#34;&#34;
+        result = self._patch(path=f&#34;instances/{instance_id}&#34;, payload=payload, params={ 
+            &#34;returnIncomingLinks&#34;: extended_response_configuration.return_incoming_links,
+            &#34;incomingLinksPageSize&#34;: extended_response_configuration.incoming_links_page_size,
+            &#34;returnPayload&#34;: extended_response_configuration.return_payload,
+            &#34;returnPermissions&#34;: extended_response_configuration.return_permissions,
+            &#34;returnAlternatives&#34;: extended_response_configuration.return_alternatives,
+            &#34;returnEmbedded&#34;: extended_response_configuration.return_embedded
+        })
+        return Result[Instance](response=result, constructor=Instance)
+
+    def create_new(self, payload: dict, space: str, extended_response_configuration: ExtendedResponseConfiguration = ExtendedResponseConfiguration()) -&gt; Result[Instance]:
+        &#34;&#34;&#34;Create new instance with a system generated id&#34;&#34;&#34;
+        result = self._post(path=&#34;instances&#34;, payload=payload, params={ 
+            &#34;space&#34;: space,
+            &#34;returnIncomingLinks&#34;: extended_response_configuration.return_incoming_links,
+            &#34;incomingLinksPageSize&#34;: extended_response_configuration.incoming_links_page_size,
+            &#34;returnPayload&#34;: extended_response_configuration.return_payload,
+            &#34;returnPermissions&#34;: extended_response_configuration.return_permissions,
+            &#34;returnAlternatives&#34;: extended_response_configuration.return_alternatives,
+            &#34;returnEmbedded&#34;: extended_response_configuration.return_embedded
+        })
+        return Result[Instance](response=result, constructor=Instance)
+
+    def create_new_with_id(self, payload: dict, instance_id: UUID, space: str, extended_response_configuration: ExtendedResponseConfiguration = ExtendedResponseConfiguration()) -&gt; Result[Instance]:
+        &#34;&#34;&#34;Create new instance with a client defined id&#34;&#34;&#34;
+        result = self._post(path=f&#34;instances/{instance_id}&#34;, payload=payload, params={ 
+            &#34;space&#34;: space,
+            &#34;returnIncomingLinks&#34;: extended_response_configuration.return_incoming_links,
+            &#34;incomingLinksPageSize&#34;: extended_response_configuration.incoming_links_page_size,
+            &#34;returnPayload&#34;: extended_response_configuration.return_payload,
+            &#34;returnPermissions&#34;: extended_response_configuration.return_permissions,
+            &#34;returnAlternatives&#34;: extended_response_configuration.return_alternatives,
+            &#34;returnEmbedded&#34;: extended_response_configuration.return_embedded
+        })
+        return Result[Instance](response=result, constructor=Instance)
+
+    def delete(self, instance_id: UUID) -&gt; Optional[Error]:
+        &#34;&#34;&#34;Delete an instance&#34;&#34;&#34;
+        result = self._delete(path=f&#34;instances/{instance_id}&#34;, params={})
+        return translate_error(result)
+
+    def get_by_id(self, instance_id: UUID, stage: Stage = Stage.RELEASED, extended_response_configuration: ExtendedResponseConfiguration = ExtendedResponseConfiguration()) -&gt; Result[Instance]:
+        &#34;&#34;&#34;Get the instance&#34;&#34;&#34;
+        result = self._get(path=f&#34;instances/{instance_id}&#34;, params={ 
+            &#34;stage&#34;: stage,
+            &#34;returnIncomingLinks&#34;: extended_response_configuration.return_incoming_links,
+            &#34;incomingLinksPageSize&#34;: extended_response_configuration.incoming_links_page_size,
+            &#34;returnPayload&#34;: extended_response_configuration.return_payload,
+            &#34;returnPermissions&#34;: extended_response_configuration.return_permissions,
+            &#34;returnAlternatives&#34;: extended_response_configuration.return_alternatives,
+            &#34;returnEmbedded&#34;: extended_response_configuration.return_embedded
+        })
+        return Result[Instance](response=result, constructor=Instance)
+
+    def get_by_identifiers(self, payload: dict, stage: Stage = Stage.RELEASED, extended_response_configuration: ExtendedResponseConfiguration = ExtendedResponseConfiguration()) -&gt; ResultsById[Instance]:
+        &#34;&#34;&#34;Read instances by the given list of (external) identifiers&#34;&#34;&#34;
+        result = self._post(path=&#34;instancesByIdentifiers&#34;, payload=payload, params={ 
+            &#34;stage&#34;: stage,
+            &#34;returnIncomingLinks&#34;: extended_response_configuration.return_incoming_links,
+            &#34;incomingLinksPageSize&#34;: extended_response_configuration.incoming_links_page_size,
+            &#34;returnPayload&#34;: extended_response_configuration.return_payload,
+            &#34;returnPermissions&#34;: extended_response_configuration.return_permissions,
+            &#34;returnAlternatives&#34;: extended_response_configuration.return_alternatives,
+            &#34;returnEmbedded&#34;: extended_response_configuration.return_embedded
+        })
+        return ResultsById[Instance](response=result, constructor=Instance)
+
+    def get_by_ids(self, payload: dict, stage: Stage = Stage.RELEASED, extended_response_configuration: ExtendedResponseConfiguration = ExtendedResponseConfiguration()) -&gt; ResultsById[Instance]:
+        &#34;&#34;&#34;Bulk operation of /instances/{id} to read instances by their UUIDs&#34;&#34;&#34;
+        result = self._post(path=&#34;instancesByIds&#34;, payload=payload, params={ 
+            &#34;stage&#34;: stage,
+            &#34;returnIncomingLinks&#34;: extended_response_configuration.return_incoming_links,
+            &#34;incomingLinksPageSize&#34;: extended_response_configuration.incoming_links_page_size,
+            &#34;returnPayload&#34;: extended_response_configuration.return_payload,
+            &#34;returnPermissions&#34;: extended_response_configuration.return_permissions,
+            &#34;returnAlternatives&#34;: extended_response_configuration.return_alternatives,
+            &#34;returnEmbedded&#34;: extended_response_configuration.return_embedded
+        })
+        return ResultsById[Instance](response=result, constructor=Instance)
+
+    def get_incoming_links(self, instance_id: UUID, property_name: str, target_type: str, stage: Stage = Stage.RELEASED, pagination: Pagination = Pagination()) -&gt; ResultPage[Instance]:
+        &#34;&#34;&#34;Get incoming links for a specific instance (paginated)&#34;&#34;&#34;
+        result = self._get(path=f&#34;instances/{instance_id}/incomingLinks&#34;, params={ 
+            &#34;stage&#34;: stage,
+            &#34;property&#34;: property_name,
+            &#34;type&#34;: target_type,
+            &#34;from&#34;: pagination.start,
+            &#34;size&#34;: pagination.size,
+            &#34;returnTotalResults&#34;: pagination.return_total_results
+        })
+        return ResultPage[Instance](response=result, constructor=Instance)
+
+    def get_release_status(self, instance_id: UUID, release_tree_scope: ReleaseTreeScope) -&gt; Result[ReleaseStatus]:
+        &#34;&#34;&#34;Get the release status for an instance&#34;&#34;&#34;
+        result = self._get(path=f&#34;instances/{instance_id}/release/status&#34;, params={ 
+            &#34;releaseTreeScope&#34;: release_tree_scope
+        })
+        return Result[ReleaseStatus](response=result, constructor=ReleaseStatus)
+
+    def get_release_status_by_ids(self, payload: dict, release_tree_scope: ReleaseTreeScope) -&gt; ResultsById[ReleaseStatus]:
+        &#34;&#34;&#34;Get the release status for multiple instances&#34;&#34;&#34;
+        result = self._post(path=&#34;instancesByIds/release/status&#34;, payload=payload, params={ 
+            &#34;releaseTreeScope&#34;: release_tree_scope
+        })
+        return ResultsById[ReleaseStatus](response=result, constructor=ReleaseStatus)
+
+    def get_scope(self, instance_id: UUID, apply_restrictions: bool = False, return_permissions: bool = False, stage: Stage = Stage.RELEASED) -&gt; Result[Scope]:
+        &#34;&#34;&#34;Get the scope for the instance by its KG-internal ID&#34;&#34;&#34;
+        result = self._get(path=f&#34;instances/{instance_id}/scope&#34;, params={ 
+            &#34;stage&#34;: stage,
+            &#34;returnPermissions&#34;: return_permissions,
+            &#34;applyRestrictions&#34;: apply_restrictions
+        })
+        return Result[Scope](response=result, constructor=Scope)
+
+    def invite_user_for(self, instance_id: UUID, user_id: UUID) -&gt; Optional[Error]:
+        &#34;&#34;&#34;Create or update an invitation for the given user to review the given instance&#34;&#34;&#34;
+        result = self._put(path=f&#34;instances/{instance_id}/invitedUsers/{user_id}&#34;, payload=None, params={})
+        return translate_error(result)
+
+    def list(self, target_type: str, filter_property: Optional[str] = None, filter_value: Optional[str] = None, search_by_label: Optional[str] = None, space: Optional[str] = None, stage: Stage = Stage.RELEASED, response_configuration: ResponseConfiguration = ResponseConfiguration(), pagination: Pagination = Pagination()) -&gt; ResultPage[Instance]:
+        &#34;&#34;&#34;Returns a list of instances according to their types&#34;&#34;&#34;
+        result = self._get(path=&#34;instances&#34;, params={ 
+            &#34;stage&#34;: stage,
+            &#34;type&#34;: target_type,
+            &#34;space&#34;: space,
+            &#34;searchByLabel&#34;: search_by_label,
+            &#34;filterProperty&#34;: filter_property,
+            &#34;filterValue&#34;: filter_value,
+            &#34;returnPayload&#34;: response_configuration.return_payload,
+            &#34;returnPermissions&#34;: response_configuration.return_permissions,
+            &#34;returnAlternatives&#34;: response_configuration.return_alternatives,
+            &#34;returnEmbedded&#34;: response_configuration.return_embedded,
+            &#34;from&#34;: pagination.start,
+            &#34;size&#34;: pagination.size,
+            &#34;returnTotalResults&#34;: pagination.return_total_results
+        })
+        return ResultPage[Instance](response=result, constructor=Instance)
+
+    def list_invitations(self, instance_id: UUID) -&gt; Result[ListOfReducedUserInformation]:
+        &#34;&#34;&#34;List invitations for review for the given instance&#34;&#34;&#34;
+        result = self._get(path=f&#34;instances/{instance_id}/invitedUsers&#34;, params={})
+        return Result[ListOfReducedUserInformation](response=result, constructor=ListOfReducedUserInformation)
+
+    def move(self, instance_id: UUID, space: str, extended_response_configuration: ExtendedResponseConfiguration = ExtendedResponseConfiguration()) -&gt; Result[Instance]:
+        &#34;&#34;&#34;Move an instance to another space&#34;&#34;&#34;
+        result = self._put(path=f&#34;instances/{instance_id}/spaces/{space}&#34;, payload=None, params={ 
+            &#34;returnIncomingLinks&#34;: extended_response_configuration.return_incoming_links,
+            &#34;incomingLinksPageSize&#34;: extended_response_configuration.incoming_links_page_size,
+            &#34;returnPayload&#34;: extended_response_configuration.return_payload,
+            &#34;returnPermissions&#34;: extended_response_configuration.return_permissions,
+            &#34;returnAlternatives&#34;: extended_response_configuration.return_alternatives,
+            &#34;returnEmbedded&#34;: extended_response_configuration.return_embedded
+        })
+        return Result[Instance](response=result, constructor=Instance)
+
+    def release(self, instance_id: UUID, revision: Optional[str] = None) -&gt; Optional[Error]:
+        &#34;&#34;&#34;Release or re-release an instance&#34;&#34;&#34;
+        result = self._put(path=f&#34;instances/{instance_id}/release&#34;, payload=None, params={ 
+            &#34;revision&#34;: revision
+        })
+        return translate_error(result)
+
+    def revoke_user_invitation(self, instance_id: UUID, user_id: UUID) -&gt; Optional[Error]:
+        &#34;&#34;&#34;Revoke an invitation for the given user to review the given instance&#34;&#34;&#34;
+        result = self._delete(path=f&#34;instances/{instance_id}/invitedUsers/{user_id}&#34;, params={})
+        return translate_error(result)
+
+    def unrelease(self, instance_id: UUID) -&gt; Optional[Error]:
+        &#34;&#34;&#34;Unrelease an instance&#34;&#34;&#34;
+        result = self._delete(path=f&#34;instances/{instance_id}/release&#34;, params={})
+        return translate_error(result)</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>kg_core.__communication.RequestsWithTokenHandler</li>
+<li>abc.ABC</li>
+</ul>
+<h3>Methods</h3>
+<dl>
+<dt id="kg_core.kg.Instances.contribute_to_full_replacement"><code class="name flex">
+<span>def <span class="ident">contribute_to_full_replacement</span></span>(<span>self, payload: dict, instance_id: UUID, extended_response_configuration: ExtendedResponseConfiguration = &lt;kg_core.request.ExtendedResponseConfiguration object&gt;) ‑> <a title="kg_core.response.Result" href="response.html#kg_core.response.Result">Result</a>[<a title="kg_core.response.Instance" href="response.html#kg_core.response.Instance">Instance</a>]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Replace contribution to an existing instance</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def contribute_to_full_replacement(self, payload: dict, instance_id: UUID, extended_response_configuration: ExtendedResponseConfiguration = ExtendedResponseConfiguration()) -&gt; Result[Instance]:
+    &#34;&#34;&#34;Replace contribution to an existing instance&#34;&#34;&#34;
+    result = self._put(path=f&#34;instances/{instance_id}&#34;, payload=payload, params={ 
+        &#34;returnIncomingLinks&#34;: extended_response_configuration.return_incoming_links,
+        &#34;incomingLinksPageSize&#34;: extended_response_configuration.incoming_links_page_size,
+        &#34;returnPayload&#34;: extended_response_configuration.return_payload,
+        &#34;returnPermissions&#34;: extended_response_configuration.return_permissions,
+        &#34;returnAlternatives&#34;: extended_response_configuration.return_alternatives,
+        &#34;returnEmbedded&#34;: extended_response_configuration.return_embedded
+    })
+    return Result[Instance](response=result, constructor=Instance)</code></pre>
+</details>
+</dd>
+<dt id="kg_core.kg.Instances.contribute_to_partial_replacement"><code class="name flex">
+<span>def <span class="ident">contribute_to_partial_replacement</span></span>(<span>self, payload: dict, instance_id: UUID, extended_response_configuration: ExtendedResponseConfiguration = &lt;kg_core.request.ExtendedResponseConfiguration object&gt;) ‑> <a title="kg_core.response.Result" href="response.html#kg_core.response.Result">Result</a>[<a title="kg_core.response.Instance" href="response.html#kg_core.response.Instance">Instance</a>]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Partially update contribution to an existing instance</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def contribute_to_partial_replacement(self, payload: dict, instance_id: UUID, extended_response_configuration: ExtendedResponseConfiguration = ExtendedResponseConfiguration()) -&gt; Result[Instance]:
+    &#34;&#34;&#34;Partially update contribution to an existing instance&#34;&#34;&#34;
+    result = self._patch(path=f&#34;instances/{instance_id}&#34;, payload=payload, params={ 
+        &#34;returnIncomingLinks&#34;: extended_response_configuration.return_incoming_links,
+        &#34;incomingLinksPageSize&#34;: extended_response_configuration.incoming_links_page_size,
+        &#34;returnPayload&#34;: extended_response_configuration.return_payload,
+        &#34;returnPermissions&#34;: extended_response_configuration.return_permissions,
+        &#34;returnAlternatives&#34;: extended_response_configuration.return_alternatives,
+        &#34;returnEmbedded&#34;: extended_response_configuration.return_embedded
+    })
+    return Result[Instance](response=result, constructor=Instance)</code></pre>
+</details>
+</dd>
+<dt id="kg_core.kg.Instances.create_new"><code class="name flex">
+<span>def <span class="ident">create_new</span></span>(<span>self, payload: dict, space: str, extended_response_configuration: ExtendedResponseConfiguration = &lt;kg_core.request.ExtendedResponseConfiguration object&gt;) ‑> <a title="kg_core.response.Result" href="response.html#kg_core.response.Result">Result</a>[<a title="kg_core.response.Instance" href="response.html#kg_core.response.Instance">Instance</a>]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Create new instance with a system generated id</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def create_new(self, payload: dict, space: str, extended_response_configuration: ExtendedResponseConfiguration = ExtendedResponseConfiguration()) -&gt; Result[Instance]:
+    &#34;&#34;&#34;Create new instance with a system generated id&#34;&#34;&#34;
+    result = self._post(path=&#34;instances&#34;, payload=payload, params={ 
+        &#34;space&#34;: space,
+        &#34;returnIncomingLinks&#34;: extended_response_configuration.return_incoming_links,
+        &#34;incomingLinksPageSize&#34;: extended_response_configuration.incoming_links_page_size,
+        &#34;returnPayload&#34;: extended_response_configuration.return_payload,
+        &#34;returnPermissions&#34;: extended_response_configuration.return_permissions,
+        &#34;returnAlternatives&#34;: extended_response_configuration.return_alternatives,
+        &#34;returnEmbedded&#34;: extended_response_configuration.return_embedded
+    })
+    return Result[Instance](response=result, constructor=Instance)</code></pre>
+</details>
+</dd>
+<dt id="kg_core.kg.Instances.create_new_with_id"><code class="name flex">
+<span>def <span class="ident">create_new_with_id</span></span>(<span>self, payload: dict, instance_id: UUID, space: str, extended_response_configuration: ExtendedResponseConfiguration = &lt;kg_core.request.ExtendedResponseConfiguration object&gt;) ‑> <a title="kg_core.response.Result" href="response.html#kg_core.response.Result">Result</a>[<a title="kg_core.response.Instance" href="response.html#kg_core.response.Instance">Instance</a>]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Create new instance with a client defined id</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def create_new_with_id(self, payload: dict, instance_id: UUID, space: str, extended_response_configuration: ExtendedResponseConfiguration = ExtendedResponseConfiguration()) -&gt; Result[Instance]:
+    &#34;&#34;&#34;Create new instance with a client defined id&#34;&#34;&#34;
+    result = self._post(path=f&#34;instances/{instance_id}&#34;, payload=payload, params={ 
+        &#34;space&#34;: space,
+        &#34;returnIncomingLinks&#34;: extended_response_configuration.return_incoming_links,
+        &#34;incomingLinksPageSize&#34;: extended_response_configuration.incoming_links_page_size,
+        &#34;returnPayload&#34;: extended_response_configuration.return_payload,
+        &#34;returnPermissions&#34;: extended_response_configuration.return_permissions,
+        &#34;returnAlternatives&#34;: extended_response_configuration.return_alternatives,
+        &#34;returnEmbedded&#34;: extended_response_configuration.return_embedded
+    })
+    return Result[Instance](response=result, constructor=Instance)</code></pre>
+</details>
+</dd>
+<dt id="kg_core.kg.Instances.delete"><code class="name flex">
+<span>def <span class="ident">delete</span></span>(<span>self, instance_id: UUID) ‑> Optional[<a title="kg_core.response.Error" href="response.html#kg_core.response.Error">Error</a>]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Delete an instance</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def delete(self, instance_id: UUID) -&gt; Optional[Error]:
+    &#34;&#34;&#34;Delete an instance&#34;&#34;&#34;
+    result = self._delete(path=f&#34;instances/{instance_id}&#34;, params={})
+    return translate_error(result)</code></pre>
+</details>
+</dd>
+<dt id="kg_core.kg.Instances.get_by_id"><code class="name flex">
+<span>def <span class="ident">get_by_id</span></span>(<span>self, instance_id: UUID, stage: Stage = 'RELEASED', extended_response_configuration: ExtendedResponseConfiguration = &lt;kg_core.request.ExtendedResponseConfiguration object&gt;) ‑> <a title="kg_core.response.Result" href="response.html#kg_core.response.Result">Result</a>[<a title="kg_core.response.Instance" href="response.html#kg_core.response.Instance">Instance</a>]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Get the instance</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_by_id(self, instance_id: UUID, stage: Stage = Stage.RELEASED, extended_response_configuration: ExtendedResponseConfiguration = ExtendedResponseConfiguration()) -&gt; Result[Instance]:
+    &#34;&#34;&#34;Get the instance&#34;&#34;&#34;
+    result = self._get(path=f&#34;instances/{instance_id}&#34;, params={ 
+        &#34;stage&#34;: stage,
+        &#34;returnIncomingLinks&#34;: extended_response_configuration.return_incoming_links,
+        &#34;incomingLinksPageSize&#34;: extended_response_configuration.incoming_links_page_size,
+        &#34;returnPayload&#34;: extended_response_configuration.return_payload,
+        &#34;returnPermissions&#34;: extended_response_configuration.return_permissions,
+        &#34;returnAlternatives&#34;: extended_response_configuration.return_alternatives,
+        &#34;returnEmbedded&#34;: extended_response_configuration.return_embedded
+    })
+    return Result[Instance](response=result, constructor=Instance)</code></pre>
+</details>
+</dd>
+<dt id="kg_core.kg.Instances.get_by_identifiers"><code class="name flex">
+<span>def <span class="ident">get_by_identifiers</span></span>(<span>self, payload: dict, stage: Stage = 'RELEASED', extended_response_configuration: ExtendedResponseConfiguration = &lt;kg_core.request.ExtendedResponseConfiguration object&gt;) ‑> <a title="kg_core.response.ResultsById" href="response.html#kg_core.response.ResultsById">ResultsById</a>[<a title="kg_core.response.Instance" href="response.html#kg_core.response.Instance">Instance</a>]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Read instances by the given list of (external) identifiers</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_by_identifiers(self, payload: dict, stage: Stage = Stage.RELEASED, extended_response_configuration: ExtendedResponseConfiguration = ExtendedResponseConfiguration()) -&gt; ResultsById[Instance]:
+    &#34;&#34;&#34;Read instances by the given list of (external) identifiers&#34;&#34;&#34;
+    result = self._post(path=&#34;instancesByIdentifiers&#34;, payload=payload, params={ 
+        &#34;stage&#34;: stage,
+        &#34;returnIncomingLinks&#34;: extended_response_configuration.return_incoming_links,
+        &#34;incomingLinksPageSize&#34;: extended_response_configuration.incoming_links_page_size,
+        &#34;returnPayload&#34;: extended_response_configuration.return_payload,
+        &#34;returnPermissions&#34;: extended_response_configuration.return_permissions,
+        &#34;returnAlternatives&#34;: extended_response_configuration.return_alternatives,
+        &#34;returnEmbedded&#34;: extended_response_configuration.return_embedded
+    })
+    return ResultsById[Instance](response=result, constructor=Instance)</code></pre>
+</details>
+</dd>
+<dt id="kg_core.kg.Instances.get_by_ids"><code class="name flex">
+<span>def <span class="ident">get_by_ids</span></span>(<span>self, payload: dict, stage: Stage = 'RELEASED', extended_response_configuration: ExtendedResponseConfiguration = &lt;kg_core.request.ExtendedResponseConfiguration object&gt;) ‑> <a title="kg_core.response.ResultsById" href="response.html#kg_core.response.ResultsById">ResultsById</a>[<a title="kg_core.response.Instance" href="response.html#kg_core.response.Instance">Instance</a>]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Bulk operation of /instances/{id} to read instances by their UUIDs</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_by_ids(self, payload: dict, stage: Stage = Stage.RELEASED, extended_response_configuration: ExtendedResponseConfiguration = ExtendedResponseConfiguration()) -&gt; ResultsById[Instance]:
+    &#34;&#34;&#34;Bulk operation of /instances/{id} to read instances by their UUIDs&#34;&#34;&#34;
+    result = self._post(path=&#34;instancesByIds&#34;, payload=payload, params={ 
+        &#34;stage&#34;: stage,
+        &#34;returnIncomingLinks&#34;: extended_response_configuration.return_incoming_links,
+        &#34;incomingLinksPageSize&#34;: extended_response_configuration.incoming_links_page_size,
+        &#34;returnPayload&#34;: extended_response_configuration.return_payload,
+        &#34;returnPermissions&#34;: extended_response_configuration.return_permissions,
+        &#34;returnAlternatives&#34;: extended_response_configuration.return_alternatives,
+        &#34;returnEmbedded&#34;: extended_response_configuration.return_embedded
+    })
+    return ResultsById[Instance](response=result, constructor=Instance)</code></pre>
+</details>
+</dd>
+<dt id="kg_core.kg.Instances.get_incoming_links"><code class="name flex">
+<span>def <span class="ident">get_incoming_links</span></span>(<span>self, instance_id: UUID, property_name: str, target_type: str, stage: Stage = 'RELEASED', pagination: Pagination = &lt;kg_core.request.Pagination object&gt;) ‑> <a title="kg_core.response.ResultPage" href="response.html#kg_core.response.ResultPage">ResultPage</a>[<a title="kg_core.response.Instance" href="response.html#kg_core.response.Instance">Instance</a>]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Get incoming links for a specific instance (paginated)</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_incoming_links(self, instance_id: UUID, property_name: str, target_type: str, stage: Stage = Stage.RELEASED, pagination: Pagination = Pagination()) -&gt; ResultPage[Instance]:
+    &#34;&#34;&#34;Get incoming links for a specific instance (paginated)&#34;&#34;&#34;
+    result = self._get(path=f&#34;instances/{instance_id}/incomingLinks&#34;, params={ 
+        &#34;stage&#34;: stage,
+        &#34;property&#34;: property_name,
+        &#34;type&#34;: target_type,
+        &#34;from&#34;: pagination.start,
+        &#34;size&#34;: pagination.size,
+        &#34;returnTotalResults&#34;: pagination.return_total_results
+    })
+    return ResultPage[Instance](response=result, constructor=Instance)</code></pre>
+</details>
+</dd>
+<dt id="kg_core.kg.Instances.get_release_status"><code class="name flex">
+<span>def <span class="ident">get_release_status</span></span>(<span>self, instance_id: UUID, release_tree_scope: ReleaseTreeScope) ‑> <a title="kg_core.response.Result" href="response.html#kg_core.response.Result">Result</a>[<a title="kg_core.response.ReleaseStatus" href="response.html#kg_core.response.ReleaseStatus">ReleaseStatus</a>]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Get the release status for an instance</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_release_status(self, instance_id: UUID, release_tree_scope: ReleaseTreeScope) -&gt; Result[ReleaseStatus]:
+    &#34;&#34;&#34;Get the release status for an instance&#34;&#34;&#34;
+    result = self._get(path=f&#34;instances/{instance_id}/release/status&#34;, params={ 
+        &#34;releaseTreeScope&#34;: release_tree_scope
+    })
+    return Result[ReleaseStatus](response=result, constructor=ReleaseStatus)</code></pre>
+</details>
+</dd>
+<dt id="kg_core.kg.Instances.get_release_status_by_ids"><code class="name flex">
+<span>def <span class="ident">get_release_status_by_ids</span></span>(<span>self, payload: dict, release_tree_scope: ReleaseTreeScope) ‑> <a title="kg_core.response.ResultsById" href="response.html#kg_core.response.ResultsById">ResultsById</a>[<a title="kg_core.response.ReleaseStatus" href="response.html#kg_core.response.ReleaseStatus">ReleaseStatus</a>]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Get the release status for multiple instances</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_release_status_by_ids(self, payload: dict, release_tree_scope: ReleaseTreeScope) -&gt; ResultsById[ReleaseStatus]:
+    &#34;&#34;&#34;Get the release status for multiple instances&#34;&#34;&#34;
+    result = self._post(path=&#34;instancesByIds/release/status&#34;, payload=payload, params={ 
+        &#34;releaseTreeScope&#34;: release_tree_scope
+    })
+    return ResultsById[ReleaseStatus](response=result, constructor=ReleaseStatus)</code></pre>
+</details>
+</dd>
+<dt id="kg_core.kg.Instances.get_scope"><code class="name flex">
+<span>def <span class="ident">get_scope</span></span>(<span>self, instance_id: UUID, apply_restrictions: bool = False, return_permissions: bool = False, stage: Stage = 'RELEASED') ‑> <a title="kg_core.response.Result" href="response.html#kg_core.response.Result">Result</a>[<a title="kg_core.response.Scope" href="response.html#kg_core.response.Scope">Scope</a>]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Get the scope for the instance by its KG-internal ID</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_scope(self, instance_id: UUID, apply_restrictions: bool = False, return_permissions: bool = False, stage: Stage = Stage.RELEASED) -&gt; Result[Scope]:
+    &#34;&#34;&#34;Get the scope for the instance by its KG-internal ID&#34;&#34;&#34;
+    result = self._get(path=f&#34;instances/{instance_id}/scope&#34;, params={ 
+        &#34;stage&#34;: stage,
+        &#34;returnPermissions&#34;: return_permissions,
+        &#34;applyRestrictions&#34;: apply_restrictions
+    })
+    return Result[Scope](response=result, constructor=Scope)</code></pre>
+</details>
+</dd>
+<dt id="kg_core.kg.Instances.invite_user_for"><code class="name flex">
+<span>def <span class="ident">invite_user_for</span></span>(<span>self, instance_id: UUID, user_id: UUID) ‑> Optional[<a title="kg_core.response.Error" href="response.html#kg_core.response.Error">Error</a>]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Create or update an invitation for the given user to review the given instance</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def invite_user_for(self, instance_id: UUID, user_id: UUID) -&gt; Optional[Error]:
+    &#34;&#34;&#34;Create or update an invitation for the given user to review the given instance&#34;&#34;&#34;
+    result = self._put(path=f&#34;instances/{instance_id}/invitedUsers/{user_id}&#34;, payload=None, params={})
+    return translate_error(result)</code></pre>
+</details>
+</dd>
+<dt id="kg_core.kg.Instances.list"><code class="name flex">
+<span>def <span class="ident">list</span></span>(<span>self, target_type: str, filter_property: Optional[str] = None, filter_value: Optional[str] = None, search_by_label: Optional[str] = None, space: Optional[str] = None, stage: Stage = 'RELEASED', response_configuration: ResponseConfiguration = &lt;kg_core.request.ResponseConfiguration object&gt;, pagination: Pagination = &lt;kg_core.request.Pagination object&gt;) ‑> <a title="kg_core.response.ResultPage" href="response.html#kg_core.response.ResultPage">ResultPage</a>[<a title="kg_core.response.Instance" href="response.html#kg_core.response.Instance">Instance</a>]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Returns a list of instances according to their types</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def list(self, target_type: str, filter_property: Optional[str] = None, filter_value: Optional[str] = None, search_by_label: Optional[str] = None, space: Optional[str] = None, stage: Stage = Stage.RELEASED, response_configuration: ResponseConfiguration = ResponseConfiguration(), pagination: Pagination = Pagination()) -&gt; ResultPage[Instance]:
+    &#34;&#34;&#34;Returns a list of instances according to their types&#34;&#34;&#34;
+    result = self._get(path=&#34;instances&#34;, params={ 
+        &#34;stage&#34;: stage,
+        &#34;type&#34;: target_type,
+        &#34;space&#34;: space,
+        &#34;searchByLabel&#34;: search_by_label,
+        &#34;filterProperty&#34;: filter_property,
+        &#34;filterValue&#34;: filter_value,
+        &#34;returnPayload&#34;: response_configuration.return_payload,
+        &#34;returnPermissions&#34;: response_configuration.return_permissions,
+        &#34;returnAlternatives&#34;: response_configuration.return_alternatives,
+        &#34;returnEmbedded&#34;: response_configuration.return_embedded,
+        &#34;from&#34;: pagination.start,
+        &#34;size&#34;: pagination.size,
+        &#34;returnTotalResults&#34;: pagination.return_total_results
+    })
+    return ResultPage[Instance](response=result, constructor=Instance)</code></pre>
+</details>
+</dd>
+<dt id="kg_core.kg.Instances.list_invitations"><code class="name flex">
+<span>def <span class="ident">list_invitations</span></span>(<span>self, instance_id: UUID) ‑> <a title="kg_core.response.Result" href="response.html#kg_core.response.Result">Result</a>[<a title="kg_core.response.ListOfReducedUserInformation" href="response.html#kg_core.response.ListOfReducedUserInformation">ListOfReducedUserInformation</a>]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>List invitations for review for the given instance</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def list_invitations(self, instance_id: UUID) -&gt; Result[ListOfReducedUserInformation]:
+    &#34;&#34;&#34;List invitations for review for the given instance&#34;&#34;&#34;
+    result = self._get(path=f&#34;instances/{instance_id}/invitedUsers&#34;, params={})
+    return Result[ListOfReducedUserInformation](response=result, constructor=ListOfReducedUserInformation)</code></pre>
+</details>
+</dd>
+<dt id="kg_core.kg.Instances.move"><code class="name flex">
+<span>def <span class="ident">move</span></span>(<span>self, instance_id: UUID, space: str, extended_response_configuration: ExtendedResponseConfiguration = &lt;kg_core.request.ExtendedResponseConfiguration object&gt;) ‑> <a title="kg_core.response.Result" href="response.html#kg_core.response.Result">Result</a>[<a title="kg_core.response.Instance" href="response.html#kg_core.response.Instance">Instance</a>]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Move an instance to another space</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def move(self, instance_id: UUID, space: str, extended_response_configuration: ExtendedResponseConfiguration = ExtendedResponseConfiguration()) -&gt; Result[Instance]:
+    &#34;&#34;&#34;Move an instance to another space&#34;&#34;&#34;
+    result = self._put(path=f&#34;instances/{instance_id}/spaces/{space}&#34;, payload=None, params={ 
+        &#34;returnIncomingLinks&#34;: extended_response_configuration.return_incoming_links,
+        &#34;incomingLinksPageSize&#34;: extended_response_configuration.incoming_links_page_size,
+        &#34;returnPayload&#34;: extended_response_configuration.return_payload,
+        &#34;returnPermissions&#34;: extended_response_configuration.return_permissions,
+        &#34;returnAlternatives&#34;: extended_response_configuration.return_alternatives,
+        &#34;returnEmbedded&#34;: extended_response_configuration.return_embedded
+    })
+    return Result[Instance](response=result, constructor=Instance)</code></pre>
+</details>
+</dd>
+<dt id="kg_core.kg.Instances.release"><code class="name flex">
+<span>def <span class="ident">release</span></span>(<span>self, instance_id: UUID, revision: Optional[str] = None) ‑> Optional[<a title="kg_core.response.Error" href="response.html#kg_core.response.Error">Error</a>]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Release or re-release an instance</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def release(self, instance_id: UUID, revision: Optional[str] = None) -&gt; Optional[Error]:
+    &#34;&#34;&#34;Release or re-release an instance&#34;&#34;&#34;
+    result = self._put(path=f&#34;instances/{instance_id}/release&#34;, payload=None, params={ 
+        &#34;revision&#34;: revision
+    })
+    return translate_error(result)</code></pre>
+</details>
+</dd>
+<dt id="kg_core.kg.Instances.revoke_user_invitation"><code class="name flex">
+<span>def <span class="ident">revoke_user_invitation</span></span>(<span>self, instance_id: UUID, user_id: UUID) ‑> Optional[<a title="kg_core.response.Error" href="response.html#kg_core.response.Error">Error</a>]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Revoke an invitation for the given user to review the given instance</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def revoke_user_invitation(self, instance_id: UUID, user_id: UUID) -&gt; Optional[Error]:
+    &#34;&#34;&#34;Revoke an invitation for the given user to review the given instance&#34;&#34;&#34;
+    result = self._delete(path=f&#34;instances/{instance_id}/invitedUsers/{user_id}&#34;, params={})
+    return translate_error(result)</code></pre>
+</details>
+</dd>
+<dt id="kg_core.kg.Instances.unrelease"><code class="name flex">
+<span>def <span class="ident">unrelease</span></span>(<span>self, instance_id: UUID) ‑> Optional[<a title="kg_core.response.Error" href="response.html#kg_core.response.Error">Error</a>]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Unrelease an instance</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def unrelease(self, instance_id: UUID) -&gt; Optional[Error]:
+    &#34;&#34;&#34;Unrelease an instance&#34;&#34;&#34;
+    result = self._delete(path=f&#34;instances/{instance_id}/release&#34;, params={})
+    return translate_error(result)</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="kg_core.kg.Jsonld"><code class="flex name class">
+<span>class <span class="ident">Jsonld</span></span>
+<span>(</span><span>config: KGConfig)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Helper class that provides a standard way to create an ABC using
+inheritance.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Jsonld(RequestsWithTokenHandler):
+    def __init__(self, config: KGConfig):
+        super(Jsonld, self).__init__(config)
+
+    def normalize_payload(self, payload: dict) -&gt; Optional[Error]:
+        &#34;&#34;&#34;Normalizes the passed payload according to the EBRAINS KG conventions&#34;&#34;&#34;
+        result = self._post(path=&#34;jsonld/normalizedPayload&#34;, payload=payload, params={})
+        return translate_error(result)</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>kg_core.__communication.RequestsWithTokenHandler</li>
+<li>abc.ABC</li>
+</ul>
+<h3>Methods</h3>
+<dl>
+<dt id="kg_core.kg.Jsonld.normalize_payload"><code class="name flex">
+<span>def <span class="ident">normalize_payload</span></span>(<span>self, payload: dict) ‑> Optional[<a title="kg_core.response.Error" href="response.html#kg_core.response.Error">Error</a>]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Normalizes the passed payload according to the EBRAINS KG conventions</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def normalize_payload(self, payload: dict) -&gt; Optional[Error]:
+    &#34;&#34;&#34;Normalizes the passed payload according to the EBRAINS KG conventions&#34;&#34;&#34;
+    result = self._post(path=&#34;jsonld/normalizedPayload&#34;, payload=payload, params={})
+    return translate_error(result)</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="kg_core.kg.Queries"><code class="flex name class">
+<span>class <span class="ident">Queries</span></span>
+<span>(</span><span>config: KGConfig)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Helper class that provides a standard way to create an ABC using
+inheritance.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Queries(RequestsWithTokenHandler):
+    def __init__(self, config: KGConfig):
+        super(Queries, self).__init__(config)
+
+    def execute_query_by_id(self, query_id: UUID, all_request_params: Dict[str, Any] = {}, instance_id: Optional[UUID] = None, restrict_to_spaces: Optional[List[str]] = None, stage: Stage = Stage.RELEASED, pagination: Pagination = Pagination()) -&gt; ResultPage[JsonLdDocument]:
+        &#34;&#34;&#34;Execute a stored query to receive the instances&#34;&#34;&#34;
+        result = self._get(path=f&#34;queries/{query_id}/instances&#34;, params={ 
+            &#34;from&#34;: pagination.start,
+            &#34;size&#34;: pagination.size,
+            &#34;returnTotalResults&#34;: pagination.return_total_results,
+            &#34;stage&#34;: stage,
+            &#34;instanceId&#34;: instance_id,
+            &#34;restrictToSpaces&#34;: restrict_to_spaces,
+            &#34;allRequestParams&#34;: all_request_params
+        })
+        return ResultPage[JsonLdDocument](response=result, constructor=JsonLdDocument)
+
+    def get_query_specification(self, query_id: UUID) -&gt; Result[Instance]:
+        &#34;&#34;&#34;Get the query specification with the given query id in a specific space&#34;&#34;&#34;
+        result = self._get(path=f&#34;queries/{query_id}&#34;, params={})
+        return Result[Instance](response=result, constructor=Instance)
+
+    def list_per_root_type(self, search: Optional[str] = None, target_type: Optional[str] = None, pagination: Pagination = Pagination()) -&gt; ResultPage[Instance]:
+        &#34;&#34;&#34;List the queries and filter them by root type and/or text in the label, name or description&#34;&#34;&#34;
+        result = self._get(path=&#34;queries&#34;, params={ 
+            &#34;from&#34;: pagination.start,
+            &#34;size&#34;: pagination.size,
+            &#34;returnTotalResults&#34;: pagination.return_total_results,
+            &#34;type&#34;: target_type,
+            &#34;search&#34;: search
+        })
+        return ResultPage[Instance](response=result, constructor=Instance)
+
+    def remove_query(self, query_id: UUID) -&gt; Optional[Error]:
+        &#34;&#34;&#34;Remove a query specification&#34;&#34;&#34;
+        result = self._delete(path=f&#34;queries/{query_id}&#34;, params={})
+        return translate_error(result)
+
+    def save_query(self, payload: dict, query_id: UUID, space: Optional[str] = None) -&gt; Result[Instance]:
+        &#34;&#34;&#34;Create or save a query specification&#34;&#34;&#34;
+        result = self._put(path=f&#34;queries/{query_id}&#34;, payload=payload, params={ 
+            &#34;space&#34;: space
+        })
+        return Result[Instance](response=result, constructor=Instance)
+
+    def test_query(self, payload: dict, all_request_params: Dict[str, Any] = {}, instance_id: Optional[UUID] = None, restrict_to_spaces: Optional[List[str]] = None, stage: Stage = Stage.RELEASED, pagination: Pagination = Pagination()) -&gt; ResultPage[JsonLdDocument]:
+        &#34;&#34;&#34;Execute the query in the payload in test mode (e.g. for execution before saving with the KG QueryBuilder)&#34;&#34;&#34;
+        result = self._post(path=&#34;queries&#34;, payload=payload, params={ 
+            &#34;from&#34;: pagination.start,
+            &#34;size&#34;: pagination.size,
+            &#34;returnTotalResults&#34;: pagination.return_total_results,
+            &#34;stage&#34;: stage,
+            &#34;instanceId&#34;: instance_id,
+            &#34;restrictToSpaces&#34;: restrict_to_spaces,
+            &#34;allRequestParams&#34;: all_request_params
+        })
+        return ResultPage[JsonLdDocument](response=result, constructor=JsonLdDocument)</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>kg_core.__communication.RequestsWithTokenHandler</li>
+<li>abc.ABC</li>
+</ul>
+<h3>Methods</h3>
+<dl>
+<dt id="kg_core.kg.Queries.execute_query_by_id"><code class="name flex">
+<span>def <span class="ident">execute_query_by_id</span></span>(<span>self, query_id: UUID, all_request_params: Dict[str, Any] = {}, instance_id: Optional[UUID] = None, restrict_to_spaces: Optional[List[str]] = None, stage: Stage = 'RELEASED', pagination: Pagination = &lt;kg_core.request.Pagination object&gt;) ‑> <a title="kg_core.response.ResultPage" href="response.html#kg_core.response.ResultPage">ResultPage</a>[<a title="kg_core.response.JsonLdDocument" href="response.html#kg_core.response.JsonLdDocument">JsonLdDocument</a>]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Execute a stored query to receive the instances</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def execute_query_by_id(self, query_id: UUID, all_request_params: Dict[str, Any] = {}, instance_id: Optional[UUID] = None, restrict_to_spaces: Optional[List[str]] = None, stage: Stage = Stage.RELEASED, pagination: Pagination = Pagination()) -&gt; ResultPage[JsonLdDocument]:
+    &#34;&#34;&#34;Execute a stored query to receive the instances&#34;&#34;&#34;
+    result = self._get(path=f&#34;queries/{query_id}/instances&#34;, params={ 
+        &#34;from&#34;: pagination.start,
+        &#34;size&#34;: pagination.size,
+        &#34;returnTotalResults&#34;: pagination.return_total_results,
+        &#34;stage&#34;: stage,
+        &#34;instanceId&#34;: instance_id,
+        &#34;restrictToSpaces&#34;: restrict_to_spaces,
+        &#34;allRequestParams&#34;: all_request_params
+    })
+    return ResultPage[JsonLdDocument](response=result, constructor=JsonLdDocument)</code></pre>
+</details>
+</dd>
+<dt id="kg_core.kg.Queries.get_query_specification"><code class="name flex">
+<span>def <span class="ident">get_query_specification</span></span>(<span>self, query_id: UUID) ‑> <a title="kg_core.response.Result" href="response.html#kg_core.response.Result">Result</a>[<a title="kg_core.response.Instance" href="response.html#kg_core.response.Instance">Instance</a>]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Get the query specification with the given query id in a specific space</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_query_specification(self, query_id: UUID) -&gt; Result[Instance]:
+    &#34;&#34;&#34;Get the query specification with the given query id in a specific space&#34;&#34;&#34;
+    result = self._get(path=f&#34;queries/{query_id}&#34;, params={})
+    return Result[Instance](response=result, constructor=Instance)</code></pre>
+</details>
+</dd>
+<dt id="kg_core.kg.Queries.list_per_root_type"><code class="name flex">
+<span>def <span class="ident">list_per_root_type</span></span>(<span>self, search: Optional[str] = None, target_type: Optional[str] = None, pagination: Pagination = &lt;kg_core.request.Pagination object&gt;) ‑> <a title="kg_core.response.ResultPage" href="response.html#kg_core.response.ResultPage">ResultPage</a>[<a title="kg_core.response.Instance" href="response.html#kg_core.response.Instance">Instance</a>]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>List the queries and filter them by root type and/or text in the label, name or description</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def list_per_root_type(self, search: Optional[str] = None, target_type: Optional[str] = None, pagination: Pagination = Pagination()) -&gt; ResultPage[Instance]:
+    &#34;&#34;&#34;List the queries and filter them by root type and/or text in the label, name or description&#34;&#34;&#34;
+    result = self._get(path=&#34;queries&#34;, params={ 
+        &#34;from&#34;: pagination.start,
+        &#34;size&#34;: pagination.size,
+        &#34;returnTotalResults&#34;: pagination.return_total_results,
+        &#34;type&#34;: target_type,
+        &#34;search&#34;: search
+    })
+    return ResultPage[Instance](response=result, constructor=Instance)</code></pre>
+</details>
+</dd>
+<dt id="kg_core.kg.Queries.remove_query"><code class="name flex">
+<span>def <span class="ident">remove_query</span></span>(<span>self, query_id: UUID) ‑> Optional[<a title="kg_core.response.Error" href="response.html#kg_core.response.Error">Error</a>]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Remove a query specification</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def remove_query(self, query_id: UUID) -&gt; Optional[Error]:
+    &#34;&#34;&#34;Remove a query specification&#34;&#34;&#34;
+    result = self._delete(path=f&#34;queries/{query_id}&#34;, params={})
+    return translate_error(result)</code></pre>
+</details>
+</dd>
+<dt id="kg_core.kg.Queries.save_query"><code class="name flex">
+<span>def <span class="ident">save_query</span></span>(<span>self, payload: dict, query_id: UUID, space: Optional[str] = None) ‑> <a title="kg_core.response.Result" href="response.html#kg_core.response.Result">Result</a>[<a title="kg_core.response.Instance" href="response.html#kg_core.response.Instance">Instance</a>]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Create or save a query specification</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def save_query(self, payload: dict, query_id: UUID, space: Optional[str] = None) -&gt; Result[Instance]:
+    &#34;&#34;&#34;Create or save a query specification&#34;&#34;&#34;
+    result = self._put(path=f&#34;queries/{query_id}&#34;, payload=payload, params={ 
+        &#34;space&#34;: space
+    })
+    return Result[Instance](response=result, constructor=Instance)</code></pre>
+</details>
+</dd>
+<dt id="kg_core.kg.Queries.test_query"><code class="name flex">
+<span>def <span class="ident">test_query</span></span>(<span>self, payload: dict, all_request_params: Dict[str, Any] = {}, instance_id: Optional[UUID] = None, restrict_to_spaces: Optional[List[str]] = None, stage: Stage = 'RELEASED', pagination: Pagination = &lt;kg_core.request.Pagination object&gt;) ‑> <a title="kg_core.response.ResultPage" href="response.html#kg_core.response.ResultPage">ResultPage</a>[<a title="kg_core.response.JsonLdDocument" href="response.html#kg_core.response.JsonLdDocument">JsonLdDocument</a>]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Execute the query in the payload in test mode (e.g. for execution before saving with the KG QueryBuilder)</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def test_query(self, payload: dict, all_request_params: Dict[str, Any] = {}, instance_id: Optional[UUID] = None, restrict_to_spaces: Optional[List[str]] = None, stage: Stage = Stage.RELEASED, pagination: Pagination = Pagination()) -&gt; ResultPage[JsonLdDocument]:
+    &#34;&#34;&#34;Execute the query in the payload in test mode (e.g. for execution before saving with the KG QueryBuilder)&#34;&#34;&#34;
+    result = self._post(path=&#34;queries&#34;, payload=payload, params={ 
+        &#34;from&#34;: pagination.start,
+        &#34;size&#34;: pagination.size,
+        &#34;returnTotalResults&#34;: pagination.return_total_results,
+        &#34;stage&#34;: stage,
+        &#34;instanceId&#34;: instance_id,
+        &#34;restrictToSpaces&#34;: restrict_to_spaces,
+        &#34;allRequestParams&#34;: all_request_params
+    })
+    return ResultPage[JsonLdDocument](response=result, constructor=JsonLdDocument)</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="kg_core.kg.Spaces"><code class="flex name class">
+<span>class <span class="ident">Spaces</span></span>
+<span>(</span><span>config: KGConfig)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Helper class that provides a standard way to create an ABC using
+inheritance.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Spaces(RequestsWithTokenHandler):
+    def __init__(self, config: KGConfig):
+        super(Spaces, self).__init__(config)
+
+    def get(self, space: str, permissions: bool = False) -&gt; Result[SpaceInformation]:
+        result = self._get(path=f&#34;spaces/{space}&#34;, params={ 
+            &#34;permissions&#34;: permissions
+        })
+        return Result[SpaceInformation](response=result, constructor=SpaceInformation)
+
+    def list(self, permissions: bool = False, pagination: Pagination = Pagination()) -&gt; ResultPage[SpaceInformation]:
+        result = self._get(path=&#34;spaces&#34;, params={ 
+            &#34;from&#34;: pagination.start,
+            &#34;size&#34;: pagination.size,
+            &#34;returnTotalResults&#34;: pagination.return_total_results,
+            &#34;permissions&#34;: permissions
+        })
+        return ResultPage[SpaceInformation](response=result, constructor=SpaceInformation)</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>kg_core.__communication.RequestsWithTokenHandler</li>
+<li>abc.ABC</li>
+</ul>
+<h3>Methods</h3>
+<dl>
+<dt id="kg_core.kg.Spaces.get"><code class="name flex">
+<span>def <span class="ident">get</span></span>(<span>self, space: str, permissions: bool = False) ‑> <a title="kg_core.response.Result" href="response.html#kg_core.response.Result">Result</a>[<a title="kg_core.response.SpaceInformation" href="response.html#kg_core.response.SpaceInformation">SpaceInformation</a>]</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get(self, space: str, permissions: bool = False) -&gt; Result[SpaceInformation]:
+    result = self._get(path=f&#34;spaces/{space}&#34;, params={ 
+        &#34;permissions&#34;: permissions
+    })
+    return Result[SpaceInformation](response=result, constructor=SpaceInformation)</code></pre>
+</details>
+</dd>
+<dt id="kg_core.kg.Spaces.list"><code class="name flex">
+<span>def <span class="ident">list</span></span>(<span>self, permissions: bool = False, pagination: Pagination = &lt;kg_core.request.Pagination object&gt;) ‑> <a title="kg_core.response.ResultPage" href="response.html#kg_core.response.ResultPage">ResultPage</a>[<a title="kg_core.response.SpaceInformation" href="response.html#kg_core.response.SpaceInformation">SpaceInformation</a>]</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def list(self, permissions: bool = False, pagination: Pagination = Pagination()) -&gt; ResultPage[SpaceInformation]:
+    result = self._get(path=&#34;spaces&#34;, params={ 
+        &#34;from&#34;: pagination.start,
+        &#34;size&#34;: pagination.size,
+        &#34;returnTotalResults&#34;: pagination.return_total_results,
+        &#34;permissions&#34;: permissions
+    })
+    return ResultPage[SpaceInformation](response=result, constructor=SpaceInformation)</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="kg_core.kg.Types"><code class="flex name class">
+<span>class <span class="ident">Types</span></span>
+<span>(</span><span>config: KGConfig)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Helper class that provides a standard way to create an ABC using
+inheritance.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Types(RequestsWithTokenHandler):
+    def __init__(self, config: KGConfig):
+        super(Types, self).__init__(config)
+
+    def get_by_name(self, payload: dict, space: Optional[str] = None, stage: Stage = Stage.RELEASED, with_incoming_links: bool = False, with_properties: bool = False) -&gt; ResultsById[TypeInformation]:
+        &#34;&#34;&#34;Returns the types according to the list of names - either with property information or without&#34;&#34;&#34;
+        result = self._post(path=&#34;typesByName&#34;, payload=payload, params={ 
+            &#34;stage&#34;: stage,
+            &#34;withProperties&#34;: with_properties,
+            &#34;withIncomingLinks&#34;: with_incoming_links,
+            &#34;space&#34;: space
+        })
+        return ResultsById[TypeInformation](response=result, constructor=TypeInformation)
+
+    def list(self, space: Optional[str] = None, stage: Stage = Stage.RELEASED, with_incoming_links: bool = False, with_properties: bool = False, pagination: Pagination = Pagination()) -&gt; ResultPage[TypeInformation]:
+        &#34;&#34;&#34;Returns the types available - either with property information or without&#34;&#34;&#34;
+        result = self._get(path=&#34;types&#34;, params={ 
+            &#34;stage&#34;: stage,
+            &#34;space&#34;: space,
+            &#34;withProperties&#34;: with_properties,
+            &#34;withIncomingLinks&#34;: with_incoming_links,
+            &#34;from&#34;: pagination.start,
+            &#34;size&#34;: pagination.size,
+            &#34;returnTotalResults&#34;: pagination.return_total_results
+        })
+        return ResultPage[TypeInformation](response=result, constructor=TypeInformation)</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>kg_core.__communication.RequestsWithTokenHandler</li>
+<li>abc.ABC</li>
+</ul>
+<h3>Methods</h3>
+<dl>
+<dt id="kg_core.kg.Types.get_by_name"><code class="name flex">
+<span>def <span class="ident">get_by_name</span></span>(<span>self, payload: dict, space: Optional[str] = None, stage: Stage = 'RELEASED', with_incoming_links: bool = False, with_properties: bool = False) ‑> <a title="kg_core.response.ResultsById" href="response.html#kg_core.response.ResultsById">ResultsById</a>[<a title="kg_core.response.TypeInformation" href="response.html#kg_core.response.TypeInformation">TypeInformation</a>]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Returns the types according to the list of names - either with property information or without</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_by_name(self, payload: dict, space: Optional[str] = None, stage: Stage = Stage.RELEASED, with_incoming_links: bool = False, with_properties: bool = False) -&gt; ResultsById[TypeInformation]:
+    &#34;&#34;&#34;Returns the types according to the list of names - either with property information or without&#34;&#34;&#34;
+    result = self._post(path=&#34;typesByName&#34;, payload=payload, params={ 
+        &#34;stage&#34;: stage,
+        &#34;withProperties&#34;: with_properties,
+        &#34;withIncomingLinks&#34;: with_incoming_links,
+        &#34;space&#34;: space
+    })
+    return ResultsById[TypeInformation](response=result, constructor=TypeInformation)</code></pre>
+</details>
+</dd>
+<dt id="kg_core.kg.Types.list"><code class="name flex">
+<span>def <span class="ident">list</span></span>(<span>self, space: Optional[str] = None, stage: Stage = 'RELEASED', with_incoming_links: bool = False, with_properties: bool = False, pagination: Pagination = &lt;kg_core.request.Pagination object&gt;) ‑> <a title="kg_core.response.ResultPage" href="response.html#kg_core.response.ResultPage">ResultPage</a>[<a title="kg_core.response.TypeInformation" href="response.html#kg_core.response.TypeInformation">TypeInformation</a>]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Returns the types available - either with property information or without</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def list(self, space: Optional[str] = None, stage: Stage = Stage.RELEASED, with_incoming_links: bool = False, with_properties: bool = False, pagination: Pagination = Pagination()) -&gt; ResultPage[TypeInformation]:
+    &#34;&#34;&#34;Returns the types available - either with property information or without&#34;&#34;&#34;
+    result = self._get(path=&#34;types&#34;, params={ 
+        &#34;stage&#34;: stage,
+        &#34;space&#34;: space,
+        &#34;withProperties&#34;: with_properties,
+        &#34;withIncomingLinks&#34;: with_incoming_links,
+        &#34;from&#34;: pagination.start,
+        &#34;size&#34;: pagination.size,
+        &#34;returnTotalResults&#34;: pagination.return_total_results
+    })
+    return ResultPage[TypeInformation](response=result, constructor=TypeInformation)</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="kg_core.kg.Users"><code class="flex name class">
+<span>class <span class="ident">Users</span></span>
+<span>(</span><span>config: KGConfig)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Helper class that provides a standard way to create an ABC using
+inheritance.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Users(RequestsWithTokenHandler):
+    def __init__(self, config: KGConfig):
+        super(Users, self).__init__(config)
+
+    def accept_terms_of_use(self, version: str) -&gt; Optional[Error]:
+        &#34;&#34;&#34;Accept the terms of use in the given version&#34;&#34;&#34;
+        result = self._post(path=f&#34;users/termsOfUse/{version}/accept&#34;, payload=None, params={})
+        return translate_error(result)
+
+    def get_open_id_config_url(self) -&gt; Result[JsonLdDocument]:
+        &#34;&#34;&#34;Get the endpoint of the openid configuration&#34;&#34;&#34;
+        result = self._get(path=&#34;users/authorization/config&#34;, params={})
+        return Result[JsonLdDocument](response=result, constructor=JsonLdDocument)
+
+    def get_terms_of_use(self) -&gt; Optional[TermsOfUse]:
+        &#34;&#34;&#34;Get the current terms of use&#34;&#34;&#34;
+        result = self._get(path=&#34;users/termsOfUse&#34;, params={})
+        return None if not result.content else TermsOfUse(**result.content)
+
+    def my_info(self) -&gt; Result[User]:
+        &#34;&#34;&#34;Retrieve user information from the passed token (including detailed information such as e-mail address)&#34;&#34;&#34;
+        result = self._get(path=&#34;users/me&#34;, params={})
+        return Result[User](response=result, constructor=User)</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>kg_core.__communication.RequestsWithTokenHandler</li>
+<li>abc.ABC</li>
+</ul>
+<h3>Methods</h3>
+<dl>
+<dt id="kg_core.kg.Users.accept_terms_of_use"><code class="name flex">
+<span>def <span class="ident">accept_terms_of_use</span></span>(<span>self, version: str) ‑> Optional[<a title="kg_core.response.Error" href="response.html#kg_core.response.Error">Error</a>]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Accept the terms of use in the given version</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def accept_terms_of_use(self, version: str) -&gt; Optional[Error]:
+    &#34;&#34;&#34;Accept the terms of use in the given version&#34;&#34;&#34;
+    result = self._post(path=f&#34;users/termsOfUse/{version}/accept&#34;, payload=None, params={})
+    return translate_error(result)</code></pre>
+</details>
+</dd>
+<dt id="kg_core.kg.Users.get_open_id_config_url"><code class="name flex">
+<span>def <span class="ident">get_open_id_config_url</span></span>(<span>self) ‑> <a title="kg_core.response.Result" href="response.html#kg_core.response.Result">Result</a>[<a title="kg_core.response.JsonLdDocument" href="response.html#kg_core.response.JsonLdDocument">JsonLdDocument</a>]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Get the endpoint of the openid configuration</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_open_id_config_url(self) -&gt; Result[JsonLdDocument]:
+    &#34;&#34;&#34;Get the endpoint of the openid configuration&#34;&#34;&#34;
+    result = self._get(path=&#34;users/authorization/config&#34;, params={})
+    return Result[JsonLdDocument](response=result, constructor=JsonLdDocument)</code></pre>
+</details>
+</dd>
+<dt id="kg_core.kg.Users.get_terms_of_use"><code class="name flex">
+<span>def <span class="ident">get_terms_of_use</span></span>(<span>self) ‑> Optional[<a title="kg_core.response.TermsOfUse" href="response.html#kg_core.response.TermsOfUse">TermsOfUse</a>]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Get the current terms of use</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_terms_of_use(self) -&gt; Optional[TermsOfUse]:
+    &#34;&#34;&#34;Get the current terms of use&#34;&#34;&#34;
+    result = self._get(path=&#34;users/termsOfUse&#34;, params={})
+    return None if not result.content else TermsOfUse(**result.content)</code></pre>
+</details>
+</dd>
+<dt id="kg_core.kg.Users.my_info"><code class="name flex">
+<span>def <span class="ident">my_info</span></span>(<span>self) ‑> <a title="kg_core.response.Result" href="response.html#kg_core.response.Result">Result</a>[<a title="kg_core.response.User" href="response.html#kg_core.response.User">User</a>]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Retrieve user information from the passed token (including detailed information such as e-mail address)</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def my_info(self) -&gt; Result[User]:
+    &#34;&#34;&#34;Retrieve user information from the passed token (including detailed information such as e-mail address)&#34;&#34;&#34;
+    result = self._get(path=&#34;users/me&#34;, params={})
+    return Result[User](response=result, constructor=User)</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+</dl>
+</section>
+</article>
+<nav id="sidebar">
+<h1>Index</h1>
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3>Super-module</h3>
+<ul>
+<li><code><a title="kg_core" href="index.html">kg_core</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-functions">Functions</a></h3>
+<ul class="">
+<li><code><a title="kg_core.kg.kg" href="#kg_core.kg.kg">kg</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-classes">Classes</a></h3>
+<ul>
+<li>
+<h4><code><a title="kg_core.kg.Admin" href="#kg_core.kg.Admin">Admin</a></code></h4>
+<ul class="">
+<li><code><a title="kg_core.kg.Admin.assign_type_to_space" href="#kg_core.kg.Admin.assign_type_to_space">assign_type_to_space</a></code></li>
+<li><code><a title="kg_core.kg.Admin.calculate_instance_invitation_scope" href="#kg_core.kg.Admin.calculate_instance_invitation_scope">calculate_instance_invitation_scope</a></code></li>
+<li><code><a title="kg_core.kg.Admin.create_space_definition" href="#kg_core.kg.Admin.create_space_definition">create_space_definition</a></code></li>
+<li><code><a title="kg_core.kg.Admin.create_type_definition" href="#kg_core.kg.Admin.create_type_definition">create_type_definition</a></code></li>
+<li><code><a title="kg_core.kg.Admin.define_property" href="#kg_core.kg.Admin.define_property">define_property</a></code></li>
+<li><code><a title="kg_core.kg.Admin.define_property_for_type" href="#kg_core.kg.Admin.define_property_for_type">define_property_for_type</a></code></li>
+<li><code><a title="kg_core.kg.Admin.deprecate_property" href="#kg_core.kg.Admin.deprecate_property">deprecate_property</a></code></li>
+<li><code><a title="kg_core.kg.Admin.deprecate_property_for_type" href="#kg_core.kg.Admin.deprecate_property_for_type">deprecate_property_for_type</a></code></li>
+<li><code><a title="kg_core.kg.Admin.get_all_role_definitions" href="#kg_core.kg.Admin.get_all_role_definitions">get_all_role_definitions</a></code></li>
+<li><code><a title="kg_core.kg.Admin.get_claim_for_role" href="#kg_core.kg.Admin.get_claim_for_role">get_claim_for_role</a></code></li>
+<li><code><a title="kg_core.kg.Admin.list_instances_with_invitations" href="#kg_core.kg.Admin.list_instances_with_invitations">list_instances_with_invitations</a></code></li>
+<li><code><a title="kg_core.kg.Admin.register_terms_of_use" href="#kg_core.kg.Admin.register_terms_of_use">register_terms_of_use</a></code></li>
+<li><code><a title="kg_core.kg.Admin.remove_space_definition" href="#kg_core.kg.Admin.remove_space_definition">remove_space_definition</a></code></li>
+<li><code><a title="kg_core.kg.Admin.remove_type_definition" href="#kg_core.kg.Admin.remove_type_definition">remove_type_definition</a></code></li>
+<li><code><a title="kg_core.kg.Admin.remove_type_from_space" href="#kg_core.kg.Admin.remove_type_from_space">remove_type_from_space</a></code></li>
+<li><code><a title="kg_core.kg.Admin.rerun_events" href="#kg_core.kg.Admin.rerun_events">rerun_events</a></code></li>
+<li><code><a title="kg_core.kg.Admin.trigger_inference" href="#kg_core.kg.Admin.trigger_inference">trigger_inference</a></code></li>
+<li><code><a title="kg_core.kg.Admin.update_claim_for_role" href="#kg_core.kg.Admin.update_claim_for_role">update_claim_for_role</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="kg_core.kg.Client" href="#kg_core.kg.Client">Client</a></code></h4>
+</li>
+<li>
+<h4><code><a title="kg_core.kg.ClientBuilder" href="#kg_core.kg.ClientBuilder">ClientBuilder</a></code></h4>
+<ul class="">
+<li><code><a title="kg_core.kg.ClientBuilder.add_client_authentication" href="#kg_core.kg.ClientBuilder.add_client_authentication">add_client_authentication</a></code></li>
+<li><code><a title="kg_core.kg.ClientBuilder.build" href="#kg_core.kg.ClientBuilder.build">build</a></code></li>
+<li><code><a title="kg_core.kg.ClientBuilder.build_admin" href="#kg_core.kg.ClientBuilder.build_admin">build_admin</a></code></li>
+<li><code><a title="kg_core.kg.ClientBuilder.with_credentials" href="#kg_core.kg.ClientBuilder.with_credentials">with_credentials</a></code></li>
+<li><code><a title="kg_core.kg.ClientBuilder.with_device_flow" href="#kg_core.kg.ClientBuilder.with_device_flow">with_device_flow</a></code></li>
+<li><code><a title="kg_core.kg.ClientBuilder.with_token" href="#kg_core.kg.ClientBuilder.with_token">with_token</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="kg_core.kg.Instances" href="#kg_core.kg.Instances">Instances</a></code></h4>
+<ul class="">
+<li><code><a title="kg_core.kg.Instances.contribute_to_full_replacement" href="#kg_core.kg.Instances.contribute_to_full_replacement">contribute_to_full_replacement</a></code></li>
+<li><code><a title="kg_core.kg.Instances.contribute_to_partial_replacement" href="#kg_core.kg.Instances.contribute_to_partial_replacement">contribute_to_partial_replacement</a></code></li>
+<li><code><a title="kg_core.kg.Instances.create_new" href="#kg_core.kg.Instances.create_new">create_new</a></code></li>
+<li><code><a title="kg_core.kg.Instances.create_new_with_id" href="#kg_core.kg.Instances.create_new_with_id">create_new_with_id</a></code></li>
+<li><code><a title="kg_core.kg.Instances.delete" href="#kg_core.kg.Instances.delete">delete</a></code></li>
+<li><code><a title="kg_core.kg.Instances.get_by_id" href="#kg_core.kg.Instances.get_by_id">get_by_id</a></code></li>
+<li><code><a title="kg_core.kg.Instances.get_by_identifiers" href="#kg_core.kg.Instances.get_by_identifiers">get_by_identifiers</a></code></li>
+<li><code><a title="kg_core.kg.Instances.get_by_ids" href="#kg_core.kg.Instances.get_by_ids">get_by_ids</a></code></li>
+<li><code><a title="kg_core.kg.Instances.get_incoming_links" href="#kg_core.kg.Instances.get_incoming_links">get_incoming_links</a></code></li>
+<li><code><a title="kg_core.kg.Instances.get_release_status" href="#kg_core.kg.Instances.get_release_status">get_release_status</a></code></li>
+<li><code><a title="kg_core.kg.Instances.get_release_status_by_ids" href="#kg_core.kg.Instances.get_release_status_by_ids">get_release_status_by_ids</a></code></li>
+<li><code><a title="kg_core.kg.Instances.get_scope" href="#kg_core.kg.Instances.get_scope">get_scope</a></code></li>
+<li><code><a title="kg_core.kg.Instances.invite_user_for" href="#kg_core.kg.Instances.invite_user_for">invite_user_for</a></code></li>
+<li><code><a title="kg_core.kg.Instances.list" href="#kg_core.kg.Instances.list">list</a></code></li>
+<li><code><a title="kg_core.kg.Instances.list_invitations" href="#kg_core.kg.Instances.list_invitations">list_invitations</a></code></li>
+<li><code><a title="kg_core.kg.Instances.move" href="#kg_core.kg.Instances.move">move</a></code></li>
+<li><code><a title="kg_core.kg.Instances.release" href="#kg_core.kg.Instances.release">release</a></code></li>
+<li><code><a title="kg_core.kg.Instances.revoke_user_invitation" href="#kg_core.kg.Instances.revoke_user_invitation">revoke_user_invitation</a></code></li>
+<li><code><a title="kg_core.kg.Instances.unrelease" href="#kg_core.kg.Instances.unrelease">unrelease</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="kg_core.kg.Jsonld" href="#kg_core.kg.Jsonld">Jsonld</a></code></h4>
+<ul class="">
+<li><code><a title="kg_core.kg.Jsonld.normalize_payload" href="#kg_core.kg.Jsonld.normalize_payload">normalize_payload</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="kg_core.kg.Queries" href="#kg_core.kg.Queries">Queries</a></code></h4>
+<ul class="">
+<li><code><a title="kg_core.kg.Queries.execute_query_by_id" href="#kg_core.kg.Queries.execute_query_by_id">execute_query_by_id</a></code></li>
+<li><code><a title="kg_core.kg.Queries.get_query_specification" href="#kg_core.kg.Queries.get_query_specification">get_query_specification</a></code></li>
+<li><code><a title="kg_core.kg.Queries.list_per_root_type" href="#kg_core.kg.Queries.list_per_root_type">list_per_root_type</a></code></li>
+<li><code><a title="kg_core.kg.Queries.remove_query" href="#kg_core.kg.Queries.remove_query">remove_query</a></code></li>
+<li><code><a title="kg_core.kg.Queries.save_query" href="#kg_core.kg.Queries.save_query">save_query</a></code></li>
+<li><code><a title="kg_core.kg.Queries.test_query" href="#kg_core.kg.Queries.test_query">test_query</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="kg_core.kg.Spaces" href="#kg_core.kg.Spaces">Spaces</a></code></h4>
+<ul class="">
+<li><code><a title="kg_core.kg.Spaces.get" href="#kg_core.kg.Spaces.get">get</a></code></li>
+<li><code><a title="kg_core.kg.Spaces.list" href="#kg_core.kg.Spaces.list">list</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="kg_core.kg.Types" href="#kg_core.kg.Types">Types</a></code></h4>
+<ul class="">
+<li><code><a title="kg_core.kg.Types.get_by_name" href="#kg_core.kg.Types.get_by_name">get_by_name</a></code></li>
+<li><code><a title="kg_core.kg.Types.list" href="#kg_core.kg.Types.list">list</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="kg_core.kg.Users" href="#kg_core.kg.Users">Users</a></code></h4>
+<ul class="">
+<li><code><a title="kg_core.kg.Users.accept_terms_of_use" href="#kg_core.kg.Users.accept_terms_of_use">accept_terms_of_use</a></code></li>
+<li><code><a title="kg_core.kg.Users.get_open_id_config_url" href="#kg_core.kg.Users.get_open_id_config_url">get_open_id_config_url</a></code></li>
+<li><code><a title="kg_core.kg.Users.get_terms_of_use" href="#kg_core.kg.Users.get_terms_of_use">get_terms_of_use</a></code></li>
+<li><code><a title="kg_core.kg.Users.my_info" href="#kg_core.kg.Users.my_info">my_info</a></code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc" title="pdoc: Python API documentation generator"><cite>pdoc</cite> 0.10.0</a>.</p>
+</footer>
+</body>
+</html>

@@ -1,2 +1,3 @@
 /dev_triggers/**
 .venv/**
+./test.py
