@@ -1,4 +1,4 @@
-#  Copyright 2018 - 2022 Swiss Federal Institute of Technology Lausanne (EPFL)
+#  Copyright 2018 - 2022 EBRAINS AISBL
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -18,37 +18,16 @@
 #  Specific Grant Agreements No. 720270, No. 785907, and No. 945539
 #  (Human Brain Project SGA1, SGA2 and SGA3).
 #
-#
-#  Licensed under the Apache License, Version 2.0 (the "License");
-#  you may not use this file except in compliance with the License.
-#  You may obtain a copy of the License at
-#
-#  http://www.apache.org/licenses/LICENSE-2.0.
-#
-#  Unless required by applicable law or agreed to in writing, software
-#  distributed under the License is distributed on an "AS IS" BASIS,
-#  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-#  See the License for the specific language governing permissions and
-#  limitations under the License.
-#
-#  This open source software code was developed in part or in whole in the
-#  Human Brain Project, funded from the European Union's Horizon 2020
-#  Framework Programme for Research and Innovation under
-#  Specific Grant Agreements No. 720270, No. 785907, and No. 945539
-#  (Human Brain Project SGA1, SGA2 and SGA3).
-#
-
 
 from __future__ import annotations
 
 import threading
+import time
 from abc import ABC, abstractmethod
 from copy import deepcopy
-from typing import Any, Dict, Optional
+from typing import Any, Dict, Optional, Callable
 
 import requests
-from datetime import datetime
-
 
 class TokenHandler(ABC):
 
@@ -74,6 +53,15 @@ class TokenHandler(ABC):
                 auth_endpoint = auth_endpoint_response.json()
                 if auth_endpoint and "data" in auth_endpoint and "endpoint" in auth_endpoint["data"] and auth_endpoint["data"]["endpoint"]:
                     self._auth_endpoint = auth_endpoint["data"]["endpoint"]
+
+
+class CallableTokenHandler(TokenHandler):
+    def __init__(self, callable: Callable[[], str]):
+        super(CallableTokenHandler, self).__init__()
+        self._callable = callable
+
+    def _fetch_token(self) -> str:
+        return self._callable()
 
 
 class KGConfig(object):
@@ -152,26 +140,32 @@ class RequestsWithTokenHandler(ABC):
         self._set_headers(args, False)
         if payload is not None:
             args['json'] = payload
-        start = datetime.timestamp(datetime.now())
-        r = requests.request(**args)
-        end = datetime.timestamp(datetime.now())
+        start = time.perf_counter()
+        r = requests.request(**args, stream=True)
+        end_request = time.perf_counter()
         if r.status_code == 401:
             self._set_headers(args, True)
-            start = datetime.timestamp(datetime.now())
-            r = requests.request(**args)
-            end = datetime.timestamp(datetime.now())
-        if self._kg_config.enable_profiling:
-            duration = end-start
-            print(f"Request was running for {duration}s")
-        args_clone = deepcopy(args)
-        del args_clone["headers"]
+            start = time.perf_counter()
+            r = requests.request(**args, stream=True)
+            end_request = time.perf_counter()             
         try:
             response: Optional[Dict[str, Any]] = r.json()
-            if r.status_code >= 500:
-                raise KGException(response)
+            end_deserialization = time.perf_counter()       
+            if self._kg_config.enable_profiling:
+                total = int((end_deserialization-start)*1000)
+                if response and "durationInMs" in response and response["durationInMs"]:
+                    server_side = response['durationInMs']
+                    client_side = int((end_request-start)*1000)-response['durationInMs']
+                    print(f"Request was running for {total}ms ({response['durationInMs']}ms on the server-side, {int((end_request-start)*1000)-response['durationInMs']}ms on the network and client, {int((end_deserialization-end_request)*1000)}ms between arrival and deserialization to a dict - size: {len(r.content)} bytes).")
+                    client_to_server_ratio = client_side/server_side
+                    if client_to_server_ratio > 1:
+                        print("The request was spending more time on the network and client than on the server. You might want to increase the page size if memory allows.")
+                else:
+                    print(f"Request was running for {total}ms ({int((end_request-start)*1000)}ms until arrival on the client, {int((end_deserialization-end_request)*1000)}ms between arrival and deserialization to a dict)")
         except ValueError:
             response = None
-        return KGRequestWithResponseContext(response, args_clone, payload, r.status_code, self._kg_config)
+        del args["headers"]
+        return KGRequestWithResponseContext(response, args, payload, r.status_code, self._kg_config)
 
     def _get(self, path: str, params: Dict[str, Any]) -> KGRequestWithResponseContext:
         return self._request("GET", path, None, params)

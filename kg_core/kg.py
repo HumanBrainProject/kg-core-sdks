@@ -22,10 +22,10 @@
 from __future__ import annotations
 import os
 import requests
-from typing import List, Optional, Dict, Any
+from typing import List, Optional, Dict, Any, Callable
 from uuid import UUID
 
-from kg_core.__communication import TokenHandler, RequestsWithTokenHandler, KGConfig
+from kg_core.__communication import TokenHandler, RequestsWithTokenHandler, KGConfig, CallableTokenHandler
 from kg_core.request import ResponseConfiguration, ExtendedResponseConfiguration, Pagination, Stage, ReleaseTreeScope
 from kg_core.oauth import SimpleToken, ClientCredentials, DeviceAuthenticationFlow
 from kg_core.response import Result, Instance, JsonLdDocument, ResultsById, ResultPage, ReleaseStatus, Error, translate_error, User, Scope, SpaceInformation, TypeInformation, TermsOfUse, ListOfUUID, ListOfReducedUserInformation
@@ -556,6 +556,10 @@ class ClientBuilder(object):
 
     def with_token(self, token: Optional[str] = None) -> ClientBuilder:
         self._token_handler = SimpleToken(token if token else os.environ["KG_TOKEN"])
+        return self
+
+    def with_custom_token_provider(self, token_provider: Callable[[], str]) -> ClientBuilder:
+        self._token_handler = CallableTokenHandler(token_provider)
         return self
 
     def with_credentials(self, client_id: Optional[str] = None, client_secret: Optional[str] = None) -> ClientBuilder:
