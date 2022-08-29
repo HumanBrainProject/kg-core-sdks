@@ -436,7 +436,7 @@ class Queries(RequestsWithTokenHandler):
             "instanceId": instance_id,
             "restrictToSpaces": restrict_to_spaces
         }
-        for k, v in additional_request_params:
+        for k, v in additional_request_params.items():
             if k not in params:
                 params[k] = v
         result = self._get(path=f"queries/{query_id}/instances", params=params)
@@ -484,7 +484,7 @@ class Queries(RequestsWithTokenHandler):
             "instanceId": instance_id,
             "restrictToSpaces": restrict_to_spaces
         }
-        for k, v in additional_request_params:
+        for k, v in additional_request_params.items():
             if k not in params:
                 params[k] = v
         result = self._post(path="queries", payload=payload, params=params)

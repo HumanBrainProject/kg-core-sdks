@@ -59,7 +59,7 @@ class {{category.capitalize()}}(RequestsWithTokenHandler):
         {% endif %}params = {% if not method.query_parameters %}{}{% else %}{ {% for p in method.query_parameters %}
             "{{p.name}}": {% if p.replace %}{{p.replace}}.{% endif %}{{p.param}}{% if not loop.last %},{% endif %}{% endfor %}
         }{% endif %}{% if method.dynamic_parameters %}
-        {% for dynamic in method.dynamic_parameters %}for k, v in {{dynamic}}:
+        {% for dynamic in method.dynamic_parameters %}for k, v in {{dynamic}}.items():
             if k not in params:
                 params[k] = v{% endfor %}{% endif %}
         result = self._{{method.operation}}(path={% if method.path.has_path_params %}f{% endif %}"{{method.path.name}}", {% if method.has_payload %}payload=payload, {%elif method.operation not in ['get', 'delete'] %}payload=None, {% endif %}params=params)
