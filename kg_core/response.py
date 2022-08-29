@@ -195,10 +195,10 @@ ResponseType = TypeVar("ResponseType")
 
 
 def translate_error(response: KGRequestWithResponseContext) -> Optional[Error]:
-    return Error(**response.content["error"]) if response.content and "error" in response.content and response.content[
-        "error"] \
-        else Error(code=response.status_code, message=http.client.responses[
-        response.status_code]) if response.status_code and response.status_code >= 400 else None
+    if response.content and "error" in response.content and response.content["error"] and type(response.content["error"]) != str:
+        return Error(**response.content["error"])
+    else:
+        return Error(code=response.status_code, message=http.client.responses[response.status_code]) if response.status_code and response.status_code >= 400 else None
 
 
 class _AbstractResult(ABC):
