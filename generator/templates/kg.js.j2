@@ -1,0 +1,140 @@
+# from __future__ import annotations
+# import os
+# import requests
+# from typing import List, Optional, Dict, Any
+# from uuid import UUID
+
+# from kg_core.__communication import TokenHandler, RequestsWithTokenHandler, KGConfig
+# from kg_core.request import ResponseConfiguration, ExtendedResponseConfiguration, Pagination, Stage, ReleaseTreeScope
+# from kg_core.oauth import SimpleToken, ClientCredentials, DeviceAuthenticationFlow
+# from kg_core.response import Result, Instance, JsonLdDocument, ResultsById, ResultPage, ReleaseStatus, Error, translate_error, User, Scope, SpaceInformation, TypeInformation, TermsOfUse, ListOfUUID, ListOfReducedUserInformation
+
+
+const _calculate_base_url = host => `http${host.startsWith('localhost')?'':'s'}://{host}/{{api_version}}/`;
+
+
+const _create_kg_config = (host, enable_profiling, token_handler, client_token_handler = null) => {
+     return KGConfig(_calculate_base_url(host), token_handler, client_token_handler, "{{id_namespace}}", enable_profiling)
+}
+
+class Client() {
+    constructor(host, enable_profiling, token_handler, client_token_handler = null) {
+        if(!host) {
+            throw new Error("No hostname specified")
+        } else if(!token_handler) {
+            throw new Error(""No token provided"")
+        }
+        const kg_config = _create_kg_config(host, enable_profiling, token_handler, client_token_handler)
+         {% for category, methods in methods_by_category %}
+          {% if category != 'admin' %}this.{{category}} = {{category.capitalize()}}(kg_config)
+        {% endif %}{% endfor %}
+    }
+   
+
+{% for category, methods in methods_by_category %}
+    class {{category.capitalize()}} {
+        constructor(config) {
+            super(config);
+        }
+        
+        {% for method in methods %}
+            {% if method.summary %}/*{{method.summary}}*/{% endif %}
+            {{method.name}}({% if method.has_payload %}, payload{% endif %}{% for p in method.parameters %}{% if not p.replace %}, {{p.name}}{% endif %}{% endfor %}){
+                    const result = _{{method.operation}}(path={% if method.path.has_path_params %}f{% endif %}"{{method.path.name}}", {% if method.has_payload %}payload=payload, {%elif method.operation not in ['get', 'delete'] %}payload=None, {% endif %}params={% if not method.query_parameters %}{}){% else %}{ {% for p in method.query_parameters %}
+                        "{{p.name}}": {% if p.replace %}{{p.replace}}.{% endif %}{{p.param}}{% if not loop.last %},{% endif %}{% endfor %}
+                    }){% endif %}
+                    return {% if method.generic_response_type %}
+                                {% if 'Optional[' in method.response_type %}
+                                    None if not result.content else {{method.generic_response_type}}(**result.content)
+                                {% else %}
+                                    {{method.response_type}}(response=result, constructor={{method.generic_response_type}})
+                                {% endif %}
+                            {% elif method.response_type %}
+                                {{method.response_type}}(response = result)
+                            {% else %}
+                                translate_error(result)
+                            {% endif %}
+            }
+        {% endfor %}
+    }
+{% endfor %}
+}
+
+class ClientBuilder() {
+    constructor(host_name, enable_profiling) {
+        this._host_name = host_name;
+        this._token_handler = null;
+        this._client_token_handler = null;
+        this._enable_profiling = enable_profiling;
+    }
+
+     _resolve_token_handler() {
+        if(!this._token_handler) {
+            this.with_device_flow();  // We fall back to device flow if there is no explicitly stated token handler and no environment variables are specified
+            return self._token_handler;
+        } 
+        return this._token_handler;
+    }
+
+    _resolve_client_token_handler() {
+        if(!this._client_token_handler) {
+            if("KG_CLIENT_ID" in process.env && "KG_CLIENT_SECRET" in process.env){
+                return ClientCredentials(os.environ["KG_CLIENT_ID"], os.environ["KG_CLIENT_SECRET"]);
+            } else if("KG_CLIENT_TOKEN" in process.env) {
+                return SimpleToken(os.environ["KG_CLIENT_TOKEN"]);
+            } else {
+                return null;
+            }
+        } 
+        return this._client_token_handler;
+    }
+
+    async with_device_flow(client_id = "{{default_client_id_for_device_flow}}", open_id_configuration_url = null) {
+        let config = null;
+        if(!open_id_configuration_url) {
+            const auth_endpoint_request = await fetch(`${_calculate_base_url(self._host_name)}users/authorization/config`);
+            const auth_endpoint = await auth_endpoint_request.json();
+            if(auth_endpoint && "data" in auth_endpoint && auth_endpoint["data"] && "endpoint" in auth_endpoint["data"]) {
+                config = auth_endpoint["data"]["endpoint"]
+            } else {
+                throw new Error("Was not able to determine the authentication endpoint. This could be caused by a temporary downtime or a misconfiguration of the host name")
+            }
+        } else {
+            config = open_id_configuration_url
+        }
+        this._token_handler = DeviceAuthenticationFlow(config, client_id); //TODO
+        return this;
+    }
+
+    with_token(token = null) {
+        this._token_handler = SimpleToken(token if token else os.environ["KG_TOKEN"]);
+        return this;
+    }
+
+    with_credentials(client_id = null, client_secret = null) {
+        this._token_handler = ClientCredentials(client_id ? client_id : process.env["KG_CLIENT_ID"], client_secret ? client_secret : process.env["KG_CLIENT_SECRET"]);
+        return this;
+    }
+
+    add_client_authentication(client_id = null, client_secret = null) {
+        this._client_token_handler = ClientCredentials(client_id ? client_id : process.env["KG_CLIENT_ID"], client_secret ? client_secret : process.env["KG_CLIENT_SECRET"])
+        return this;
+    }
+        
+
+    build() {
+        return Client(this._host_name, this._enable_profiling, this._resolve_token_handler(), this._resolve_client_token_handler())
+    }
+
+    build_admin() {
+        return Admin(_create_kg_config(this._host_name, this._enable_profiling, this._resolve_token_handler(), this._resolve_client_token_handler()))
+    }
+        
+}
+
+
+const kg = (host = "{{ default_kg_root }}", enable_profiling = false) {
+    return ClientBuilder(host, enable_profiling);
+}
+    
+
