@@ -6,27 +6,27 @@
 
 # from kg_core.__communication import TokenHandler, RequestsWithTokenHandler, KGConfig
 # from kg_core.request import ResponseConfiguration, ExtendedResponseConfiguration, Pagination, Stage, ReleaseTreeScope
-# from kg_core.oauth import SimpleToken, ClientCredentials, DeviceAuthenticationFlow
+# from kg_core.oauth import SimpleToken, ClientCredentials
 # from kg_core.response import Result, Instance, JsonLdDocument, ResultsById, ResultPage, ReleaseStatus, Error, translate_error, User, Scope, SpaceInformation, TypeInformation, TermsOfUse, ListOfUUID, ListOfReducedUserInformation
 
 
-const _calculate_base_url = host => `http${host.startsWith('localhost')?'':'s'}://{host}/{{api_version}}/`;
+const _calculateBaseUrl = host => `http${host.startsWith('localhost')?'':'s'}://{host}/{{api_version}}/`;
 
 
-const _create_kg_config = (host, enable_profiling, token_handler, client_token_handler = null) => {
-     return KGConfig(_calculate_base_url(host), token_handler, client_token_handler, "{{id_namespace}}", enable_profiling)
+const _createKgConfig = (host, enableProfiling, tokenHandler, clientTokenHandler = null) => {
+     return KGConfig(_calculateBaseUrl(host), tokenHandler, clientTokenHandler, "{{id_namespace}}", enableProfiling)
 }
 
 class Client() {
-    constructor(host, enable_profiling, token_handler, client_token_handler = null) {
+    constructor(host, enableProfiling, tokenHandler, clientTokenHandler = null) {
         if(!host) {
             throw new Error("No hostname specified")
-        } else if(!token_handler) {
+        } else if(!tokenHandler) {
             throw new Error(""No token provided"")
         }
-        const kg_config = _create_kg_config(host, enable_profiling, token_handler, client_token_handler)
+        const kgConfig = _createKgConfig(host, enableProfiling, tokenHandler, clientTokenHandler);
          {% for category, methods in methods_by_category %}
-          {% if category != 'admin' %}this.{{category}} = {{category.capitalize()}}(kg_config)
+          {% if category != 'admin' %}this.{{category}} = {{category.capitalize()}}(kgConfig);
         {% endif %}{% endfor %}
     }
    
@@ -61,80 +61,54 @@ class Client() {
 }
 
 class ClientBuilder() {
-    constructor(host_name, enable_profiling) {
-        this._host_name = host_name;
-        this._token_handler = null;
-        this._client_token_handler = null;
-        this._enable_profiling = enable_profiling;
+    constructor(hostName, enableProfiling) {
+        this._hostName = hostName;
+        this._tokenHandler = null;
+        this._clientTokenHandler = null;
+        this._enableProfiling = enableProfiling;
     }
 
-     _resolve_token_handler() {
-        if(!this._token_handler) {
-            this.with_device_flow();  // We fall back to device flow if there is no explicitly stated token handler and no environment variables are specified
-            return self._token_handler;
-        } 
-        return this._token_handler;
-    }
-
-    _resolve_client_token_handler() {
-        if(!this._client_token_handler) {
+    _resolveClientTokenHandler() {
+        if(!this._clientTokenHandler) {
             if("KG_CLIENT_ID" in process.env && "KG_CLIENT_SECRET" in process.env){
-                return ClientCredentials(os.environ["KG_CLIENT_ID"], os.environ["KG_CLIENT_SECRET"]);
+                return ClientCredentials(process.env["KG_CLIENT_ID"], process.env["KG_CLIENT_SECRET"]); //TODO implement ClientCredentials
             } else if("KG_CLIENT_TOKEN" in process.env) {
-                return SimpleToken(os.environ["KG_CLIENT_TOKEN"]);
+                return SimpleToken(process.env["KG_CLIENT_TOKEN"]); //TODO implement SimpleToken
             } else {
                 return null;
             }
         } 
-        return this._client_token_handler;
+        return this._clientTokenHandler;
     }
 
-    async with_device_flow(client_id = "{{default_client_id_for_device_flow}}", open_id_configuration_url = null) {
-        let config = null;
-        if(!open_id_configuration_url) {
-            const auth_endpoint_request = await fetch(`${_calculate_base_url(self._host_name)}users/authorization/config`);
-            const auth_endpoint = await auth_endpoint_request.json();
-            if(auth_endpoint && "data" in auth_endpoint && auth_endpoint["data"] && "endpoint" in auth_endpoint["data"]) {
-                config = auth_endpoint["data"]["endpoint"]
-            } else {
-                throw new Error("Was not able to determine the authentication endpoint. This could be caused by a temporary downtime or a misconfiguration of the host name")
-            }
-        } else {
-            config = open_id_configuration_url
-        }
-        this._token_handler = DeviceAuthenticationFlow(config, client_id); //TODO
+    withToken(token = null) {
+        this._tokenHandler = SimpleToken(token?token:process.env["KG_TOKEN"]); //TODO implement SimpleToken
         return this;
     }
 
-    with_token(token = null) {
-        this._token_handler = SimpleToken(token if token else os.environ["KG_TOKEN"]);
+    withCredentials(client_id = null, client_secret = null) {
+        this._tokenHandler = ClientCredentials(client_id ? client_id : process.env["KG_CLIENT_ID"], client_secret ? client_secret : process.env["KG_CLIENT_SECRET"]); //TODO implement ClientCredentials
         return this;
     }
 
-    with_credentials(client_id = null, client_secret = null) {
-        this._token_handler = ClientCredentials(client_id ? client_id : process.env["KG_CLIENT_ID"], client_secret ? client_secret : process.env["KG_CLIENT_SECRET"]);
-        return this;
-    }
-
-    add_client_authentication(client_id = null, client_secret = null) {
-        this._client_token_handler = ClientCredentials(client_id ? client_id : process.env["KG_CLIENT_ID"], client_secret ? client_secret : process.env["KG_CLIENT_SECRET"])
+    addClientAuthentication(client_id = null, client_secret = null) {
+        this._clientTokenHandler = ClientCredentials(client_id ? client_id : process.env["KG_CLIENT_ID"], client_secret ? client_secret : process.env["KG_CLIENT_SECRET"]); //TODO implement ClientCredentials
         return this;
     }
         
-
     build() {
-        return Client(this._host_name, this._enable_profiling, this._resolve_token_handler(), this._resolve_client_token_handler())
+        return Client(this._hostName, this._enableProfiling, this._tokenHandler, this._resolveClientTokenHandler()); //TODO implement Client
     }
 
-    build_admin() {
-        return Admin(_create_kg_config(this._host_name, this._enable_profiling, this._resolve_token_handler(), this._resolve_client_token_handler()))
+    buildAdmin() {
+        return Admin(_createKgConfig(this._hostName, this._enableProfiling, this._tokenHandler, this._resolveClientTokenHandler())) //TODO implement Admin
     }
         
 }
 
 
-const kg = (host = "{{ default_kg_root }}", enable_profiling = false) {
-    return ClientBuilder(host, enable_profiling);
+const kg = (host = "{{ default_kg_root }}", enableProfiling = false) => {
+    return ClientBuilder(host, enableProfiling);
 }
     
 
