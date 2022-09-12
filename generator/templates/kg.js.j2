@@ -23,7 +23,7 @@
 # from kg_core.request import ResponseConfiguration, ExtendedResponseConfiguration, Pagination, Stage, ReleaseTreeScope
 # from kg_core.oauth import SimpleToken, ClientCredentials
 # from kg_core.response import Result, Instance, JsonLdDocument, ResultsById, ResultPage, ReleaseStatus, Error, translate_error, User, Scope, SpaceInformation, TypeInformation, TermsOfUse, ListOfUUID, ListOfReducedUserInformation
-
+import { SimpleToken, ClientCredentials } from "kg_core/oauth";
 
 const _calculateBaseUrl = host => `http${host.startsWith('localhost')?'':'s'}://{host}/{{api_version}}/`;
 
@@ -86,9 +86,9 @@ class ClientBuilder() {
     _resolveClientTokenHandler() {
         if(!this._clientTokenHandler) {
             if("KG_CLIENT_ID" in process.env && "KG_CLIENT_SECRET" in process.env){
-                return ClientCredentials(process.env["KG_CLIENT_ID"], process.env["KG_CLIENT_SECRET"]); //TODO implement ClientCredentials
+                return new ClientCredentials(process.env["KG_CLIENT_ID"], process.env["KG_CLIENT_SECRET"]);
             } else if("KG_CLIENT_TOKEN" in process.env) {
-                return SimpleToken(process.env["KG_CLIENT_TOKEN"]); //TODO implement SimpleToken
+                return new SimpleToken(process.env["KG_CLIENT_TOKEN"]);
             } else {
                 return null;
             }
@@ -97,17 +97,17 @@ class ClientBuilder() {
     }
 
     withToken(token = null) {
-        this._tokenHandler = SimpleToken(token?token:process.env["KG_TOKEN"]); //TODO implement SimpleToken
+        this._tokenHandler = new SimpleToken(token?token:process.env["KG_TOKEN"]);
         return this;
     }
 
     withCredentials(client_id = null, client_secret = null) {
-        this._tokenHandler = ClientCredentials(client_id ? client_id : process.env["KG_CLIENT_ID"], client_secret ? client_secret : process.env["KG_CLIENT_SECRET"]); //TODO implement ClientCredentials
+        this._tokenHandler = new ClientCredentials(client_id ? client_id : process.env["KG_CLIENT_ID"], client_secret ? client_secret : process.env["KG_CLIENT_SECRET"]);
         return this;
     }
 
     addClientAuthentication(client_id = null, client_secret = null) {
-        this._clientTokenHandler = ClientCredentials(client_id ? client_id : process.env["KG_CLIENT_ID"], client_secret ? client_secret : process.env["KG_CLIENT_SECRET"]); //TODO implement ClientCredentials
+        this._clientTokenHandler = new ClientCredentials(client_id ? client_id : process.env["KG_CLIENT_ID"], client_secret ? client_secret : process.env["KG_CLIENT_SECRET"]);
         return this;
     }
         
@@ -122,8 +122,6 @@ class ClientBuilder() {
 }
 
 
-const kg = (host = "{{ default_kg_root }}", enableProfiling = false) => {
-    return ClientBuilder(host, enableProfiling);
-}
+const kg = (host = "{{ default_kg_root }}", enableProfiling = false) => new ClientBuilder(host, enableProfiling);
     
 
