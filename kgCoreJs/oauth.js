@@ -19,10 +19,10 @@
 *  (Human Brain Project SGA1, SGA2 and SGA3).
 */
 
-// from kg_core.__communication import TokenHandler
+import { TokenHandler } from "./communication";
 
 
-export class SimpleToken extends TokenHandler { //  TODO implement TokenHandler
+export class SimpleToken extends TokenHandler {
     constructor(token) {
         super();
         this.__simpleToken = token;
@@ -33,7 +33,7 @@ export class SimpleToken extends TokenHandler { //  TODO implement TokenHandler
     }
 }
 
-export class ClientCredentials extends TokenHandler { //  TODO implement TokenHandler
+export class ClientCredentials extends TokenHandler {
     constructor(clientId, clientSecret) {
         super();
         this.clientId = clientId;
@@ -54,6 +54,7 @@ export class ClientCredentials extends TokenHandler { //  TODO implement TokenHa
                     "client_secret": this.clientSecret
                 })
             };
+            
             try {
                 const fetchResponse = await fetch(this._auth_endpoint, settings);
                 if(fetchResponse.status === 200) {

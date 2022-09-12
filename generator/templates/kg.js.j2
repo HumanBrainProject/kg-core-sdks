@@ -18,11 +18,6 @@
 *  Specific Grant Agreements No. 720270, No. 785907, and No. 945539
 *  (Human Brain Project SGA1, SGA2 and SGA3).
 */
-
-# from kg_core.__communication import TokenHandler, RequestsWithTokenHandler, KGConfig
-# from kg_core.request import ResponseConfiguration, ExtendedResponseConfiguration, Pagination, Stage, ReleaseTreeScope
-# from kg_core.oauth import SimpleToken, ClientCredentials
-# from kg_core.response import Result, Instance, JsonLdDocument, ResultsById, ResultPage, ReleaseStatus, Error, translate_error, User, Scope, SpaceInformation, TypeInformation, TermsOfUse, ListOfUUID, ListOfReducedUserInformation
 import { SimpleToken, ClientCredentials } from "kgCoreJs/oauth";
 import { KGConfig } from "kgCoreJs/communication";
 
@@ -60,7 +55,7 @@ class Client() {
                     const result = _{{method.operation}}(path={% if method.path.has_path_params %}f{% endif %}"{{method.path.name}}", {% if method.has_payload %}payload=payload, {%elif method.operation not in ['get', 'delete'] %}payload=None, {% endif %}params={% if not method.query_parameters %}{}){% else %}{ {% for p in method.query_parameters %}
                         "{{p.name}}": {% if p.replace %}{{p.replace}}.{% endif %}{{p.param}}{% if not loop.last %},{% endif %}{% endfor %}
                     }){% endif %}
-                    return {% if method.generic_response_type %}
+                    return {% if method.generic_response_type %} // TODO implement the return logic
                                 {% if 'Optional[' in method.response_type %}
                                     None if not result.content else {{method.generic_response_type}}(**result.content)
                                 {% else %}

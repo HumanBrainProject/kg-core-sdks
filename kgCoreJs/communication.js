@@ -19,6 +19,19 @@
 *  (Human Brain Project SGA1, SGA2 and SGA3).
 */
 
+export class TokenHandler {
+    constructor() {
+        if (this.constructor === TokenHandler) {
+            throw new Error("Class 'TokenHandler' cannot be instantiated");
+        }
+        this.authEndpoint = null;
+        this.token = null;
+    }
+
+    fetchToken() {
+        throw new Error("Method 'fetchToken()' must be implemented.");
+    }
+}
 export class KGConfig {
     constructor(endpoint, tokenHandler, clientTokenHandler, idNamespace, enableProfiling) {
         this.endpoint = endpoint;
