@@ -23,13 +23,15 @@
 # from kg_core.request import ResponseConfiguration, ExtendedResponseConfiguration, Pagination, Stage, ReleaseTreeScope
 # from kg_core.oauth import SimpleToken, ClientCredentials
 # from kg_core.response import Result, Instance, JsonLdDocument, ResultsById, ResultPage, ReleaseStatus, Error, translate_error, User, Scope, SpaceInformation, TypeInformation, TermsOfUse, ListOfUUID, ListOfReducedUserInformation
-import { SimpleToken, ClientCredentials } from "kg_core/oauth";
+import { SimpleToken, ClientCredentials } from "kgCoreJs/oauth";
+import { KGConfig } from "kgCoreJs/communication";
+
 
 const _calculateBaseUrl = host => `http${host.startsWith('localhost')?'':'s'}://{host}/{{api_version}}/`;
 
 
 const _createKgConfig = (host, enableProfiling, tokenHandler, clientTokenHandler = null) => {
-     return KGConfig(_calculateBaseUrl(host), tokenHandler, clientTokenHandler, "{{id_namespace}}", enableProfiling) //TODO implement KGConfig
+     return new KGConfig(_calculateBaseUrl(host), tokenHandler, clientTokenHandler, "{{id_namespace}}", enableProfiling);
 }
 
 class Client() {
@@ -112,11 +114,11 @@ class ClientBuilder() {
     }
         
     build() {
-        return Client(this._hostName, this._enableProfiling, this._tokenHandler, this._resolveClientTokenHandler()); //TODO implement Client
+        return new Client(this._hostName, this._enableProfiling, this._tokenHandler, this._resolveClientTokenHandler());
     }
 
     buildAdmin() {
-        return Admin(_createKgConfig(this._hostName, this._enableProfiling, this._tokenHandler, this._resolveClientTokenHandler())) //TODO implement Admin
+        return new Admin(_createKgConfig(this._hostName, this._enableProfiling, this._tokenHandler, this._resolveClientTokenHandler()));
     }
         
 }
