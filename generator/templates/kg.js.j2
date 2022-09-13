@@ -28,7 +28,7 @@ const _calculateBaseUrl = host => `http${host.startsWith('localhost')?'':'s'}://
 
 const _createKgConfig = (host, tokenHandler, clientTokenHandler = null) => new KGConfig(_calculateBaseUrl(host), tokenHandler, clientTokenHandler, "{{id_namespace}}");
 
-class Client() {
+class Client {
     constructor(host, tokenHandler, clientTokenHandler = null) {
         if(!host) {
             throw new Error("No hostname specified")
@@ -59,13 +59,14 @@ class {{category.capitalize()}} extends RequestsWithTokenHandler {
             if k not in params:
                 params[k] = v{% endfor %}{% endif %}
         const result = this._{{method.operation}}(path={% if method.path.has_path_params %}f{% endif %}"{{method.path.name}}", {% if method.has_payload %}payload=payload, {%elif method.operation not in ['get', 'delete'] %}payload=None, {% endif %}params=params);
-        return {% if method.generic_response_type %}{% if 'Optional[' in method.response_type %}None if not result.content else {{method.generic_response_type}}(**result.content){% else %}{{method.response_type}}(response=result, constructor={{method.generic_response_type}}){% endif %}{% elif method.response_type %}{{method.response_type}}(response = result){% else %}translate_error(result){% endif %} # TODO Implement the return logic
+        return result;
+        # return {% if method.generic_response_type %}{% if 'Optional[' in method.response_type %}None if not result.content else {{method.generic_response_type}}(**result.content){% else %}{{method.response_type}}(response=result, constructor={{method.generic_response_type}}){% endif %}{% elif method.response_type %}{{method.response_type}}(response = result){% else %}translate_error(result){% endif %} TODO Implement the return logic
     }
 {% endfor %}
 }
 {% endfor %}
 
-class ClientBuilder() {
+class ClientBuilder {
     constructor(hostName) {
         this._hostName = hostName;
         this._tokenHandler = null;
