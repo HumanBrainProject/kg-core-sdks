@@ -43,7 +43,7 @@ long_description = "This is a client library to access the EBRAINS KG core API v
 
 setup(
     name='ebrains_kg_core',
-    version='0.9.7',
+    version='0.9.10',
     packages=['kg_core'],
     package_data = {
         'kg_core': ['py.typed'],

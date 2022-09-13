@@ -22,10 +22,10 @@
 from __future__ import annotations
 import os
 import requests
-from typing import List, Optional, Dict, Any
+from typing import List, Optional, Dict, Any, Callable
 from uuid import UUID
 
-from kg_core.__communication import TokenHandler, RequestsWithTokenHandler, KGConfig
+from kg_core.__communication import TokenHandler, RequestsWithTokenHandler, KGConfig, CallableTokenHandler
 from kg_core.request import ResponseConfiguration, ExtendedResponseConfiguration, Pagination, Stage, ReleaseTreeScope
 from kg_core.oauth import SimpleToken, ClientCredentials, DeviceAuthenticationFlow
 from kg_core.response import Result, Instance, JsonLdDocument, ResultsById, ResultPage, ReleaseStatus, Error, translate_error, User, Scope, SpaceInformation, TypeInformation, TermsOfUse, ListOfUUID, ListOfReducedUserInformation
@@ -56,9 +56,13 @@ class {{category.capitalize()}}(RequestsWithTokenHandler):
 {% for method in methods %}
     def {{method.name}}(self{% if method.has_payload %}, payload: dict{% endif %}{% for p in method.parameters %}{% if not p.replace %}, {{p.name}}{% if p.type %}: {{p.type}}{% endif %}{% endif %}{% endfor %}){% if method.response_type %} -> {{method.response_type}}{% else %} -> Optional[Error]{% endif %}:
         {% if method.summary %}"""{{method.summary}}"""
-        {% endif %}result = self._{{method.operation}}(path={% if method.path.has_path_params %}f{% endif %}"{{method.path.name}}", {% if method.has_payload %}payload=payload, {%elif method.operation not in ['get', 'delete'] %}payload=None, {% endif %}params={% if not method.query_parameters %}{}){% else %}{ {% for p in method.query_parameters %}
+        {% endif %}params = {% if not method.query_parameters %}{}{% else %}{ {% for p in method.query_parameters %}
             "{{p.name}}": {% if p.replace %}{{p.replace}}.{% endif %}{{p.param}}{% if not loop.last %},{% endif %}{% endfor %}
-        }){% endif %}
+        }{% endif %}{% if method.dynamic_parameters %}
+        {% for dynamic in method.dynamic_parameters %}for k, v in {{dynamic}}.items():
+            if k not in params:
+                params[k] = v{% endfor %}{% endif %}
+        result = self._{{method.operation}}(path={% if method.path.has_path_params %}f{% endif %}"{{method.path.name}}", {% if method.has_payload %}payload=payload, {%elif method.operation not in ['get', 'delete'] %}payload=None, {% endif %}params=params)
         return {% if method.generic_response_type %}{% if 'Optional[' in method.response_type %}None if not result.content else {{method.generic_response_type}}(**result.content){% else %}{{method.response_type}}(response=result, constructor={{method.generic_response_type}}){% endif %}{% elif method.response_type %}{{method.response_type}}(response = result){% else %}translate_error(result){% endif %}
 {% endfor %}
 {% endfor %}
@@ -102,6 +106,10 @@ class ClientBuilder(object):
 
     def with_token(self, token: Optional[str] = None) -> ClientBuilder:
         self._token_handler = SimpleToken(token if token else os.environ["KG_TOKEN"])
+        return self
+
+    def with_custom_token_provider(self, token_provider: Callable[[], str]) -> ClientBuilder:
+        self._token_handler = CallableTokenHandler(token_provider)
         return self
 
     def with_credentials(self, client_id: Optional[str] = None, client_secret: Optional[str] = None) -> ClientBuilder:

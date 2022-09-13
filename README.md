@@ -116,6 +116,16 @@ kg().with_credentials(
 ```
 Just as with an existing token, the arguments "client_id" and "client_secret" default to the environment variables "KG_CLIENT_ID" and "KG_CLIENT_SECRET", so you can use either way to define the values.
 
+
+#### Custom token provider
+Maybe, you don't have the token itself but you have some logic which can fetch it. This is what the custom token provider is for: You can implement your own function on how to fetch the token:
+```python
+from kg_core.kg import kg
+
+kg().with_custom_token_provider(lambda: some_way_to_fetch_the_token())
+```
+
+
 #### Special case: Client Authentication
 The EBRAINS Knowledge Graph knows the concept of dual authentication, which means that not only the user but also the technical client can authenticate.
 This is e.g. useful to restrict the capabilities of the user from the client context (e.g. if the user has write rights but the client only executes "read-only" operations, it can be prevented that the user manipulates data) and to profit from contextualized responses from the EBRAINS KG.
@@ -132,7 +142,6 @@ kg().with_device_flow().add_client_authentication(
 )
 ```
 This would cause the user to authenticate with the device flow and would additionally authenticate the client with the passed **client-id** and **client-secret**. Just as with the "With credentials" authentication mechanism, client_id and client_secret default to their corresponding environment variables.
-
 
 
 

@@ -96,6 +96,11 @@ class ClientGenerator(object):
 
                 for operation, definition in value.items():
                     parameters: List[Dict[str, Any]] = definition["parameters"] if "parameters" in definition else []
+                    for p in parameters:
+                        if p["name"] == "allRequestParams":
+                            # We change the wording for the "allRequestParams" because the client ensures there
+                            # is no override of the original "hard-coded" properties and therefore the role of this parameter slightly changes.
+                            p["name"] = "additionalRequestParams"
                     path_parameters = [p["name"] for p in parameters if p["in"] == "path"]
                     query_parameters = [{"name": p["name"], "param": self._to_snake_case(p["name"])} for p in parameters if p["in"] == "query"]
 
@@ -103,11 +108,15 @@ class ClientGenerator(object):
                     method_parameters.sort(key=self._sort_params)
 
                     method_param_names: List[Optional[str]] = [p["name"] for p in method_parameters]
-
                     self.consolidate_request_objects(ExtendedResponseConfiguration(), method_parameters, method_param_names, query_parameters)
                     self.consolidate_request_objects(ResponseConfiguration(), method_parameters, method_param_names, query_parameters)
                     self.consolidate_request_objects(Pagination(), method_parameters, method_param_names, query_parameters)
-
+                    dynamic_parameters = [p["name"] for p in method_parameters if p["type"].startswith("Dict[str, Any]")]
+                    for dp in dynamic_parameters:
+                        for qp in query_parameters:
+                            if qp["param"] == dp:
+                                query_parameters.remove(qp)
+                                break
                     method_name = self._to_snake_case(definition["operationId"])
                     category_singular = category[:-1] if category.endswith("s") else category
                     method_name = re.sub(f"^{category_singular}_", "", method_name)
@@ -126,7 +135,7 @@ class ClientGenerator(object):
 
                     method: Dict[str, Any] = {"operation": operation, "summary": definition["summary"] if "summary" in definition else None, "has_payload": "requestBody" in definition and definition["requestBody"],
                               "path": {"name": self._translate_path(relative_path, path_parameters), "has_path_params": len(path_parameters) > 0}, "name": method_name,
-                              "parameters": method_parameters, "query_parameters": query_parameters, "response_type": response_type, "generic_response_type": generic_response_type}
+                              "parameters": method_parameters, "query_parameters": query_parameters, "dynamic_parameters": dynamic_parameters, "response_type": response_type, "generic_response_type": generic_response_type}
                     methods_by_category[category].append(method)
                     print(f"Operation: {operation}, Path: {relative_path}")
             # Todo sort by operationId
