@@ -31,9 +31,9 @@ const _createKgConfig = (host, tokenHandler, clientTokenHandler = null) => new K
 class Client {
     constructor(host, tokenHandler, clientTokenHandler = null) {
         if(!host) {
-            throw new Error("No hostname specified")
+            throw new Error("No hostname specified");
         } else if(!tokenHandler) {
-            throw new Error(""No token provided"")
+            throw new Error("No token provided");
         }
         const kgConfig = _createKgConfig(host, tokenHandler, clientTokenHandler);
 {% for category, methods in methods_by_category %}
@@ -51,7 +51,7 @@ class {{category.capitalize()}} extends RequestsWithTokenHandler {
     
 {% for method in methods %}
     {% if method.summary %}/*{{method.summary}}*/{% endif %}
-    {{method.name}}({% if method.has_payload %}, payload{% endif %}{% for p in method.parameters %}{% if not p.replace %}, {{p.name}}{% endif %}{% endfor %}) {
+    {{method.name}}({% if method.has_payload %}payload{% endif %}{% for p in method.parameters %}{% if not p.replace %}, {{p.name}}{% endif %}{% endfor %}) {
         params = {% if not method.query_parameters %}{}{% else %}{ {% for p in method.query_parameters %}
             "{{p.name}}": {% if p.replace %}{{p.replace}}.{% endif %}{{p.param}}{% if not loop.last %},{% endif %}{% endfor %}
         }{% endif %}{% if method.dynamic_parameters %}
