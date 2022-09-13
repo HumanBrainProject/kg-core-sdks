@@ -41,7 +41,8 @@ class ClientGenerator(object):
     }
     specs = ["0%20simple", "1%20advanced"]
     admin_spec = "2%20admin"
-    target = "kg_core/kg.py"
+    python_target = "kg_core/kg.py"
+    js_target = "kg_core/kg.js"
 
     def __init__(self, kg_root:str, open_api_spec_subpath:str, id_namespace:str, default_client_id_for_device_flow:str):
         self.default_kg_root:str = kg_root
@@ -54,7 +55,8 @@ class ClientGenerator(object):
             loader=PackageLoader("generator"),
             autoescape=select_autoescape()
         )
-        template = env.get_template("kg.py.j2")
+        python_template = env.get_template("kg.py.j2")
+        js_template = env.get_template("kg.js.j2")
         api_version = None
 
         all_specs: List[Dict[str, Dict[str, Any]]] = []
@@ -141,8 +143,10 @@ class ClientGenerator(object):
             # Todo sort by operationId
             for _, methods in methods_by_category.items():
                 methods.sort(key=lambda m: m['name'])
-        with open(self.target, "w") as file:
-            file.write(template.render(default_kg_root=self.default_kg_root, methods_by_category=sorted(methods_by_category.items()), api_version=api_version, id_namespace=self.id_namespace, default_client_id_for_device_flow=self.default_client_id_for_device_flow))
+        with open(self.python_target, "w") as file:
+            file.write(python_template.render(default_kg_root=self.default_kg_root, methods_by_category=sorted(methods_by_category.items()), api_version=api_version, id_namespace=self.id_namespace, default_client_id_for_device_flow=self.default_client_id_for_device_flow))
+        with open(self.js_target, "w") as file:
+            file.write(js_template.render(default_kg_root=self.default_kg_root, methods_by_category=sorted(methods_by_category.items()), api_version=api_version, id_namespace=self.id_namespace, default_client_id_for_device_flow=self.default_client_id_for_device_flow))
         print(json.dumps(paths_by_categories, indent=4))
         print(json.dumps(all_schemas, indent=4))
 

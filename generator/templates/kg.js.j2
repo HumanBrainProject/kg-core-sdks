@@ -23,7 +23,7 @@ import { SimpleToken, ClientCredentials } from "kgCoreJs/oauth";
 import { KGConfig, CallableTokenHandler } from "kgCoreJs/communication";
 
 
-const _calculateBaseUrl = host => `http${host.startsWith('localhost')?'':'s'}://{host}/{{api_version}}/`;
+const _calculateBaseUrl = host => `http${host.startsWith('localhost')?'':'s'}://${host}/{{api_version}}/`;
 
 
 const _createKgConfig = (host, tokenHandler, clientTokenHandler = null) => new KGConfig(_calculateBaseUrl(host), tokenHandler, clientTokenHandler, "{{id_namespace}}");
@@ -36,11 +36,8 @@ class Client {
             throw new Error("No token provided");
         }
         const kgConfig = _createKgConfig(host, tokenHandler, clientTokenHandler);
-{% for category, methods in methods_by_category %}
-    {% if category != 'admin' %}
-        this.{{category}} = new {{category.capitalize()}}(kgConfig);
-    {% endif %}
-{% endfor %}
+        {% for category, methods in methods_by_category %}{% if category != 'admin' %}this.{{category}} = new {{category.capitalize()}}(kgConfig);
+        {% endif %}{% endfor %}
     }
 }
 {% for category, methods in methods_by_category %}
@@ -58,7 +55,7 @@ class {{category.capitalize()}} extends RequestsWithTokenHandler {
         {% for dynamic in method.dynamic_parameters %}for k, v in {{dynamic}}.items():
             if k not in params:
                 params[k] = v{% endfor %}{% endif %}
-        const result = this._{{method.operation}}(path={% if method.path.has_path_params %}f{% endif %}"{{method.path.name}}", {% if method.has_payload %}payload=payload, {%elif method.operation not in ['get', 'delete'] %}payload=None, {% endif %}params=params);
+        const result = this._{{method.operation}}(path={% if method.path.has_path_params %}`{{method.path.name|replace('{', '${')}}`{%else%}"{{method.path.name}}"{% endif %}, {% if method.has_payload %}payload=payload, {%elif method.operation not in ['get', 'delete'] %}payload=None, {% endif %}params=params);
         return result;
     }
 {% endfor %}
