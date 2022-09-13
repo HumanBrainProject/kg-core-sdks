@@ -53,29 +53,29 @@ class Admin extends RequestsWithTokenHandler {
     
 
     /*Assign a type to a space*/
-    assign_type_to_space(, space, target_type) {
+    assign_type_to_space(space, target_type) {
         params = { 
             "type": target_type
         }
-        const result = this._put(path=`spaces/${space}/types`, payload=None, params=params);
+        const result = this._put(path=`spaces/${space}/types`, payload=null, params=params);
         return result;
     }
 
     /*Update invitation scope for this instance*/
-    calculate_instance_invitation_scope(, instance_id) {
+    calculate_instance_invitation_scope(instance_id) {
         params = {}
-        const result = this._put(path=`instances/${instance_id}/invitationScope`, payload=None, params=params);
+        const result = this._put(path=`instances/${instance_id}/invitationScope`, payload=null, params=params);
         return result;
     }
 
     /*Explicitly specify a space*/
-    create_space_definition(, space, autorelease, client_space, defer_cache) {
+    create_space_definition(space, autorelease, client_space, defer_cache) {
         params = { 
             "autorelease": autorelease,
             "clientSpace": client_space,
             "deferCache": defer_cache
         }
-        const result = this._put(path=`spaces/${space}/specification`, payload=None, params=params);
+        const result = this._put(path=`spaces/${space}/specification`, payload=null, params=params);
         return result;
     }
 
@@ -111,7 +111,7 @@ class Admin extends RequestsWithTokenHandler {
     }
 
     /*Upload a property specification either globally or for the requesting client*/
-    deprecate_property(, property_name, is_global) {
+    deprecate_property(property_name, is_global) {
         params = { 
             "global": is_global,
             "property": property_name
@@ -121,7 +121,7 @@ class Admin extends RequestsWithTokenHandler {
     }
 
     /*Deprecate a property specification for a specific type either globally or for the requesting client*/
-    deprecate_property_for_type(, property_name, target_type, is_global) {
+    deprecate_property_for_type(property_name, target_type, is_global) {
         params = { 
             "global": is_global,
             "property": property_name,
@@ -139,7 +139,7 @@ class Admin extends RequestsWithTokenHandler {
     }
 
     
-    get_claim_for_role(, role, space) {
+    get_claim_for_role(role, space) {
         params = { 
             "space": space
         }
@@ -162,14 +162,14 @@ class Admin extends RequestsWithTokenHandler {
     }
 
     /*Remove a space definition*/
-    remove_space_definition(, space) {
+    remove_space_definition(space) {
         params = {}
         const result = this._delete(path=`spaces/${space}/specification`, params=params);
         return result;
     }
 
     /*Remove a type definition*/
-    remove_type_definition(, is_global, target_type) {
+    remove_type_definition(is_global, target_type) {
         params = { 
             "type": target_type,
             "global": is_global
@@ -179,7 +179,7 @@ class Admin extends RequestsWithTokenHandler {
     }
 
     /*Remove a type in space definition*/
-    remove_type_from_space(, space, target_type) {
+    remove_type_from_space(space, target_type) {
         params = { 
             "type": target_type
         }
@@ -188,19 +188,19 @@ class Admin extends RequestsWithTokenHandler {
     }
 
     /*Trigger a rerun of the events of this space*/
-    rerun_events(, space) {
+    rerun_events(space) {
         params = {}
-        const result = this._put(path=`spaces/${space}/eventHistory`, payload=None, params=params);
+        const result = this._put(path=`spaces/${space}/eventHistory`, payload=null, params=params);
         return result;
     }
 
     /*Triggers the inference of all documents of the given space*/
-    trigger_inference(, space, identifier, is_async) {
+    trigger_inference(space, identifier, is_async) {
         params = { 
             "identifier": identifier,
             "async": is_async
         }
-        const result = this._post(path=`spaces/${space}/inference`, payload=None, params=params);
+        const result = this._post(path=`spaces/${space}/inference`, payload=null, params=params);
         return result;
     }
 
@@ -281,14 +281,14 @@ class Instances extends RequestsWithTokenHandler {
     }
 
     /*Delete an instance*/
-    delete(, instance_id) {
+    delete(instance_id) {
         params = {}
         const result = this._delete(path=`instances/${instance_id}`, params=params);
         return result;
     }
 
     /*Get the instance*/
-    get_by_id(, instance_id, stage, extended_response_configuration) {
+    get_by_id(instance_id, stage, extended_response_configuration) {
         params = { 
             "stage": stage,
             "returnIncomingLinks": extended_response_configuration.return_incoming_links,
@@ -333,7 +333,7 @@ class Instances extends RequestsWithTokenHandler {
     }
 
     /*Get incoming links for a specific instance (paginated)*/
-    get_incoming_links(, instance_id, property_name, target_type, stage, pagination) {
+    get_incoming_links(instance_id, property_name, target_type, stage, pagination) {
         params = { 
             "stage": stage,
             "property": property_name,
@@ -347,7 +347,7 @@ class Instances extends RequestsWithTokenHandler {
     }
 
     /*Get the release status for an instance*/
-    get_release_status(, instance_id, release_tree_scope) {
+    get_release_status(instance_id, release_tree_scope) {
         params = { 
             "releaseTreeScope": release_tree_scope
         }
@@ -365,7 +365,7 @@ class Instances extends RequestsWithTokenHandler {
     }
 
     /*Get the scope for the instance by its KG-internal ID*/
-    get_scope(, instance_id, apply_restrictions, return_permissions, stage) {
+    get_scope(instance_id, apply_restrictions, return_permissions, stage) {
         params = { 
             "stage": stage,
             "returnPermissions": return_permissions,
@@ -376,14 +376,14 @@ class Instances extends RequestsWithTokenHandler {
     }
 
     /*Create or update an invitation for the given user to review the given instance*/
-    invite_user_for(, instance_id, user_id) {
+    invite_user_for(instance_id, user_id) {
         params = {}
-        const result = this._put(path=`instances/${instance_id}/invitedUsers/${user_id}`, payload=None, params=params);
+        const result = this._put(path=`instances/${instance_id}/invitedUsers/${user_id}`, payload=null, params=params);
         return result;
     }
 
     /*Returns a list of instances according to their types*/
-    list(, target_type, filter_property, filter_value, search_by_label, space, stage, response_configuration, pagination) {
+    list(target_type, filter_property, filter_value, search_by_label, space, stage, response_configuration, pagination) {
         params = { 
             "stage": stage,
             "type": target_type,
@@ -404,14 +404,14 @@ class Instances extends RequestsWithTokenHandler {
     }
 
     /*List invitations for review for the given instance*/
-    list_invitations(, instance_id) {
+    list_invitations(instance_id) {
         params = {}
         const result = this._get(path=`instances/${instance_id}/invitedUsers`, params=params);
         return result;
     }
 
     /*Move an instance to another space*/
-    move(, instance_id, space, extended_response_configuration) {
+    move(instance_id, space, extended_response_configuration) {
         params = { 
             "returnIncomingLinks": extended_response_configuration.return_incoming_links,
             "incomingLinksPageSize": extended_response_configuration.incoming_links_page_size,
@@ -420,28 +420,28 @@ class Instances extends RequestsWithTokenHandler {
             "returnAlternatives": extended_response_configuration.return_alternatives,
             "returnEmbedded": extended_response_configuration.return_embedded
         }
-        const result = this._put(path=`instances/${instance_id}/spaces/${space}`, payload=None, params=params);
+        const result = this._put(path=`instances/${instance_id}/spaces/${space}`, payload=null, params=params);
         return result;
     }
 
     /*Release or re-release an instance*/
-    release(, instance_id, revision) {
+    release(instance_id, revision) {
         params = { 
             "revision": revision
         }
-        const result = this._put(path=`instances/${instance_id}/release`, payload=None, params=params);
+        const result = this._put(path=`instances/${instance_id}/release`, payload=null, params=params);
         return result;
     }
 
     /*Revoke an invitation for the given user to review the given instance*/
-    revoke_user_invitation(, instance_id, user_id) {
+    revoke_user_invitation(instance_id, user_id) {
         params = {}
         const result = this._delete(path=`instances/${instance_id}/invitedUsers/${user_id}`, params=params);
         return result;
     }
 
     /*Unrelease an instance*/
-    unrelease(, instance_id) {
+    unrelease(instance_id) {
         params = {}
         const result = this._delete(path=`instances/${instance_id}/release`, params=params);
         return result;
@@ -471,7 +471,7 @@ class Queries extends RequestsWithTokenHandler {
     
 
     /*Execute a stored query to receive the instances*/
-    execute_query_by_id(, query_id, additional_request_params, instance_id, restrict_to_spaces, stage, pagination) {
+    execute_query_by_id(query_id, additional_request_params, instance_id, restrict_to_spaces, stage, pagination) {
         params = { 
             "from": pagination.start,
             "size": pagination.size,
@@ -488,14 +488,14 @@ class Queries extends RequestsWithTokenHandler {
     }
 
     /*Get the query specification with the given query id in a specific space*/
-    get_query_specification(, query_id) {
+    get_query_specification(query_id) {
         params = {}
         const result = this._get(path=`queries/${query_id}`, params=params);
         return result;
     }
 
     /*List the queries and filter them by root type and/or text in the label, name or description*/
-    list_per_root_type(, search, target_type, pagination) {
+    list_per_root_type(search, target_type, pagination) {
         params = { 
             "from": pagination.start,
             "size": pagination.size,
@@ -508,7 +508,7 @@ class Queries extends RequestsWithTokenHandler {
     }
 
     /*Remove a query specification*/
-    remove_query(, query_id) {
+    remove_query(query_id) {
         params = {}
         const result = this._delete(path=`queries/${query_id}`, params=params);
         return result;
@@ -549,7 +549,7 @@ class Spaces extends RequestsWithTokenHandler {
     
 
     
-    get(, space, permissions) {
+    get(space, permissions) {
         params = { 
             "permissions": permissions
         }
@@ -558,7 +558,7 @@ class Spaces extends RequestsWithTokenHandler {
     }
 
     
-    list(, permissions, pagination) {
+    list(permissions, pagination) {
         params = { 
             "from": pagination.start,
             "size": pagination.size,
@@ -590,7 +590,7 @@ class Types extends RequestsWithTokenHandler {
     }
 
     /*Returns the types available - either with property information or without*/
-    list(, space, stage, with_incoming_links, with_properties, pagination) {
+    list(space, stage, with_incoming_links, with_properties, pagination) {
         params = { 
             "stage": stage,
             "space": space,
@@ -613,9 +613,9 @@ class Users extends RequestsWithTokenHandler {
     
 
     /*Accept the terms of use in the given version*/
-    accept_terms_of_use(, version) {
+    accept_terms_of_use(version) {
         params = {}
-        const result = this._post(path=`users/termsOfUse/${version}/accept`, payload=None, params=params);
+        const result = this._post(path=`users/termsOfUse/${version}/accept`, payload=null, params=params);
         return result;
     }
 
