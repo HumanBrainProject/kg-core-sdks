@@ -28,17 +28,80 @@ export class TokenHandler {
         this.token = null;
     }
 
+
+    getToken(forceFetch = false) {
+        if(!this.token || forceFetch) {
+            this.token = this.fetchToken();
+        }
+        return this.token;
+    }
+        
+
     fetchToken() {
         throw new Error("Method 'fetchToken()' must be implemented.");
     }
+
+    async defineEndpoint(kgEndpoint) {
+        if(!this.authEndpoint && kgEndpoint) {
+            const authEndpointResponse = await fetch(`${kgEndpoint}/users/authorization/tokenEndpoint`);
+            if(authEndpointResponse.status === 200) {
+                const authEndpoint = await authEndpointResponse.json();
+                if(authEndpoint && authEndpoint["data"] && authEndpoint["data"]["endpoint"]) {
+                    this.authEndpoint = authEndpoint["data"]["endpoint"];
+                }
+            }
+        }
+    }
 }
+
+export class CallableTokenHandler extends TokenHandler {
+    constructor(callable) {
+        super();
+        this._callable = callable;
+    }
+
+    fetchToken() {
+        return this._callable();
+    }
+}
+
 export class KGConfig {
-    constructor(endpoint, tokenHandler, clientTokenHandler, idNamespace, enableProfiling) {
+    constructor(endpoint, tokenHandler, clientTokenHandler, idNamespace) {
         this.endpoint = endpoint;
         this.tokenHandler = tokenHandler;
         this.clientTokenHandler = clientTokenHandler;
         this.idNamespace = idNamespace;
-        this.enableProfiling = enableProfiling;
+    }
+}
+
+
+class KGRequestWithResponseContext {
+    constructor(content, requestArguments, requestPayload, statusCode, kgConfig) {
+        this.content = content;
+        this.requestArguments = requestArguments ? requestArguments:{};
+        this.requestPayload = requestPayload;
+        this.statusCode = statusCode;
+        this.idNamespace = kgConfig.idNamespace;
+        this.kgConfig = kgConfig;
+
+    }
+
+    copyContext(content) {
+        return new KGRequestWithResponseContext(content, null, null, null, this.kgConfig);
+    }
+
+    nextPage(originalStartFrom, originalSize) {
+        return new GenericRequests(this.kgConfig).request(this._defineArgumentsForNextPage(originalStartFrom+originalSize, originalSize), this.requestPayload);
+    }
+
+    _defineArgumentsForNextPage(newStartFrom, newSize) {
+        const newArguments = JSON.parse(JSON.stringify(this.requestArguments));
+        if (!("params" in newArguments)) {
+            newArguments["params"] = {};
+        }
+        newArguments["params"]["from"] = newStartFrom;
+        newArguments["params"]["size"] = newSize;
+        return newArguments;
     }
 }
 
@@ -65,7 +128,7 @@ export class RequestsWithTokenHandler {
             if(this.kgConfig.clientTokenHandler) {
                 const clientToken = this.kgConfig.clientTokenHandler.getToken(forceFetchToken);
                 if(clientToken){
-                    args["headers"]["Client-Authorization"] = `Bearer ${client_token}`;
+                    args["headers"]["Client-Authorization"] = `Bearer ${clientToken}`;
                 }
             }
         }
@@ -91,18 +154,14 @@ export class RequestsWithTokenHandler {
             this._setHeaders(args, true);
             r = await fetch(args);
         }
-        argsClone = {...args};
-        delete argsClone["headers"];
         let response = null;
         try {
             response = await r.json();
-            if(r.status >= 500) {
-                throw new Error(response); //TODO Throw a custom exception (KG Exception)
-            }
         } catch(e) {
             response = null;
         }
-        return new KGRequestWithResponseContext(response, args_clone, payload, r.status_code, this.kgConfig); //TODO implement KGRequestWithResponseContext
+        delete args["headers"];
+        return new KGRequestWithResponseContext(response, args_clone, payload, r.status_code, this.kgConfig);
     }
 
     _get(path, params) {
@@ -125,4 +184,14 @@ export class RequestsWithTokenHandler {
         return this._request("PATCH", path, payload, params);
     }
 
+}
+
+class GenericRequests extends RequestsWithTokenHandler {
+    constructor(config) {
+        super(config);
+    }
+
+    request(requestArguments, requestPayload) {
+        return this._doRequest(requestArguments, requestPayload);
+    }
 }

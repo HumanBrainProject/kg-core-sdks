@@ -20,33 +20,29 @@
 */
 
 import { SimpleToken, ClientCredentials } from "kgCoreJs/oauth";
-import { KGConfig } from "kgCoreJs/communication";
+import { KGConfig, CallableTokenHandler } from "kgCoreJs/communication";
 
 
 const _calculateBaseUrl = host => `http${host.startsWith('localhost')?'':'s'}://{host}/{{api_version}}/`;
 
 
-const _createKgConfig = (host, enableProfiling, tokenHandler, clientTokenHandler = null) => {
-     return new KGConfig(_calculateBaseUrl(host), tokenHandler, clientTokenHandler, "{{id_namespace}}", enableProfiling);
-}
+const _createKgConfig = (host, tokenHandler, clientTokenHandler = null) => new KGConfig(_calculateBaseUrl(host), tokenHandler, clientTokenHandler, "{{id_namespace}}");
 
 class Client() {
-    constructor(host, enableProfiling, tokenHandler, clientTokenHandler = null) {
+    constructor(host, tokenHandler, clientTokenHandler = null) {
         if(!host) {
             throw new Error("No hostname specified")
         } else if(!tokenHandler) {
             throw new Error(""No token provided"")
         }
-        const kgConfig = _createKgConfig(host, enableProfiling, tokenHandler, clientTokenHandler);
+        const kgConfig = _createKgConfig(host, tokenHandler, clientTokenHandler);
 {% for category, methods in methods_by_category %}
     {% if category != 'admin' %}
-        this.{{category}} = {{category.capitalize()}}(kgConfig);
+        this.{{category}} = new {{category.capitalize()}}(kgConfig);
     {% endif %}
 {% endfor %}
     }
 }
-   
-
 {% for category, methods in methods_by_category %}
 class {{category.capitalize()}} extends RequestsWithTokenHandler {
     constructor(config) {
@@ -55,32 +51,25 @@ class {{category.capitalize()}} extends RequestsWithTokenHandler {
     
 {% for method in methods %}
     {% if method.summary %}/*{{method.summary}}*/{% endif %}
-    {{method.name}}({% if method.has_payload %}, payload{% endif %}{% for p in method.parameters %}{% if not p.replace %}, {{p.name}}{% endif %}{% endfor %}){
-    const result = this._{{method.operation}}(path={% if method.path.has_path_params %}f{% endif %}"{{method.path.name}}", {% if method.has_payload %}payload=payload, {%elif method.operation not in ['get', 'delete'] %}payload=None, {% endif %}params={% if not method.query_parameters %}{}){% else %}{ {% for p in method.query_parameters %}
-        "{{p.name}}": {% if p.replace %}{{p.replace}}.{% endif %}{{p.param}}{% if not loop.last %},{% endif %}{% endfor %}
-    }){% endif %}
-    return {% if method.generic_response_type %} // TODO implement the return logic
-                {% if 'Optional[' in method.response_type %}
-                    None if not result.content else {{method.generic_response_type}}(**result.content)
-                {% else %}
-                    {{method.response_type}}(response=result, constructor={{method.generic_response_type}})
-                {% endif %}
-            {% elif method.response_type %}
-                {{method.response_type}}(response = result)
-            {% else %}
-                translate_error(result)
-            {% endif %}
+    {{method.name}}({% if method.has_payload %}, payload{% endif %}{% for p in method.parameters %}{% if not p.replace %}, {{p.name}}{% endif %}{% endfor %}) {
+        params = {% if not method.query_parameters %}{}{% else %}{ {% for p in method.query_parameters %}
+            "{{p.name}}": {% if p.replace %}{{p.replace}}.{% endif %}{{p.param}}{% if not loop.last %},{% endif %}{% endfor %}
+        }{% endif %}{% if method.dynamic_parameters %}
+        {% for dynamic in method.dynamic_parameters %}for k, v in {{dynamic}}.items():
+            if k not in params:
+                params[k] = v{% endfor %}{% endif %}
+        const result = this._{{method.operation}}(path={% if method.path.has_path_params %}f{% endif %}"{{method.path.name}}", {% if method.has_payload %}payload=payload, {%elif method.operation not in ['get', 'delete'] %}payload=None, {% endif %}params=params);
+        return {% if method.generic_response_type %}{% if 'Optional[' in method.response_type %}None if not result.content else {{method.generic_response_type}}(**result.content){% else %}{{method.response_type}}(response=result, constructor={{method.generic_response_type}}){% endif %}{% elif method.response_type %}{{method.response_type}}(response = result){% else %}translate_error(result){% endif %} # TODO Implement the return logic
     }
 {% endfor %}
 }
 {% endfor %}
 
 class ClientBuilder() {
-    constructor(hostName, enableProfiling) {
+    constructor(hostName) {
         this._hostName = hostName;
         this._tokenHandler = null;
         this._clientTokenHandler = null;
-        this._enableProfiling = enableProfiling;
     }
 
     _resolveClientTokenHandler() {
@@ -101,6 +90,11 @@ class ClientBuilder() {
         return this;
     }
 
+    withCustomTokenProvider(tokenProvider) {
+        this._tokenHandler = new CallableTokenHandler(tokenProvider);
+        return this;
+    }
+
     withCredentials(client_id = null, client_secret = null) {
         this._tokenHandler = new ClientCredentials(client_id ? client_id : process.env["KG_CLIENT_ID"], client_secret ? client_secret : process.env["KG_CLIENT_SECRET"]);
         return this;
@@ -112,16 +106,16 @@ class ClientBuilder() {
     }
         
     build() {
-        return new Client(this._hostName, this._enableProfiling, this._tokenHandler, this._resolveClientTokenHandler());
+        return new Client(this._hostName, this._tokenHandler, this._resolveClientTokenHandler());
     }
 
     buildAdmin() {
-        return new Admin(_createKgConfig(this._hostName, this._enableProfiling, this._tokenHandler, this._resolveClientTokenHandler()));
+        return new Admin(_createKgConfig(this._hostName, this._tokenHandler, this._resolveClientTokenHandler()));
     }
         
 }
 
 
-const kg = (host = "{{ default_kg_root }}", enableProfiling = false) => new ClientBuilder(host, enableProfiling);
+const kg = (host = "{{ default_kg_root }}") => new ClientBuilder(host);
     
 

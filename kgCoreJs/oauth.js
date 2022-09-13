@@ -25,11 +25,11 @@ import { TokenHandler } from "./communication";
 export class SimpleToken extends TokenHandler {
     constructor(token) {
         super();
-        this.__simpleToken = token;
+        this.simpleToken = token;
     }
 
     fetchToken() {
-        return this.__simpleToken;
+        return this.simpleToken;
     }
 }
 
