@@ -50,7 +50,6 @@ class Admin extends RequestsWithTokenHandler {
     constructor(config) {
         super(config);
     }
-    
 
     /*Assign a type to a space*/
     assign_type_to_space(space, targetType) {
@@ -220,7 +219,6 @@ class Instances extends RequestsWithTokenHandler {
     constructor(config) {
         super(config);
     }
-    
 
     /*Replace contribution to an existing instance*/
     contribute_to_full_replacement(payload, instanceId, extended_response_configuration) {
@@ -453,7 +451,6 @@ class Jsonld extends RequestsWithTokenHandler {
     constructor(config) {
         super(config);
     }
-    
 
     /*Normalizes the passed payload according to the EBRAINS KG conventions*/
     normalize_payload(payload) {
@@ -468,7 +465,6 @@ class Queries extends RequestsWithTokenHandler {
     constructor(config) {
         super(config);
     }
-    
 
     /*Execute a stored query to receive the instances*/
     execute_query_by_id(query_id, additional_request_params, instance_id, restrict_to_spaces, stage, pagination) {
@@ -485,7 +481,6 @@ class Queries extends RequestsWithTokenHandler {
                 params[k] = v;
             }
         });
-        
         const result = this._get(path=`queries/${query_id}/instances`, params=params);
         return result;
     }
@@ -541,7 +536,6 @@ class Queries extends RequestsWithTokenHandler {
                 params[k] = v;
             }
         });
-        
         const result = this._post(path="queries", payload=payload, params=params);
         return result;
     }
@@ -552,7 +546,6 @@ class Spaces extends RequestsWithTokenHandler {
     constructor(config) {
         super(config);
     }
-    
 
     
     get(space, permissions) {
@@ -581,7 +574,6 @@ class Types extends RequestsWithTokenHandler {
     constructor(config) {
         super(config);
     }
-    
 
     /*Returns the types according to the list of names - either with property information or without*/
     get_by_name(payload, space, stage, with_incoming_links, with_properties) {
@@ -616,7 +608,6 @@ class Users extends RequestsWithTokenHandler {
     constructor(config) {
         super(config);
     }
-    
 
     /*Accept the terms of use in the given version*/
     accept_terms_of_use(version) {
@@ -699,5 +690,5 @@ class ClientBuilder {
         
 }
 
-const kg = (host = "core.kg.ebrains.eu") => new ClientBuilder(host);
+export const kg = (host = "core.kg.ebrains.eu") => new ClientBuilder(host);
     
