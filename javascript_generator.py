@@ -152,6 +152,10 @@ class JavascriptClientGenerator(ClientGenerator):
         if input in self.keyword_translations:
             return self.keyword_translations[input]
         return input
+    
+    def _to_camel_case(self, snake_str):
+        components = snake_str.split('_')
+        return components[0] + ''.join(x.title() for x in components[1:])
 
     def _find_type(self, type_: Optional[str], items: Optional[Dict[str, Any]], format_: Optional[str], required: bool, default: Optional[str], enum_: Optional[List[str]]) -> Optional[str]:
         result = None
@@ -280,8 +284,10 @@ class JavascriptClientGenerator(ClientGenerator):
     def consolidate_request_objects(self, request_object: object, method_parameters: List[Dict[str, Any]], method_param_names: List[Optional[str]], query_parameters: List[Dict[str, Any]]):
         all_params = True
         request_object_name: str = request_object.__class__.__name__
-        request_object_name_snake = self._apply_translations(request_object_name)
-        for r in request_object.__dict__.keys():
+        request_object_name_translated = self._apply_translations(request_object_name)
+        request_object_name_translated_camel_case = request_object_name_translated[0].lower() + request_object_name_translated[1:]
+        request_object_camel_case_keys = [self._to_camel_case(k) for k in request_object.__dict__.keys()]
+        for r in request_object_camel_case_keys:
             if r not in method_param_names:
                 all_params = False
                 break
@@ -291,14 +297,14 @@ class JavascriptClientGenerator(ClientGenerator):
                     all_params = False
                     break
         if all_params:
-            for r in request_object.__dict__.keys():
+            for r in request_object_camel_case_keys:
                 for p in method_parameters:
                     if p["name"] == r and "replace" not in p:
-                        p["replace"] = self._apply_translations(request_object_name_snake)
+                        p["replace"] = self._apply_translations(request_object_name_translated_camel_case)
                 for p in query_parameters:
                     if p["param"] == r and "replace" not in p:
-                        p["replace"] = self._apply_translations(request_object_name_snake)
-            method_parameters.append({"name": request_object_name_snake, "type": f"{request_object_name} = {request_object_name}()"})
+                        p["replace"] = self._apply_translations(request_object_name_translated_camel_case)
+            method_parameters.append({"name": request_object_name_translated_camel_case, "type": f"{request_object_name} = new {request_object_name}()"})
 
 
 if __name__ == "__main__":

@@ -240,14 +240,14 @@ class Instances extends RequestsWithTokenHandler {
     }
 
     /*Replace contribution to an existing instance*/
-    contributeToFullReplacement(payload: any, instanceId: string, incomingLinksPageSize: number|null = null, returnAlternatives: boolean|null = null, returnEmbedded: boolean|null = null, returnIncomingLinks: boolean|null = null, returnPayload: boolean|null = null, returnPermissions: boolean|null = null):Result[Instance] {
+    contributeToFullReplacement(payload: any, instanceId: string, extendedResponseConfiguration: ExtendedResponseConfiguration = new ExtendedResponseConfiguration()):Result[Instance] {
         const params = { 
-            "returnIncomingLinks": returnIncomingLinks,
-            "incomingLinksPageSize": incomingLinksPageSize,
-            "returnPayload": returnPayload,
-            "returnPermissions": returnPermissions,
-            "returnAlternatives": returnAlternatives,
-            "returnEmbedded": returnEmbedded
+            "returnIncomingLinks": extendedResponseConfiguration.returnIncomingLinks,
+            "incomingLinksPageSize": extendedResponseConfiguration.incomingLinksPageSize,
+            "returnPayload": extendedResponseConfiguration.returnPayload,
+            "returnPermissions": extendedResponseConfiguration.returnPermissions,
+            "returnAlternatives": extendedResponseConfiguration.returnAlternatives,
+            "returnEmbedded": extendedResponseConfiguration.returnEmbedded
         }
         const result = this._put(`instances/${instanceId}`, payload, params);
         return result;
@@ -255,14 +255,14 @@ class Instances extends RequestsWithTokenHandler {
     }
 
     /*Partially update contribution to an existing instance*/
-    contributeToPartialReplacement(payload: any, instanceId: string, incomingLinksPageSize: number|null = null, returnAlternatives: boolean|null = null, returnEmbedded: boolean|null = null, returnIncomingLinks: boolean|null = null, returnPayload: boolean|null = null, returnPermissions: boolean|null = null):Result[Instance] {
+    contributeToPartialReplacement(payload: any, instanceId: string, extendedResponseConfiguration: ExtendedResponseConfiguration = new ExtendedResponseConfiguration()):Result[Instance] {
         const params = { 
-            "returnIncomingLinks": returnIncomingLinks,
-            "incomingLinksPageSize": incomingLinksPageSize,
-            "returnPayload": returnPayload,
-            "returnPermissions": returnPermissions,
-            "returnAlternatives": returnAlternatives,
-            "returnEmbedded": returnEmbedded
+            "returnIncomingLinks": extendedResponseConfiguration.returnIncomingLinks,
+            "incomingLinksPageSize": extendedResponseConfiguration.incomingLinksPageSize,
+            "returnPayload": extendedResponseConfiguration.returnPayload,
+            "returnPermissions": extendedResponseConfiguration.returnPermissions,
+            "returnAlternatives": extendedResponseConfiguration.returnAlternatives,
+            "returnEmbedded": extendedResponseConfiguration.returnEmbedded
         }
         const result = this._patch(`instances/${instanceId}`, payload, params);
         return result;
@@ -270,15 +270,15 @@ class Instances extends RequestsWithTokenHandler {
     }
 
     /*Create new instance with a system generated id*/
-    createNew(payload: any, space: string, incomingLinksPageSize: number|null = null, returnAlternatives: boolean|null = null, returnEmbedded: boolean|null = null, returnIncomingLinks: boolean|null = null, returnPayload: boolean|null = null, returnPermissions: boolean|null = null):Result[Instance] {
+    createNew(payload: any, space: string, extendedResponseConfiguration: ExtendedResponseConfiguration = new ExtendedResponseConfiguration()):Result[Instance] {
         const params = { 
             "space": space,
-            "returnIncomingLinks": returnIncomingLinks,
-            "incomingLinksPageSize": incomingLinksPageSize,
-            "returnPayload": returnPayload,
-            "returnPermissions": returnPermissions,
-            "returnAlternatives": returnAlternatives,
-            "returnEmbedded": returnEmbedded
+            "returnIncomingLinks": extendedResponseConfiguration.returnIncomingLinks,
+            "incomingLinksPageSize": extendedResponseConfiguration.incomingLinksPageSize,
+            "returnPayload": extendedResponseConfiguration.returnPayload,
+            "returnPermissions": extendedResponseConfiguration.returnPermissions,
+            "returnAlternatives": extendedResponseConfiguration.returnAlternatives,
+            "returnEmbedded": extendedResponseConfiguration.returnEmbedded
         }
         const result = this._post("instances", payload, params);
         return result;
@@ -286,15 +286,15 @@ class Instances extends RequestsWithTokenHandler {
     }
 
     /*Create new instance with a client defined id*/
-    createNewWithId(payload: any, instanceId: string, space: string, incomingLinksPageSize: number|null = null, returnAlternatives: boolean|null = null, returnEmbedded: boolean|null = null, returnIncomingLinks: boolean|null = null, returnPayload: boolean|null = null, returnPermissions: boolean|null = null):Result[Instance] {
+    createNewWithId(payload: any, instanceId: string, space: string, extendedResponseConfiguration: ExtendedResponseConfiguration = new ExtendedResponseConfiguration()):Result[Instance] {
         const params = { 
             "space": space,
-            "returnIncomingLinks": returnIncomingLinks,
-            "incomingLinksPageSize": incomingLinksPageSize,
-            "returnPayload": returnPayload,
-            "returnPermissions": returnPermissions,
-            "returnAlternatives": returnAlternatives,
-            "returnEmbedded": returnEmbedded
+            "returnIncomingLinks": extendedResponseConfiguration.returnIncomingLinks,
+            "incomingLinksPageSize": extendedResponseConfiguration.incomingLinksPageSize,
+            "returnPayload": extendedResponseConfiguration.returnPayload,
+            "returnPermissions": extendedResponseConfiguration.returnPermissions,
+            "returnAlternatives": extendedResponseConfiguration.returnAlternatives,
+            "returnEmbedded": extendedResponseConfiguration.returnEmbedded
         }
         const result = this._post(`instances/${instanceId}`, payload, params);
         return result;
@@ -310,15 +310,15 @@ class Instances extends RequestsWithTokenHandler {
     }
 
     /*Get the instance*/
-    getById(instanceId: string, incomingLinksPageSize: number|null = null, returnAlternatives: boolean|null = null, returnEmbedded: boolean|null = null, returnIncomingLinks: boolean|null = null, returnPayload: boolean|null = null, returnPermissions: boolean|null = null, stage: Stage = Stage.RELEASED):Result[Instance] {
+    getById(instanceId: string, stage: Stage = Stage.RELEASED, extendedResponseConfiguration: ExtendedResponseConfiguration = new ExtendedResponseConfiguration()):Result[Instance] {
         const params = { 
             "stage": stage,
-            "returnIncomingLinks": returnIncomingLinks,
-            "incomingLinksPageSize": incomingLinksPageSize,
-            "returnPayload": returnPayload,
-            "returnPermissions": returnPermissions,
-            "returnAlternatives": returnAlternatives,
-            "returnEmbedded": returnEmbedded
+            "returnIncomingLinks": extendedResponseConfiguration.returnIncomingLinks,
+            "incomingLinksPageSize": extendedResponseConfiguration.incomingLinksPageSize,
+            "returnPayload": extendedResponseConfiguration.returnPayload,
+            "returnPermissions": extendedResponseConfiguration.returnPermissions,
+            "returnAlternatives": extendedResponseConfiguration.returnAlternatives,
+            "returnEmbedded": extendedResponseConfiguration.returnEmbedded
         }
         const result = this._get(`instances/${instanceId}`, params);
         return result;
@@ -326,15 +326,15 @@ class Instances extends RequestsWithTokenHandler {
     }
 
     /*Read instances by the given list of (external) identifiers*/
-    getByIdentifiers(payload: any, incomingLinksPageSize: number|null = null, returnAlternatives: boolean|null = null, returnEmbedded: boolean|null = null, returnIncomingLinks: boolean|null = null, returnPayload: boolean|null = null, returnPermissions: boolean|null = null, stage: Stage = Stage.RELEASED):ResultsById[Instance] {
+    getByIdentifiers(payload: any, stage: Stage = Stage.RELEASED, extendedResponseConfiguration: ExtendedResponseConfiguration = new ExtendedResponseConfiguration()):ResultsById[Instance] {
         const params = { 
             "stage": stage,
-            "returnIncomingLinks": returnIncomingLinks,
-            "incomingLinksPageSize": incomingLinksPageSize,
-            "returnPayload": returnPayload,
-            "returnPermissions": returnPermissions,
-            "returnAlternatives": returnAlternatives,
-            "returnEmbedded": returnEmbedded
+            "returnIncomingLinks": extendedResponseConfiguration.returnIncomingLinks,
+            "incomingLinksPageSize": extendedResponseConfiguration.incomingLinksPageSize,
+            "returnPayload": extendedResponseConfiguration.returnPayload,
+            "returnPermissions": extendedResponseConfiguration.returnPermissions,
+            "returnAlternatives": extendedResponseConfiguration.returnAlternatives,
+            "returnEmbedded": extendedResponseConfiguration.returnEmbedded
         }
         const result = this._post("instancesByIdentifiers", payload, params);
         return result;
@@ -342,15 +342,15 @@ class Instances extends RequestsWithTokenHandler {
     }
 
     /*Bulk operation of /instances/{id} to read instances by their UUIDs*/
-    getByIds(payload: any, incomingLinksPageSize: number|null = null, returnAlternatives: boolean|null = null, returnEmbedded: boolean|null = null, returnIncomingLinks: boolean|null = null, returnPayload: boolean|null = null, returnPermissions: boolean|null = null, stage: Stage = Stage.RELEASED):ResultsById[Instance] {
+    getByIds(payload: any, stage: Stage = Stage.RELEASED, extendedResponseConfiguration: ExtendedResponseConfiguration = new ExtendedResponseConfiguration()):ResultsById[Instance] {
         const params = { 
             "stage": stage,
-            "returnIncomingLinks": returnIncomingLinks,
-            "incomingLinksPageSize": incomingLinksPageSize,
-            "returnPayload": returnPayload,
-            "returnPermissions": returnPermissions,
-            "returnAlternatives": returnAlternatives,
-            "returnEmbedded": returnEmbedded
+            "returnIncomingLinks": extendedResponseConfiguration.returnIncomingLinks,
+            "incomingLinksPageSize": extendedResponseConfiguration.incomingLinksPageSize,
+            "returnPayload": extendedResponseConfiguration.returnPayload,
+            "returnPermissions": extendedResponseConfiguration.returnPermissions,
+            "returnAlternatives": extendedResponseConfiguration.returnAlternatives,
+            "returnEmbedded": extendedResponseConfiguration.returnEmbedded
         }
         const result = this._post("instancesByIds", payload, params);
         return result;
@@ -358,14 +358,14 @@ class Instances extends RequestsWithTokenHandler {
     }
 
     /*Get incoming links for a specific instance (paginated)*/
-    getIncomingLinks(instanceId: string, propertyName: string, targetType: string, returnTotalResults: boolean|null = null, size: number|null = null, stage: Stage = Stage.RELEASED, start: number|null = null):ResultPage[Instance] {
+    getIncomingLinks(instanceId: string, propertyName: string, targetType: string, stage: Stage = Stage.RELEASED, pagination: Pagination = new Pagination()):ResultPage[Instance] {
         const params = { 
             "stage": stage,
             "property": propertyName,
             "type": targetType,
-            "from": start,
-            "size": size,
-            "returnTotalResults": returnTotalResults
+            "from": pagination.start,
+            "size": pagination.size,
+            "returnTotalResults": pagination.returnTotalResults
         }
         const result = this._get(`instances/${instanceId}/incomingLinks`, params);
         return result;
@@ -413,7 +413,7 @@ class Instances extends RequestsWithTokenHandler {
     }
 
     /*Returns a list of instances according to their types*/
-    list(targetType: string, filterProperty: string|null = null, filterValue: string|null = null, returnAlternatives: boolean|null = null, returnEmbedded: boolean|null = null, returnPayload: boolean|null = null, returnPermissions: boolean|null = null, returnTotalResults: boolean|null = null, searchByLabel: string|null = null, size: number|null = null, space: string|null = null, stage: Stage = Stage.RELEASED, start: number|null = null):ResultPage[Instance] {
+    list(targetType: string, filterProperty: string|null = null, filterValue: string|null = null, searchByLabel: string|null = null, space: string|null = null, stage: Stage = Stage.RELEASED, responseConfiguration: ResponseConfiguration = new ResponseConfiguration(), pagination: Pagination = new Pagination()):ResultPage[Instance] {
         const params = { 
             "stage": stage,
             "type": targetType,
@@ -421,13 +421,13 @@ class Instances extends RequestsWithTokenHandler {
             "searchByLabel": searchByLabel,
             "filterProperty": filterProperty,
             "filterValue": filterValue,
-            "returnPayload": returnPayload,
-            "returnPermissions": returnPermissions,
-            "returnAlternatives": returnAlternatives,
-            "returnEmbedded": returnEmbedded,
-            "from": start,
-            "size": size,
-            "returnTotalResults": returnTotalResults
+            "returnPayload": responseConfiguration.returnPayload,
+            "returnPermissions": responseConfiguration.returnPermissions,
+            "returnAlternatives": responseConfiguration.returnAlternatives,
+            "returnEmbedded": responseConfiguration.returnEmbedded,
+            "from": pagination.start,
+            "size": pagination.size,
+            "returnTotalResults": pagination.returnTotalResults
         }
         const result = this._get("instances", params);
         return result;
@@ -443,14 +443,14 @@ class Instances extends RequestsWithTokenHandler {
     }
 
     /*Move an instance to another space*/
-    move(instanceId: string, space: string, incomingLinksPageSize: number|null = null, returnAlternatives: boolean|null = null, returnEmbedded: boolean|null = null, returnIncomingLinks: boolean|null = null, returnPayload: boolean|null = null, returnPermissions: boolean|null = null):Result[Instance] {
+    move(instanceId: string, space: string, extendedResponseConfiguration: ExtendedResponseConfiguration = new ExtendedResponseConfiguration()):Result[Instance] {
         const params = { 
-            "returnIncomingLinks": returnIncomingLinks,
-            "incomingLinksPageSize": incomingLinksPageSize,
-            "returnPayload": returnPayload,
-            "returnPermissions": returnPermissions,
-            "returnAlternatives": returnAlternatives,
-            "returnEmbedded": returnEmbedded
+            "returnIncomingLinks": extendedResponseConfiguration.returnIncomingLinks,
+            "incomingLinksPageSize": extendedResponseConfiguration.incomingLinksPageSize,
+            "returnPayload": extendedResponseConfiguration.returnPayload,
+            "returnPermissions": extendedResponseConfiguration.returnPermissions,
+            "returnAlternatives": extendedResponseConfiguration.returnAlternatives,
+            "returnEmbedded": extendedResponseConfiguration.returnEmbedded
         }
         const result = this._put(`instances/${instanceId}/spaces/${space}`, null, params);
         return result;
@@ -506,11 +506,11 @@ class Queries extends RequestsWithTokenHandler {
     }
 
     /*Execute a stored query to receive the instances*/
-    executeQueryById(queryId: string, additionalRequestParams: any = {}, instanceId: string|null = null, restrictToSpaces: Array<string>|null = null, returnTotalResults: boolean|null = null, size: number|null = null, stage: Stage = Stage.RELEASED, start: number|null = null):ResultPage[JsonLdDocument] {
+    executeQueryById(queryId: string, additionalRequestParams: any = {}, instanceId: string|null = null, restrictToSpaces: Array<string>|null = null, stage: Stage = Stage.RELEASED, pagination: Pagination = new Pagination()):ResultPage[JsonLdDocument] {
         const params = { 
-            "from": start,
-            "size": size,
-            "returnTotalResults": returnTotalResults,
+            "from": pagination.start,
+            "size": pagination.size,
+            "returnTotalResults": pagination.returnTotalResults,
             "stage": stage,
             "instanceId": instanceId,
             "restrictToSpaces": restrictToSpaces,
@@ -530,11 +530,11 @@ class Queries extends RequestsWithTokenHandler {
     }
 
     /*List the queries and filter them by root type and/or text in the label, name or description*/
-    listPerRootType(returnTotalResults: boolean|null = null, search: string|null = null, size: number|null = null, start: number|null = null, targetType: string|null = null):ResultPage[Instance] {
+    listPerRootType(search: string|null = null, targetType: string|null = null, pagination: Pagination = new Pagination()):ResultPage[Instance] {
         const params = { 
-            "from": start,
-            "size": size,
-            "returnTotalResults": returnTotalResults,
+            "from": pagination.start,
+            "size": pagination.size,
+            "returnTotalResults": pagination.returnTotalResults,
             "type": targetType,
             "search": search
         }
@@ -562,11 +562,11 @@ class Queries extends RequestsWithTokenHandler {
     }
 
     /*Execute the query in the payload in test mode (e.g. for execution before saving with the KG QueryBuilder)*/
-    testQuery(payload: any, additionalRequestParams: any = {}, instanceId: string|null = null, restrictToSpaces: Array<string>|null = null, returnTotalResults: boolean|null = null, size: number|null = null, stage: Stage = Stage.RELEASED, start: number|null = null):ResultPage[JsonLdDocument] {
+    testQuery(payload: any, additionalRequestParams: any = {}, instanceId: string|null = null, restrictToSpaces: Array<string>|null = null, stage: Stage = Stage.RELEASED, pagination: Pagination = new Pagination()):ResultPage[JsonLdDocument] {
         const params = { 
-            "from": start,
-            "size": size,
-            "returnTotalResults": returnTotalResults,
+            "from": pagination.start,
+            "size": pagination.size,
+            "returnTotalResults": pagination.returnTotalResults,
             "stage": stage,
             "instanceId": instanceId,
             "restrictToSpaces": restrictToSpaces,
@@ -595,11 +595,11 @@ class Spaces extends RequestsWithTokenHandler {
     }
 
     
-    list(permissions: boolean = false, returnTotalResults: boolean|null = null, size: number|null = null, start: number|null = null):ResultPage[SpaceInformation] {
+    list(permissions: boolean = false, pagination: Pagination = new Pagination()):ResultPage[SpaceInformation] {
         const params = { 
-            "from": start,
-            "size": size,
-            "returnTotalResults": returnTotalResults,
+            "from": pagination.start,
+            "size": pagination.size,
+            "returnTotalResults": pagination.returnTotalResults,
             "permissions": permissions
         }
         const result = this._get("spaces", params);
@@ -628,15 +628,15 @@ class Types extends RequestsWithTokenHandler {
     }
 
     /*Returns the types available - either with property information or without*/
-    list(returnTotalResults: boolean|null = null, size: number|null = null, space: string|null = null, stage: Stage = Stage.RELEASED, start: number|null = null, withIncomingLinks: boolean = false, withProperties: boolean = false):ResultPage[TypeInformation] {
+    list(space: string|null = null, stage: Stage = Stage.RELEASED, withIncomingLinks: boolean = false, withProperties: boolean = false, pagination: Pagination = new Pagination()):ResultPage[TypeInformation] {
         const params = { 
             "stage": stage,
             "space": space,
             "withProperties": withProperties,
             "withIncomingLinks": withIncomingLinks,
-            "from": start,
-            "size": size,
-            "returnTotalResults": returnTotalResults
+            "from": pagination.start,
+            "size": pagination.size,
+            "returnTotalResults": pagination.returnTotalResults
         }
         const result = this._get("types", params);
         return result;
@@ -686,10 +686,13 @@ class Users extends RequestsWithTokenHandler {
 
 
 class ClientBuilder {
+    _hostName: string;
+    _tokenHandler: TokenHandler | null = null;
+    _clientTokenHandler: TokenHandler | null;
     constructor(hostName: string) {
-        this._hostName: string = hostName;
-        this._tokenHandler: TokenHandler | null = null;
-        this._clientTokenHandler: TokenHandler | null = null;
+        this._hostName = hostName;
+        this._tokenHandler = null;
+        this._clientTokenHandler = null;
     }
 
     _resolveClientTokenHandler():TokenHandler|null {

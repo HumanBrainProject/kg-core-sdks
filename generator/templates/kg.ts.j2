@@ -66,10 +66,13 @@ class {{category.capitalize()}} extends RequestsWithTokenHandler {
 {% endfor %}
 
 class ClientBuilder {
+    _hostName: string;
+    _tokenHandler: TokenHandler | null = null;
+    _clientTokenHandler: TokenHandler | null;
     constructor(hostName: string) {
-        this._hostName: string = hostName;
-        this._tokenHandler: TokenHandler | null = null;
-        this._clientTokenHandler: TokenHandler | null = null;
+        this._hostName = hostName;
+        this._tokenHandler = null;
+        this._clientTokenHandler = null;
     }
 
     _resolveClientTokenHandler():TokenHandler|null {
