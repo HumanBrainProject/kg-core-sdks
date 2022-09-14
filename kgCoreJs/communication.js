@@ -96,7 +96,7 @@ class KGRequestWithResponseContext {
 
     _defineArgumentsForNextPage(newStartFrom, newSize) {
         const newArguments = JSON.parse(JSON.stringify(this.requestArguments));
-        if (!("params" in newArguments)) {
+        if (!newArguments["params"]) {
             newArguments["params"] = {};
         }
         newArguments["params"]["from"] = newStartFrom;
@@ -146,13 +146,15 @@ export class RequestsWithTokenHandler {
 
     async _doRequest(args, payload) {
         this._setHeaders(args, false);
+        const url = args["url"];
+        delete args["url"];
         if(payload) {
-            args["json"] = payload;
+            args["body"] = JSON.stringify(payload);
         }
-        let r = await fetch(args); // TODO check how to do this in JS
+        let r = await fetch(url, args);
         if(r.status === 401) {
             this._setHeaders(args, true);
-            r = await fetch(args);
+            r = await fetch(url, args);
         }
         let response = null;
         try {
