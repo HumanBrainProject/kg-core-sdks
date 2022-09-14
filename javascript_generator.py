@@ -97,7 +97,7 @@ class JavascriptClientGenerator(ClientGenerator):
                             # is no override of the original "hard-coded" properties and therefore the role of this parameter slightly changes.
                             p["name"] = "additionalRequestParams"
                     path_parameters = [p["name"] for p in parameters if p["in"] == "path"]
-                    query_parameters = [{"name": p["name"], "param": self._to_snake_case(p["name"])} for p in parameters if p["in"] == "query"]
+                    query_parameters = [{"name": p["name"], "param": self._apply_translations(p["name"])} for p in parameters if p["in"] == "query"]
 
                     method_parameters = [self._translate_parameter(p) for p in parameters]
                     method_parameters.sort(key=self._sort_params)
@@ -112,14 +112,21 @@ class JavascriptClientGenerator(ClientGenerator):
                             if qp["param"] == dp:
                                 query_parameters.remove(qp)
                                 break
-                    method_name = self._to_snake_case(definition["operationId"])
+                    method_name = self._apply_translations(definition["operationId"])
                     category_singular = category[:-1] if category.endswith("s") else category
-                    method_name = re.sub(f"^{category_singular}_", "", method_name)
-                    method_name = re.sub(f"^{category}_", "", method_name)
-                    method_name = re.sub(f"_{category_singular}_", "_", method_name)
-                    method_name = re.sub(f"_{category}_", "_", method_name)
-                    method_name = re.sub(f"_{category}$", "", method_name)
-                    method_name = re.sub(f"_{category_singular}$", "", method_name)
+                    category_capitalized = category.capitalize()
+                    category_singular_capitalized = category_singular.capitalize()
+                    method_name = re.sub(f"^{category_singular}", "", method_name) #TODO: Check if this is needed. I think it can be removed.
+                    method_name = re.sub(f"^{category}", "", method_name) #TODO: Check if this is needed. I think it can be removed.
+                    method_name = re.sub(f"{category}", "", method_name)
+                    method_name = re.sub(f"{category}$", "", method_name)
+                    method_name = re.sub(f"{category_singular}", "", method_name)
+                    method_name = re.sub(f"{category_singular}$", "", method_name)
+
+                    method_name = re.sub(f"{category_capitalized}", "", method_name)
+                    method_name = re.sub(f"{category_capitalized}$", "", method_name)
+                    method_name = re.sub(f"{category_singular_capitalized}", "", method_name)
+                    method_name = re.sub(f"{category_singular_capitalized}$", "", method_name)
 
                     response_type = self._response_type(definition["responses"] if "responses" in definition else {})
                     generic_response_type = None
@@ -141,10 +148,10 @@ class JavascriptClientGenerator(ClientGenerator):
         print(json.dumps(paths_by_categories, indent=4))
         print(json.dumps(all_schemas, indent=4))
 
-    def _to_snake_case(self, input: str) -> str:
+    def _apply_translations(self, input: str) -> str:
         if input in self.keyword_translations:
             return self.keyword_translations[input]
-        return re.sub(r'(?<!^)(?=[A-Z])', '_', input).lower()
+        return input
 
     def _find_type(self, type_: Optional[str], items: Optional[Dict[str, Any]], format_: Optional[str], required: bool, default: Optional[str], enum_: Optional[List[str]]) -> Optional[str]:
         result = None
@@ -187,14 +194,14 @@ class JavascriptClientGenerator(ClientGenerator):
         required: bool = input_.get("required", False)
         enum: Optional[List[str]] = schema.get("enum", None)
         return {
-            "name": self._to_snake_case(input_["name"]),
+            "name": self._apply_translations(input_["name"]),
             "type": self._find_type(type_, items, format_, required, default, enum)
         }
 
     def _translate_path(self, input: str, path_params: List[str]) -> str:
         result = input
         for p in path_params:
-            result = result.replace(f"{{{p}}}", f"{{{self._to_snake_case(p)}}}")
+            result = result.replace(f"{{{p}}}", f"{{{self._apply_translations(p)}}}")
         return result
 
     def _split_path(self, path: str):
@@ -273,7 +280,7 @@ class JavascriptClientGenerator(ClientGenerator):
     def consolidate_request_objects(self, request_object: object, method_parameters: List[Dict[str, Any]], method_param_names: List[Optional[str]], query_parameters: List[Dict[str, Any]]):
         all_params = True
         request_object_name: str = request_object.__class__.__name__
-        request_object_name_snake = self._to_snake_case(request_object_name)
+        request_object_name_snake = self._apply_translations(request_object_name)
         for r in request_object.__dict__.keys():
             if r not in method_param_names:
                 all_params = False
@@ -287,10 +294,10 @@ class JavascriptClientGenerator(ClientGenerator):
             for r in request_object.__dict__.keys():
                 for p in method_parameters:
                     if p["name"] == r and "replace" not in p:
-                        p["replace"] = self._to_snake_case(request_object_name_snake)
+                        p["replace"] = self._apply_translations(request_object_name_snake)
                 for p in query_parameters:
                     if p["param"] == r and "replace" not in p:
-                        p["replace"] = self._to_snake_case(request_object_name_snake)
+                        p["replace"] = self._apply_translations(request_object_name_snake)
             method_parameters.append({"name": request_object_name_snake, "type": f"{request_object_name} = {request_object_name}()"})
 
 

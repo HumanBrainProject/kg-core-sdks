@@ -53,7 +53,7 @@ class Admin extends RequestsWithTokenHandler {
     }
 
     /*Assign a type to a space*/
-    assign_type_to_space(space: string, targetType: string):Error|null {
+    assignTypeToSpace(space: string, targetType: string):Error|null {
         const params = { 
             "type": targetType
         }
@@ -63,7 +63,7 @@ class Admin extends RequestsWithTokenHandler {
     }
 
     /*Update invitation scope for this instance*/
-    calculate_instance_invitation_scope(instanceId: string):Error|null {
+    calculateInstanceInvitationScope(instanceId: string):Error|null {
         const params = {}
         const result = this._put(`instances/${instanceId}/invitationScope`, null, params);
         return result;
@@ -71,11 +71,11 @@ class Admin extends RequestsWithTokenHandler {
     }
 
     /*Explicitly specify a space*/
-    create_space_definition(space: string, autorelease: boolean = false, client_space: boolean = false, defer_cache: boolean = false):Error|null {
+    createSpaceDefinition(space: string, autorelease: boolean = false, clientSpace: boolean = false, deferCache: boolean = false):Error|null {
         const params = { 
             "autorelease": autorelease,
-            "clientSpace": client_space,
-            "deferCache": defer_cache
+            "clientSpace": clientSpace,
+            "deferCache": deferCache
         }
         const result = this._put(`spaces/${space}/specification`, null, params);
         return result;
@@ -83,7 +83,7 @@ class Admin extends RequestsWithTokenHandler {
     }
 
     /*Specify a type*/
-    create_type_definition(payload: any, targetType: string, isGlobal: boolean|null = null):Error|null {
+    createTypeDefinition(payload: any, targetType: string, isGlobal: boolean|null = null):Error|null {
         const params = { 
             "global": isGlobal,
             "type": targetType
@@ -94,7 +94,7 @@ class Admin extends RequestsWithTokenHandler {
     }
 
     /*Upload a property specification either globally or for the requesting client*/
-    define_property(payload: any, propertyName: string, isGlobal: boolean|null = null):Error|null {
+    defineProperty(payload: any, propertyName: string, isGlobal: boolean|null = null):Error|null {
         const params = { 
             "global": isGlobal,
             "property": propertyName
@@ -105,7 +105,7 @@ class Admin extends RequestsWithTokenHandler {
     }
 
     /*Define a property specification either globally for the requesting client*/
-    define_property_for_type(payload: any, propertyName: string, targetType: string, isGlobal: boolean|null = null):Error|null {
+    definePropertyForType(payload: any, propertyName: string, targetType: string, isGlobal: boolean|null = null):Error|null {
         const params = { 
             "global": isGlobal,
             "property": propertyName,
@@ -117,7 +117,7 @@ class Admin extends RequestsWithTokenHandler {
     }
 
     /*Upload a property specification either globally or for the requesting client*/
-    deprecate_property(propertyName: string, isGlobal: boolean|null = null):Error|null {
+    deprecateProperty(propertyName: string, isGlobal: boolean|null = null):Error|null {
         const params = { 
             "global": isGlobal,
             "property": propertyName
@@ -128,7 +128,7 @@ class Admin extends RequestsWithTokenHandler {
     }
 
     /*Deprecate a property specification for a specific type either globally or for the requesting client*/
-    deprecate_property_for_type(propertyName: string, targetType: string, isGlobal: boolean|null = null):Error|null {
+    deprecatePropertyForType(propertyName: string, targetType: string, isGlobal: boolean|null = null):Error|null {
         const params = { 
             "global": isGlobal,
             "property": propertyName,
@@ -140,7 +140,7 @@ class Admin extends RequestsWithTokenHandler {
     }
 
     
-    get_all_role_definitions():Error|null {
+    getAllRoleDefinitions():Error|null {
         const params = {}
         const result = this._get("setup/permissions", params);
         return result;
@@ -148,7 +148,7 @@ class Admin extends RequestsWithTokenHandler {
     }
 
     
-    get_claim_for_role(role: string, space: string|null = null):Error|null {
+    getClaimForRole(role: string, space: string|null = null):Error|null {
         const params = { 
             "space": space
         }
@@ -158,7 +158,7 @@ class Admin extends RequestsWithTokenHandler {
     }
 
     /*List instances with invitations*/
-    list_instances_with_invitations():Result[ListOfUUID] {
+    listInstancesWithInvitations():Result[ListOfUUID] {
         const params = {}
         const result = this._get("instancesWithInvitations", params);
         return result;
@@ -166,7 +166,7 @@ class Admin extends RequestsWithTokenHandler {
     }
 
     
-    register_terms_of_use(payload: any):Error|null {
+    registerTermsOfUse(payload: any):Error|null {
         const params = {}
         const result = this._put("setup/termsOfUse", payload, params);
         return result;
@@ -174,7 +174,7 @@ class Admin extends RequestsWithTokenHandler {
     }
 
     /*Remove a space definition*/
-    remove_space_definition(space: string):Error|null {
+    removeSpaceDefinition(space: string):Error|null {
         const params = {}
         const result = this._delete(`spaces/${space}/specification`, params);
         return result;
@@ -182,7 +182,7 @@ class Admin extends RequestsWithTokenHandler {
     }
 
     /*Remove a type definition*/
-    remove_type_definition(isGlobal: boolean|null = null, targetType: string|null = null):Error|null {
+    removeTypeDefinition(isGlobal: boolean|null = null, targetType: string|null = null):Error|null {
         const params = { 
             "type": targetType,
             "global": isGlobal
@@ -193,7 +193,7 @@ class Admin extends RequestsWithTokenHandler {
     }
 
     /*Remove a type in space definition*/
-    remove_type_from_space(space: string, targetType: string):Error|null {
+    removeTypeFromSpace(space: string, targetType: string):Error|null {
         const params = { 
             "type": targetType
         }
@@ -203,7 +203,7 @@ class Admin extends RequestsWithTokenHandler {
     }
 
     /*Trigger a rerun of the events of this space*/
-    rerun_events(space: string):Error|null {
+    rerunEvents(space: string):Error|null {
         const params = {}
         const result = this._put(`spaces/${space}/eventHistory`, null, params);
         return result;
@@ -211,7 +211,7 @@ class Admin extends RequestsWithTokenHandler {
     }
 
     /*Triggers the inference of all documents of the given space*/
-    trigger_inference(space: string, identifier: string|null = null, isAsync: boolean = false):Error|null {
+    triggerInference(space: string, identifier: string|null = null, isAsync: boolean = false):Error|null {
         const params = { 
             "identifier": identifier,
             "async": isAsync
@@ -222,7 +222,7 @@ class Admin extends RequestsWithTokenHandler {
     }
 
     
-    update_claim_for_role(payload: any, remove: boolean, role: string, space: string|null = null):Error|null {
+    updateClaimForRole(payload: any, remove: boolean, role: string, space: string|null = null):Error|null {
         const params = { 
             "space": space,
             "remove": remove
@@ -240,14 +240,14 @@ class Instances extends RequestsWithTokenHandler {
     }
 
     /*Replace contribution to an existing instance*/
-    contribute_to_full_replacement(payload: any, instanceId: string, extended_response_configuration: ExtendedResponseConfiguration = ExtendedResponseConfiguration()):Result[Instance] {
+    contributeToFullReplacement(payload: any, instanceId: string, incomingLinksPageSize: number|null = null, returnAlternatives: boolean|null = null, returnEmbedded: boolean|null = null, returnIncomingLinks: boolean|null = null, returnPayload: boolean|null = null, returnPermissions: boolean|null = null):Result[Instance] {
         const params = { 
-            "returnIncomingLinks": extended_response_configuration.return_incoming_links,
-            "incomingLinksPageSize": extended_response_configuration.incoming_links_page_size,
-            "returnPayload": extended_response_configuration.return_payload,
-            "returnPermissions": extended_response_configuration.return_permissions,
-            "returnAlternatives": extended_response_configuration.return_alternatives,
-            "returnEmbedded": extended_response_configuration.return_embedded
+            "returnIncomingLinks": returnIncomingLinks,
+            "incomingLinksPageSize": incomingLinksPageSize,
+            "returnPayload": returnPayload,
+            "returnPermissions": returnPermissions,
+            "returnAlternatives": returnAlternatives,
+            "returnEmbedded": returnEmbedded
         }
         const result = this._put(`instances/${instanceId}`, payload, params);
         return result;
@@ -255,14 +255,14 @@ class Instances extends RequestsWithTokenHandler {
     }
 
     /*Partially update contribution to an existing instance*/
-    contribute_to_partial_replacement(payload: any, instanceId: string, extended_response_configuration: ExtendedResponseConfiguration = ExtendedResponseConfiguration()):Result[Instance] {
+    contributeToPartialReplacement(payload: any, instanceId: string, incomingLinksPageSize: number|null = null, returnAlternatives: boolean|null = null, returnEmbedded: boolean|null = null, returnIncomingLinks: boolean|null = null, returnPayload: boolean|null = null, returnPermissions: boolean|null = null):Result[Instance] {
         const params = { 
-            "returnIncomingLinks": extended_response_configuration.return_incoming_links,
-            "incomingLinksPageSize": extended_response_configuration.incoming_links_page_size,
-            "returnPayload": extended_response_configuration.return_payload,
-            "returnPermissions": extended_response_configuration.return_permissions,
-            "returnAlternatives": extended_response_configuration.return_alternatives,
-            "returnEmbedded": extended_response_configuration.return_embedded
+            "returnIncomingLinks": returnIncomingLinks,
+            "incomingLinksPageSize": incomingLinksPageSize,
+            "returnPayload": returnPayload,
+            "returnPermissions": returnPermissions,
+            "returnAlternatives": returnAlternatives,
+            "returnEmbedded": returnEmbedded
         }
         const result = this._patch(`instances/${instanceId}`, payload, params);
         return result;
@@ -270,15 +270,15 @@ class Instances extends RequestsWithTokenHandler {
     }
 
     /*Create new instance with a system generated id*/
-    create_new(payload: any, space: string, extended_response_configuration: ExtendedResponseConfiguration = ExtendedResponseConfiguration()):Result[Instance] {
+    createNew(payload: any, space: string, incomingLinksPageSize: number|null = null, returnAlternatives: boolean|null = null, returnEmbedded: boolean|null = null, returnIncomingLinks: boolean|null = null, returnPayload: boolean|null = null, returnPermissions: boolean|null = null):Result[Instance] {
         const params = { 
             "space": space,
-            "returnIncomingLinks": extended_response_configuration.return_incoming_links,
-            "incomingLinksPageSize": extended_response_configuration.incoming_links_page_size,
-            "returnPayload": extended_response_configuration.return_payload,
-            "returnPermissions": extended_response_configuration.return_permissions,
-            "returnAlternatives": extended_response_configuration.return_alternatives,
-            "returnEmbedded": extended_response_configuration.return_embedded
+            "returnIncomingLinks": returnIncomingLinks,
+            "incomingLinksPageSize": incomingLinksPageSize,
+            "returnPayload": returnPayload,
+            "returnPermissions": returnPermissions,
+            "returnAlternatives": returnAlternatives,
+            "returnEmbedded": returnEmbedded
         }
         const result = this._post("instances", payload, params);
         return result;
@@ -286,15 +286,15 @@ class Instances extends RequestsWithTokenHandler {
     }
 
     /*Create new instance with a client defined id*/
-    create_new_with_id(payload: any, instanceId: string, space: string, extended_response_configuration: ExtendedResponseConfiguration = ExtendedResponseConfiguration()):Result[Instance] {
+    createNewWithId(payload: any, instanceId: string, space: string, incomingLinksPageSize: number|null = null, returnAlternatives: boolean|null = null, returnEmbedded: boolean|null = null, returnIncomingLinks: boolean|null = null, returnPayload: boolean|null = null, returnPermissions: boolean|null = null):Result[Instance] {
         const params = { 
             "space": space,
-            "returnIncomingLinks": extended_response_configuration.return_incoming_links,
-            "incomingLinksPageSize": extended_response_configuration.incoming_links_page_size,
-            "returnPayload": extended_response_configuration.return_payload,
-            "returnPermissions": extended_response_configuration.return_permissions,
-            "returnAlternatives": extended_response_configuration.return_alternatives,
-            "returnEmbedded": extended_response_configuration.return_embedded
+            "returnIncomingLinks": returnIncomingLinks,
+            "incomingLinksPageSize": incomingLinksPageSize,
+            "returnPayload": returnPayload,
+            "returnPermissions": returnPermissions,
+            "returnAlternatives": returnAlternatives,
+            "returnEmbedded": returnEmbedded
         }
         const result = this._post(`instances/${instanceId}`, payload, params);
         return result;
@@ -310,15 +310,15 @@ class Instances extends RequestsWithTokenHandler {
     }
 
     /*Get the instance*/
-    get_by_id(instanceId: string, stage: Stage = Stage.RELEASED, extended_response_configuration: ExtendedResponseConfiguration = ExtendedResponseConfiguration()):Result[Instance] {
+    getById(instanceId: string, incomingLinksPageSize: number|null = null, returnAlternatives: boolean|null = null, returnEmbedded: boolean|null = null, returnIncomingLinks: boolean|null = null, returnPayload: boolean|null = null, returnPermissions: boolean|null = null, stage: Stage = Stage.RELEASED):Result[Instance] {
         const params = { 
             "stage": stage,
-            "returnIncomingLinks": extended_response_configuration.return_incoming_links,
-            "incomingLinksPageSize": extended_response_configuration.incoming_links_page_size,
-            "returnPayload": extended_response_configuration.return_payload,
-            "returnPermissions": extended_response_configuration.return_permissions,
-            "returnAlternatives": extended_response_configuration.return_alternatives,
-            "returnEmbedded": extended_response_configuration.return_embedded
+            "returnIncomingLinks": returnIncomingLinks,
+            "incomingLinksPageSize": incomingLinksPageSize,
+            "returnPayload": returnPayload,
+            "returnPermissions": returnPermissions,
+            "returnAlternatives": returnAlternatives,
+            "returnEmbedded": returnEmbedded
         }
         const result = this._get(`instances/${instanceId}`, params);
         return result;
@@ -326,15 +326,15 @@ class Instances extends RequestsWithTokenHandler {
     }
 
     /*Read instances by the given list of (external) identifiers*/
-    get_by_identifiers(payload: any, stage: Stage = Stage.RELEASED, extended_response_configuration: ExtendedResponseConfiguration = ExtendedResponseConfiguration()):ResultsById[Instance] {
+    getByIdentifiers(payload: any, incomingLinksPageSize: number|null = null, returnAlternatives: boolean|null = null, returnEmbedded: boolean|null = null, returnIncomingLinks: boolean|null = null, returnPayload: boolean|null = null, returnPermissions: boolean|null = null, stage: Stage = Stage.RELEASED):ResultsById[Instance] {
         const params = { 
             "stage": stage,
-            "returnIncomingLinks": extended_response_configuration.return_incoming_links,
-            "incomingLinksPageSize": extended_response_configuration.incoming_links_page_size,
-            "returnPayload": extended_response_configuration.return_payload,
-            "returnPermissions": extended_response_configuration.return_permissions,
-            "returnAlternatives": extended_response_configuration.return_alternatives,
-            "returnEmbedded": extended_response_configuration.return_embedded
+            "returnIncomingLinks": returnIncomingLinks,
+            "incomingLinksPageSize": incomingLinksPageSize,
+            "returnPayload": returnPayload,
+            "returnPermissions": returnPermissions,
+            "returnAlternatives": returnAlternatives,
+            "returnEmbedded": returnEmbedded
         }
         const result = this._post("instancesByIdentifiers", payload, params);
         return result;
@@ -342,15 +342,15 @@ class Instances extends RequestsWithTokenHandler {
     }
 
     /*Bulk operation of /instances/{id} to read instances by their UUIDs*/
-    get_by_ids(payload: any, stage: Stage = Stage.RELEASED, extended_response_configuration: ExtendedResponseConfiguration = ExtendedResponseConfiguration()):ResultsById[Instance] {
+    getByIds(payload: any, incomingLinksPageSize: number|null = null, returnAlternatives: boolean|null = null, returnEmbedded: boolean|null = null, returnIncomingLinks: boolean|null = null, returnPayload: boolean|null = null, returnPermissions: boolean|null = null, stage: Stage = Stage.RELEASED):ResultsById[Instance] {
         const params = { 
             "stage": stage,
-            "returnIncomingLinks": extended_response_configuration.return_incoming_links,
-            "incomingLinksPageSize": extended_response_configuration.incoming_links_page_size,
-            "returnPayload": extended_response_configuration.return_payload,
-            "returnPermissions": extended_response_configuration.return_permissions,
-            "returnAlternatives": extended_response_configuration.return_alternatives,
-            "returnEmbedded": extended_response_configuration.return_embedded
+            "returnIncomingLinks": returnIncomingLinks,
+            "incomingLinksPageSize": incomingLinksPageSize,
+            "returnPayload": returnPayload,
+            "returnPermissions": returnPermissions,
+            "returnAlternatives": returnAlternatives,
+            "returnEmbedded": returnEmbedded
         }
         const result = this._post("instancesByIds", payload, params);
         return result;
@@ -358,14 +358,14 @@ class Instances extends RequestsWithTokenHandler {
     }
 
     /*Get incoming links for a specific instance (paginated)*/
-    get_incoming_links(instanceId: string, propertyName: string, targetType: string, stage: Stage = Stage.RELEASED, pagination: Pagination = Pagination()):ResultPage[Instance] {
+    getIncomingLinks(instanceId: string, propertyName: string, targetType: string, returnTotalResults: boolean|null = null, size: number|null = null, stage: Stage = Stage.RELEASED, start: number|null = null):ResultPage[Instance] {
         const params = { 
             "stage": stage,
             "property": propertyName,
             "type": targetType,
-            "from": pagination.start,
-            "size": pagination.size,
-            "returnTotalResults": pagination.return_total_results
+            "from": start,
+            "size": size,
+            "returnTotalResults": returnTotalResults
         }
         const result = this._get(`instances/${instanceId}/incomingLinks`, params);
         return result;
@@ -373,9 +373,9 @@ class Instances extends RequestsWithTokenHandler {
     }
 
     /*Get the release status for an instance*/
-    get_release_status(instanceId: string, release_tree_scope: ReleaseTreeScope):Result[ReleaseStatus] {
+    getReleaseStatus(instanceId: string, releaseTreeScope: ReleaseTreeScope):Result[ReleaseStatus] {
         const params = { 
-            "releaseTreeScope": release_tree_scope
+            "releaseTreeScope": releaseTreeScope
         }
         const result = this._get(`instances/${instanceId}/release/status`, params);
         return result;
@@ -383,9 +383,9 @@ class Instances extends RequestsWithTokenHandler {
     }
 
     /*Get the release status for multiple instances*/
-    get_release_status_by_ids(payload: any, release_tree_scope: ReleaseTreeScope):ResultsById[ReleaseStatus] {
+    getReleaseStatusByIds(payload: any, releaseTreeScope: ReleaseTreeScope):ResultsById[ReleaseStatus] {
         const params = { 
-            "releaseTreeScope": release_tree_scope
+            "releaseTreeScope": releaseTreeScope
         }
         const result = this._post("instancesByIds/release/status", payload, params);
         return result;
@@ -393,11 +393,11 @@ class Instances extends RequestsWithTokenHandler {
     }
 
     /*Get the scope for the instance by its KG-internal ID*/
-    get_scope(instanceId: string, apply_restrictions: boolean = false, return_permissions: boolean = false, stage: Stage = Stage.RELEASED):Result[Scope] {
+    getScope(instanceId: string, applyRestrictions: boolean = false, returnPermissions: boolean = false, stage: Stage = Stage.RELEASED):Result[Scope] {
         const params = { 
             "stage": stage,
-            "returnPermissions": return_permissions,
-            "applyRestrictions": apply_restrictions
+            "returnPermissions": returnPermissions,
+            "applyRestrictions": applyRestrictions
         }
         const result = this._get(`instances/${instanceId}/scope`, params);
         return result;
@@ -405,29 +405,29 @@ class Instances extends RequestsWithTokenHandler {
     }
 
     /*Create or update an invitation for the given user to review the given instance*/
-    invite_user_for(instanceId: string, user_id: string):Error|null {
+    inviteUserFor(instanceId: string, userId: string):Error|null {
         const params = {}
-        const result = this._put(`instances/${instanceId}/invitedUsers/${user_id}`, null, params);
+        const result = this._put(`instances/${instanceId}/invitedUsers/${userId}`, null, params);
         return result;
         //return translate_error(result)
     }
 
     /*Returns a list of instances according to their types*/
-    list(targetType: string, filter_property: string|null = null, filter_value: string|null = null, search_by_label: string|null = null, space: string|null = null, stage: Stage = Stage.RELEASED, response_configuration: ResponseConfiguration = ResponseConfiguration(), pagination: Pagination = Pagination()):ResultPage[Instance] {
+    list(targetType: string, filterProperty: string|null = null, filterValue: string|null = null, returnAlternatives: boolean|null = null, returnEmbedded: boolean|null = null, returnPayload: boolean|null = null, returnPermissions: boolean|null = null, returnTotalResults: boolean|null = null, searchByLabel: string|null = null, size: number|null = null, space: string|null = null, stage: Stage = Stage.RELEASED, start: number|null = null):ResultPage[Instance] {
         const params = { 
             "stage": stage,
             "type": targetType,
             "space": space,
-            "searchByLabel": search_by_label,
-            "filterProperty": filter_property,
-            "filterValue": filter_value,
-            "returnPayload": response_configuration.return_payload,
-            "returnPermissions": response_configuration.return_permissions,
-            "returnAlternatives": response_configuration.return_alternatives,
-            "returnEmbedded": response_configuration.return_embedded,
-            "from": pagination.start,
-            "size": pagination.size,
-            "returnTotalResults": pagination.return_total_results
+            "searchByLabel": searchByLabel,
+            "filterProperty": filterProperty,
+            "filterValue": filterValue,
+            "returnPayload": returnPayload,
+            "returnPermissions": returnPermissions,
+            "returnAlternatives": returnAlternatives,
+            "returnEmbedded": returnEmbedded,
+            "from": start,
+            "size": size,
+            "returnTotalResults": returnTotalResults
         }
         const result = this._get("instances", params);
         return result;
@@ -435,7 +435,7 @@ class Instances extends RequestsWithTokenHandler {
     }
 
     /*List invitations for review for the given instance*/
-    list_invitations(instanceId: string):Result[ListOfReducedUserInformation] {
+    listInvitations(instanceId: string):Result[ListOfReducedUserInformation] {
         const params = {}
         const result = this._get(`instances/${instanceId}/invitedUsers`, params);
         return result;
@@ -443,14 +443,14 @@ class Instances extends RequestsWithTokenHandler {
     }
 
     /*Move an instance to another space*/
-    move(instanceId: string, space: string, extended_response_configuration: ExtendedResponseConfiguration = ExtendedResponseConfiguration()):Result[Instance] {
+    move(instanceId: string, space: string, incomingLinksPageSize: number|null = null, returnAlternatives: boolean|null = null, returnEmbedded: boolean|null = null, returnIncomingLinks: boolean|null = null, returnPayload: boolean|null = null, returnPermissions: boolean|null = null):Result[Instance] {
         const params = { 
-            "returnIncomingLinks": extended_response_configuration.return_incoming_links,
-            "incomingLinksPageSize": extended_response_configuration.incoming_links_page_size,
-            "returnPayload": extended_response_configuration.return_payload,
-            "returnPermissions": extended_response_configuration.return_permissions,
-            "returnAlternatives": extended_response_configuration.return_alternatives,
-            "returnEmbedded": extended_response_configuration.return_embedded
+            "returnIncomingLinks": returnIncomingLinks,
+            "incomingLinksPageSize": incomingLinksPageSize,
+            "returnPayload": returnPayload,
+            "returnPermissions": returnPermissions,
+            "returnAlternatives": returnAlternatives,
+            "returnEmbedded": returnEmbedded
         }
         const result = this._put(`instances/${instanceId}/spaces/${space}`, null, params);
         return result;
@@ -468,9 +468,9 @@ class Instances extends RequestsWithTokenHandler {
     }
 
     /*Revoke an invitation for the given user to review the given instance*/
-    revoke_user_invitation(instanceId: string, user_id: string):Error|null {
+    revokeUserInvitation(instanceId: string, userId: string):Error|null {
         const params = {}
-        const result = this._delete(`instances/${instanceId}/invitedUsers/${user_id}`, params);
+        const result = this._delete(`instances/${instanceId}/invitedUsers/${userId}`, params);
         return result;
         //return translate_error(result)
     }
@@ -491,7 +491,7 @@ class Jsonld extends RequestsWithTokenHandler {
     }
 
     /*Normalizes the passed payload according to the EBRAINS KG conventions*/
-    normalize_payload(payload: any):Error|null {
+    normalizePayload(payload: any):Error|null {
         const params = {}
         const result = this._post("jsonld/normalizedPayload", payload, params);
         return result;
@@ -506,35 +506,35 @@ class Queries extends RequestsWithTokenHandler {
     }
 
     /*Execute a stored query to receive the instances*/
-    execute_query_by_id(query_id: string, additional_request_params: any = {}, instance_id: string|null = null, restrict_to_spaces: Array<string>|null = null, stage: Stage = Stage.RELEASED, pagination: Pagination = Pagination()):ResultPage[JsonLdDocument] {
+    executeQueryById(queryId: string, additionalRequestParams: any = {}, instanceId: string|null = null, restrictToSpaces: Array<string>|null = null, returnTotalResults: boolean|null = null, size: number|null = null, stage: Stage = Stage.RELEASED, start: number|null = null):ResultPage[JsonLdDocument] {
         const params = { 
-            "from": pagination.start,
-            "size": pagination.size,
-            "returnTotalResults": pagination.return_total_results,
+            "from": start,
+            "size": size,
+            "returnTotalResults": returnTotalResults,
             "stage": stage,
-            "instanceId": instance_id,
-            "restrictToSpaces": restrict_to_spaces,
-            "additionalRequestParams": additional_request_params
+            "instanceId": instanceId,
+            "restrictToSpaces": restrictToSpaces,
+            "additionalRequestParams": additionalRequestParams
         }
-        const result = this._get(`queries/${query_id}/instances`, params);
+        const result = this._get(`queries/${queryId}/instances`, params);
         return result;
         //return ResultPage[JsonLdDocument](response=result, constructor=JsonLdDocument)
     }
 
     /*Get the query specification with the given query id in a specific space*/
-    get_query_specification(query_id: string):Result[Instance] {
+    getQuerySpecification(queryId: string):Result[Instance] {
         const params = {}
-        const result = this._get(`queries/${query_id}`, params);
+        const result = this._get(`queries/${queryId}`, params);
         return result;
         //return Result[Instance](response=result, constructor=Instance)
     }
 
     /*List the queries and filter them by root type and/or text in the label, name or description*/
-    list_per_root_type(search: string|null = null, targetType: string|null = null, pagination: Pagination = Pagination()):ResultPage[Instance] {
+    listPerRootType(returnTotalResults: boolean|null = null, search: string|null = null, size: number|null = null, start: number|null = null, targetType: string|null = null):ResultPage[Instance] {
         const params = { 
-            "from": pagination.start,
-            "size": pagination.size,
-            "returnTotalResults": pagination.return_total_results,
+            "from": start,
+            "size": size,
+            "returnTotalResults": returnTotalResults,
             "type": targetType,
             "search": search
         }
@@ -544,33 +544,33 @@ class Queries extends RequestsWithTokenHandler {
     }
 
     /*Remove a query specification*/
-    remove_query(query_id: string):Error|null {
+    removeQuery(queryId: string):Error|null {
         const params = {}
-        const result = this._delete(`queries/${query_id}`, params);
+        const result = this._delete(`queries/${queryId}`, params);
         return result;
         //return translate_error(result)
     }
 
     /*Create or save a query specification*/
-    save_query(payload: any, query_id: string, space: string|null = null):Result[Instance] {
+    saveQuery(payload: any, queryId: string, space: string|null = null):Result[Instance] {
         const params = { 
             "space": space
         }
-        const result = this._put(`queries/${query_id}`, payload, params);
+        const result = this._put(`queries/${queryId}`, payload, params);
         return result;
         //return Result[Instance](response=result, constructor=Instance)
     }
 
     /*Execute the query in the payload in test mode (e.g. for execution before saving with the KG QueryBuilder)*/
-    test_query(payload: any, additional_request_params: any = {}, instance_id: string|null = null, restrict_to_spaces: Array<string>|null = null, stage: Stage = Stage.RELEASED, pagination: Pagination = Pagination()):ResultPage[JsonLdDocument] {
+    testQuery(payload: any, additionalRequestParams: any = {}, instanceId: string|null = null, restrictToSpaces: Array<string>|null = null, returnTotalResults: boolean|null = null, size: number|null = null, stage: Stage = Stage.RELEASED, start: number|null = null):ResultPage[JsonLdDocument] {
         const params = { 
-            "from": pagination.start,
-            "size": pagination.size,
-            "returnTotalResults": pagination.return_total_results,
+            "from": start,
+            "size": size,
+            "returnTotalResults": returnTotalResults,
             "stage": stage,
-            "instanceId": instance_id,
-            "restrictToSpaces": restrict_to_spaces,
-            "additionalRequestParams": additional_request_params
+            "instanceId": instanceId,
+            "restrictToSpaces": restrictToSpaces,
+            "additionalRequestParams": additionalRequestParams
         }
         const result = this._post("queries", payload, params);
         return result;
@@ -595,11 +595,11 @@ class Spaces extends RequestsWithTokenHandler {
     }
 
     
-    list(permissions: boolean = false, pagination: Pagination = Pagination()):ResultPage[SpaceInformation] {
+    list(permissions: boolean = false, returnTotalResults: boolean|null = null, size: number|null = null, start: number|null = null):ResultPage[SpaceInformation] {
         const params = { 
-            "from": pagination.start,
-            "size": pagination.size,
-            "returnTotalResults": pagination.return_total_results,
+            "from": start,
+            "size": size,
+            "returnTotalResults": returnTotalResults,
             "permissions": permissions
         }
         const result = this._get("spaces", params);
@@ -615,11 +615,11 @@ class Types extends RequestsWithTokenHandler {
     }
 
     /*Returns the types according to the list of names - either with property information or without*/
-    get_by_name(payload: any, space: string|null = null, stage: Stage = Stage.RELEASED, with_incoming_links: boolean = false, with_properties: boolean = false):ResultsById[TypeInformation] {
+    getByName(payload: any, space: string|null = null, stage: Stage = Stage.RELEASED, withIncomingLinks: boolean = false, withProperties: boolean = false):ResultsById[TypeInformation] {
         const params = { 
             "stage": stage,
-            "withProperties": with_properties,
-            "withIncomingLinks": with_incoming_links,
+            "withProperties": withProperties,
+            "withIncomingLinks": withIncomingLinks,
             "space": space
         }
         const result = this._post("typesByName", payload, params);
@@ -628,15 +628,15 @@ class Types extends RequestsWithTokenHandler {
     }
 
     /*Returns the types available - either with property information or without*/
-    list(space: string|null = null, stage: Stage = Stage.RELEASED, with_incoming_links: boolean = false, with_properties: boolean = false, pagination: Pagination = Pagination()):ResultPage[TypeInformation] {
+    list(returnTotalResults: boolean|null = null, size: number|null = null, space: string|null = null, stage: Stage = Stage.RELEASED, start: number|null = null, withIncomingLinks: boolean = false, withProperties: boolean = false):ResultPage[TypeInformation] {
         const params = { 
             "stage": stage,
             "space": space,
-            "withProperties": with_properties,
-            "withIncomingLinks": with_incoming_links,
-            "from": pagination.start,
-            "size": pagination.size,
-            "returnTotalResults": pagination.return_total_results
+            "withProperties": withProperties,
+            "withIncomingLinks": withIncomingLinks,
+            "from": start,
+            "size": size,
+            "returnTotalResults": returnTotalResults
         }
         const result = this._get("types", params);
         return result;
@@ -651,7 +651,7 @@ class Users extends RequestsWithTokenHandler {
     }
 
     /*Accept the terms of use in the given version*/
-    accept_terms_of_use(version: string):Error|null {
+    acceptTermsOfUse(version: string):Error|null {
         const params = {}
         const result = this._post(`users/termsOfUse/${version}/accept`, null, params);
         return result;
@@ -659,7 +659,7 @@ class Users extends RequestsWithTokenHandler {
     }
 
     /*Get the endpoint of the openid configuration*/
-    get_open_id_config_url():Result[JsonLdDocument] {
+    getOpenIdConfigUrl():Result[JsonLdDocument] {
         const params = {}
         const result = this._get("users/authorization/config", params);
         return result;
@@ -667,7 +667,7 @@ class Users extends RequestsWithTokenHandler {
     }
 
     /*Get the current terms of use*/
-    get_terms_of_use():Optional[TermsOfUse] {
+    getTermsOfUse():Optional[TermsOfUse] {
         const params = {}
         const result = this._get("users/termsOfUse", params);
         return result;
@@ -675,7 +675,7 @@ class Users extends RequestsWithTokenHandler {
     }
 
     /*Retrieve user information from the passed token (including detailed information such as e-mail address)*/
-    my_info():Result[User] {
+    myInfo():Result[User] {
         const params = {}
         const result = this._get("users/me", params);
         return result;
