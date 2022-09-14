@@ -20,7 +20,7 @@
 */
 
 import { SimpleToken, ClientCredentials } from "kgCoreJs/oauth";
-import { KGConfig, CallableTokenHandler, TokenHandler } from "kgCoreJs/communication";
+import { KGConfig, CallableTokenHandler, TokenHandler, RequestsWithTokenHandler } from "kgCoreJs/communication";
 
 
 const _calculateBaseUrl = (host:string) => `http${host.startsWith('localhost')?'':'s'}://${host}/{{api_version}}/`;
@@ -56,7 +56,7 @@ class {{category.capitalize()}} extends RequestsWithTokenHandler {
                 params[k] = v;
             }
         });{% endfor %}{% endif %}
-        const result = this._{{method.operation}}(path={% if method.path.has_path_params %}`{{method.path.name|replace('{', '${')}}`{%else%}"{{method.path.name}}"{% endif %}, {% if method.has_payload %}payload=payload, {%elif method.operation not in ['get', 'delete'] %}payload=null, {% endif %}params=params);
+        const result = this._{{method.operation}}({% if method.path.has_path_params %}`{{method.path.name|replace('{', '${')}}`{%else%}"{{method.path.name}}"{% endif %}, {% if method.has_payload %}payload, {%elif method.operation not in ['get', 'delete'] %}null, {% endif %}params);
         return result;
         //return {% if method.generic_response_type %}{% if 'Optional[' in method.response_type %}null if not result.content else {{method.generic_response_type}}(**result.content){% else %}{{method.response_type}}(response=result, constructor={{method.generic_response_type}}){% endif %}{% elif method.response_type %}{{method.response_type}}(response = result){% else %}translate_error(result){% endif %}
     }

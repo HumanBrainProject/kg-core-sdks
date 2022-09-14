@@ -149,33 +149,33 @@ class JavascriptClientGenerator(ClientGenerator):
     def _find_type(self, type_: Optional[str], items: Optional[Dict[str, Any]], format_: Optional[str], required: bool, default: Optional[str], enum_: Optional[List[str]]) -> Optional[str]:
         result = None
         if type_ == "string":
-            if format_ == "uuid":
-                result = "UUID"
-            elif enum_:
+            if enum_:
                 if len(enum_) == 2 and "IN_PROGRESS" in enum_ and "RELEASED" in enum_:
                     result = "Stage = Stage.RELEASED"  # We set the default of the stage to "RELEASED"
                 elif len(enum_) == 3 and "TOP_INSTANCE_ONLY" in enum_ and "CHILDREN_ONLY" in enum_ and "CHILDREN_ONLY_RESTRICTED" in enum_:
                     result = "ReleaseTreeScope"
                 else:
-                    result = "str"
+                    result = "string"
             else:
-                result = "str"
+                result = "string"
         elif type_ == "boolean":
-            result = "bool"
+            result = "boolean"
         elif type_ == "integer":
-            result = "int"
+            result = "number"
         elif type_ == "object":
-            result = "Dict[str, Any]"
+            result = "any"
         elif type_ == "array":
             if items and "type" in items and items["type"] == "string":
-                result = "List[str]"
+                result = "Array<string>"
             else:
-                result = "list"
+                result = "Array<any>"
         if result:
             if default:
+                if default in ['False', 'True']:
+                    default = default.lower()
                 result = f"{result} = {default}"
             elif not required:
-                result = f"Optional[{result}] = None"
+                result = f"{result}|null = null"
         return result
 
     def _translate_parameter(self, input_: Dict[str, Any]) -> Dict[str, Optional[str]]:
