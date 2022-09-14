@@ -171,7 +171,7 @@ class JavascriptClientGenerator(ClientGenerator):
                 result = "Array<any>"
         if result:
             if default:
-                if default in ['False', 'True']:
+                if default in ('False', 'True'):
                     default = default.lower()
                 result = f"{result} = {default}"
             elif not required:

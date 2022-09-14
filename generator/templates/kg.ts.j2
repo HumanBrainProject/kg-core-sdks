@@ -19,8 +19,9 @@
 *  (Human Brain Project SGA1, SGA2 and SGA3).
 */
 
-import { SimpleToken, ClientCredentials } from "kgCoreJs/oauth";
-import { KGConfig, CallableTokenHandler, TokenHandler, RequestsWithTokenHandler } from "kgCoreJs/communication";
+import { SimpleToken, ClientCredentials } from "./oauth";
+import { KGConfig, CallableTokenHandler, TokenHandler, RequestsWithTokenHandler } from "./communication";
+import { ResponseConfiguration, ExtendedResponseConfiguration, Pagination, Stage, ReleaseTreeScope } from "./request";
 
 
 const _calculateBaseUrl = (host:string) => `http${host.startsWith('localhost')?'':'s'}://${host}/{{api_version}}/`;
