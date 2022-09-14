@@ -30,5 +30,5 @@ class ClientGenerator(ABC):
         self.id_namespace:str = id_namespace
 
     @abstractmethod
-    def generate(self, target: str, template: str) -> None:
+    def generate(self) -> None:
         pass

@@ -20,6 +20,7 @@
 */
 
 export class TokenHandler {
+    authEndpoint:string|null;
     constructor() {
         if (this.constructor === TokenHandler) {
             throw new Error("Class 'TokenHandler' cannot be instantiated");
@@ -29,7 +30,7 @@ export class TokenHandler {
     }
 
 
-    getToken(forceFetch = false) {
+    getToken(forceFetch:boolean = false) {
         if(!this.token || forceFetch) {
             this.token = this.fetchToken();
         }
@@ -41,7 +42,7 @@ export class TokenHandler {
         throw new Error("Method 'fetchToken()' must be implemented.");
     }
 
-    async defineEndpoint(kgEndpoint) {
+    async defineEndpoint(kgEndpoint:string) {
         if(!this.authEndpoint && kgEndpoint) {
             const authEndpointResponse = await fetch(`${kgEndpoint}/users/authorization/tokenEndpoint`);
             if(authEndpointResponse.status === 200) {
@@ -66,7 +67,12 @@ export class CallableTokenHandler extends TokenHandler {
 }
 
 export class KGConfig {
-    constructor(endpoint, tokenHandler, clientTokenHandler, idNamespace) {
+    endpoint: string;
+    tokenHandler: TokenHandler;
+    clientTokenHandler: TokenHandler|null;
+    idNamespace: string
+    
+    constructor(endpoint:string, tokenHandler:TokenHandler, clientTokenHandler:TokenHandler|null, idNamespace:string) {
         this.endpoint = endpoint;
         this.tokenHandler = tokenHandler;
         this.clientTokenHandler = clientTokenHandler;
@@ -76,7 +82,7 @@ export class KGConfig {
 
 
 class KGRequestWithResponseContext {
-    constructor(content, requestArguments, requestPayload, statusCode, kgConfig) {
+    constructor(content:any|null, requestArguments:any|null, requestPayload:any|null, statusCode:number|null, kgConfig: KGConfig) {
         this.content = content;
         this.requestArguments = requestArguments ? requestArguments:{};
         this.requestPayload = requestPayload;
@@ -86,15 +92,15 @@ class KGRequestWithResponseContext {
 
     }
 
-    copyContext(content) {
+    copyContext(content: any):KGRequestWithResponseContext {
         return new KGRequestWithResponseContext(content, null, null, null, this.kgConfig);
     }
 
-    nextPage(originalStartFrom, originalSize) {
+    nextPage(originalStartFrom:number, originalSize:number):Promise<KGRequestWithResponseContext> {
         return new GenericRequests(this.kgConfig).request(this._defineArgumentsForNextPage(originalStartFrom+originalSize, originalSize), this.requestPayload);
     }
 
-    _defineArgumentsForNextPage(newStartFrom, newSize) {
+    _defineArgumentsForNextPage(newStartFrom:number, newSize:number):any {
         const newArguments = JSON.parse(JSON.stringify(this.requestArguments));
         if (!newArguments["params"]) {
             newArguments["params"] = {};
@@ -106,7 +112,8 @@ class KGRequestWithResponseContext {
 }
 
 export class RequestsWithTokenHandler {
-    constructor(kgConfig) {
+    kgConfig:KGConfig
+    constructor(kgConfig:KGConfig) {
         if (this.constructor === RequestsWithTokenHandler) {
             throw new Error("Class 'RequestsWithTokenHandler' cannot be instantiated");
         }
@@ -117,7 +124,7 @@ export class RequestsWithTokenHandler {
         }
     }
 
-    _setHeaders(args, forceFetchToken) {
+    _setHeaders(args:any, forceFetchToken:boolean) {
         if(this.kgConfig.tokenHandler) {
             const token = this.kgConfig.tokenHandler.getToken(forceFetchToken);
             if(token) {
@@ -134,9 +141,9 @@ export class RequestsWithTokenHandler {
         }
     }
 
-    _request(method, path, payload, params) {
+    _request(method:string, path:string, payload:any|null, params:any):Promise<KGRequestWithResponseContext> {
         const absolutePath = `${this.kgConfig.endpoint}${path}`;
-        args = {
+        const args:any = {
             'method': method,
             'url': absolutePath,
             'params': params
@@ -144,7 +151,7 @@ export class RequestsWithTokenHandler {
         return this._doRequest(args, payload);
     }
 
-    async _doRequest(args, payload) {
+    async _doRequest(args:any, payload:any|null):Promise<KGRequestWithResponseContext> {
         this._setHeaders(args, false);
         const url = args["url"];
         delete args["url"];
@@ -163,37 +170,37 @@ export class RequestsWithTokenHandler {
             response = null;
         }
         delete args["headers"];
-        return new KGRequestWithResponseContext(response, args_clone, payload, r.status_code, this.kgConfig);
+        return new KGRequestWithResponseContext(response, args, payload, r.status, this.kgConfig);
     }
 
-    _get(path, params) {
+    _get(path:string, params:any):Promise<KGRequestWithResponseContext> {
         return this._request("GET", path, null, params);
     }
 
-    _post(path, payload, params) {
+    _post(path:string, payload:any|null, params:any):Promise<KGRequestWithResponseContext> {
         return this._request("POST", path, payload, params);
     }
 
-    _put(path, payload, params) {
+    _put(path:string, payload:any|null, params:any):Promise<KGRequestWithResponseContext> {
         return this._request("PUT", path, payload, params);
     }
 
-    _delete(path, params) {
-        return this._request("DELETE", path, None, params);
+    _delete(path:string, params:any):Promise<KGRequestWithResponseContext> {
+        return this._request("DELETE", path, null, params);
     }
 
-    _patch(path, payload, params) {
+    _patch(path:string, payload:any|null, params:any):Promise<KGRequestWithResponseContext> {
         return this._request("PATCH", path, payload, params);
     }
 
 }
 
 class GenericRequests extends RequestsWithTokenHandler {
-    constructor(config) {
+    constructor(config:KGConfig) {
         super(config);
     }
 
-    request(requestArguments, requestPayload) {
+    request(requestArguments:any, requestPayload:any|null) {
         return this._doRequest(requestArguments, requestPayload);
     }
 }

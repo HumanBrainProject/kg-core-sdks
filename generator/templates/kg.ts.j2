@@ -20,16 +20,16 @@
 */
 
 import { SimpleToken, ClientCredentials } from "kgCoreJs/oauth";
-import { KGConfig, CallableTokenHandler } from "kgCoreJs/communication";
+import { KGConfig, CallableTokenHandler, TokenHandler } from "kgCoreJs/communication";
 
 
-const _calculateBaseUrl = host => `http${host.startsWith('localhost')?'':'s'}://${host}/{{api_version}}/`;
+const _calculateBaseUrl = (host:string) => `http${host.startsWith('localhost')?'':'s'}://${host}/{{api_version}}/`;
 
 
-const _createKgConfig = (host, tokenHandler, clientTokenHandler = null) => new KGConfig(_calculateBaseUrl(host), tokenHandler, clientTokenHandler, "{{id_namespace}}");
+const _createKgConfig = (host:string, tokenHandler: TokenHandler, clientTokenHandler: TokenHandler | null = null):KGConfig => new KGConfig(_calculateBaseUrl(host), tokenHandler, clientTokenHandler, "{{id_namespace}}");
 
 class Client {
-    constructor(host, tokenHandler, clientTokenHandler = null) {
+    constructor(host:string, tokenHandler: TokenHandler, clientTokenHandler: TokenHandler | null = null) {
         if(!host) {
             throw new Error("No hostname specified");
         } else if(!tokenHandler) {
@@ -42,12 +42,12 @@ class Client {
 }
 {% for category, methods in methods_by_category %}
 class {{category.capitalize()}} extends RequestsWithTokenHandler {
-    constructor(config) {
+    constructor(config: KGConfig) {
         super(config);
     }
 {% for method in methods %}
     {% if method.summary %}/*{{method.summary}}*/{% endif %}
-    {{method.name}}({% if method.has_payload %}payload{%if method.parameters%}, {%endif%}{% endif %}{% for p in method.parameters %}{% if not p.replace %}{{p.name}}{% endif %}{% if not loop.last and not p.replace%}, {% endif %}{% endfor %}) {
+    {{method.name}}({% if method.has_payload %}payload: any{%if method.parameters%}, {%endif%}{% endif %}{% for p in method.parameters %}{% if not p.replace %}{{p.name}}{% if p.type %}: {{p.type}}{% endif %}{% endif %}{% if not loop.last and not p.replace%}, {% endif %}{% endfor %}){% if method.response_type %}:{{method.response_type}}{% else %}:Error|null{% endif %} {
         const params = {% if not method.query_parameters %}{}{% else %}{ {% for p in method.query_parameters %}
             "{{p.name}}": {% if p.replace %}{{p.replace}}.{% endif %}{{p.param}}{% if not loop.last %},{% endif %}{% endfor %}
         }{% endif %}{% if method.dynamic_parameters %}
@@ -58,19 +58,20 @@ class {{category.capitalize()}} extends RequestsWithTokenHandler {
         });{% endfor %}{% endif %}
         const result = this._{{method.operation}}(path={% if method.path.has_path_params %}`{{method.path.name|replace('{', '${')}}`{%else%}"{{method.path.name}}"{% endif %}, {% if method.has_payload %}payload=payload, {%elif method.operation not in ['get', 'delete'] %}payload=null, {% endif %}params=params);
         return result;
+        //return {% if method.generic_response_type %}{% if 'Optional[' in method.response_type %}null if not result.content else {{method.generic_response_type}}(**result.content){% else %}{{method.response_type}}(response=result, constructor={{method.generic_response_type}}){% endif %}{% elif method.response_type %}{{method.response_type}}(response = result){% else %}translate_error(result){% endif %}
     }
 {% endfor %}
 }
 {% endfor %}
 
 class ClientBuilder {
-    constructor(hostName) {
-        this._hostName = hostName;
-        this._tokenHandler = null;
-        this._clientTokenHandler = null;
+    constructor(hostName: string) {
+        this._hostName: string = hostName;
+        this._tokenHandler: TokenHandler | null = null;
+        this._clientTokenHandler: TokenHandler | null = null;
     }
 
-    _resolveClientTokenHandler() {
+    _resolveClientTokenHandler():TokenHandler|null {
         if(!this._clientTokenHandler) {
             if("KG_CLIENT_ID" in process.env && "KG_CLIENT_SECRET" in process.env){
                 return new ClientCredentials(process.env["KG_CLIENT_ID"], process.env["KG_CLIENT_SECRET"]);
@@ -83,36 +84,36 @@ class ClientBuilder {
         return this._clientTokenHandler;
     }
 
-    withToken(token = null) {
+    withToken(token:string|null = null):ClientBuilder {
         this._tokenHandler = new SimpleToken(token?token:process.env["KG_TOKEN"]);
         return this;
     }
 
-    withCustomTokenProvider(tokenProvider) {
+    withCustomTokenProvider(tokenProvider):ClientBuilder {
         this._tokenHandler = new CallableTokenHandler(tokenProvider);
         return this;
     }
 
-    withCredentials(client_id = null, client_secret = null) {
+    withCredentials(client_id:string|null = null, client_secret:string|null = null):ClientBuilder{
         this._tokenHandler = new ClientCredentials(client_id ? client_id : process.env["KG_CLIENT_ID"], client_secret ? client_secret : process.env["KG_CLIENT_SECRET"]);
         return this;
     }
 
-    addClientAuthentication(client_id = null, client_secret = null) {
+    addClientAuthentication(client_id:string|null = null, client_secret:string|null = null):ClientBuilder {
         this._clientTokenHandler = new ClientCredentials(client_id ? client_id : process.env["KG_CLIENT_ID"], client_secret ? client_secret : process.env["KG_CLIENT_SECRET"]);
         return this;
     }
         
-    build() {
+    build():Client {
         return new Client(this._hostName, this._tokenHandler, this._resolveClientTokenHandler());
     }
 
-    buildAdmin() {
+    buildAdmin():Admin {
         return new Admin(_createKgConfig(this._hostName, this._tokenHandler, this._resolveClientTokenHandler()));
     }
         
 }
 
-export const kg = (host = "{{ default_kg_root }}") => new ClientBuilder(host);
+export const kg = (host:string = "{{ default_kg_root }}"):ClientBuilder => new ClientBuilder(host);
     
 

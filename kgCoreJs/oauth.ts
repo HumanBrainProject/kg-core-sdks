@@ -23,30 +23,33 @@ import { TokenHandler } from "./communication";
 
 
 export class SimpleToken extends TokenHandler {
-    constructor(token) {
+    simpleToken:string;
+    constructor(token:string) {
         super();
         this.simpleToken = token;
     }
 
-    fetchToken() {
+    fetchToken():string {
         return this.simpleToken;
     }
 }
 
 export class ClientCredentials extends TokenHandler {
-    constructor(clientId, clientSecret) {
+    clientId:string;
+    clientSecret:string;
+    constructor(clientId:string, clientSecret:string) {
         super();
         this.clientId = clientId;
         this.clientSecret = clientSecret;
     }
 
-    async fetchToken() {
-        if(this._auth_endpoint && this.clientId && this.clientSecret) {
+    async fetchToken():Promise<string|null> {
+        if(this.authEndpoint && this.clientId && this.clientSecret) {
             const settings = {
-                method: 'POST',
+                method: "POST",
                 headers: {
-                    Accept: 'application/json',
-                    'Content-Type': 'application/json',
+                    Accept: "application/json",
+                    "Content-Type": "pplication/json",
                 },
                 body: JSON.stringify({   
                     "grant_type": "client_credentials",
@@ -56,7 +59,7 @@ export class ClientCredentials extends TokenHandler {
             };
             
             try {
-                const fetchResponse = await fetch(this._auth_endpoint, settings);
+                const fetchResponse = await fetch(this.authEndpoint, settings);
                 if(fetchResponse.status === 200) {
                     const tokenResponse = await fetchResponse.json();
                     if(tokenResponse &&  "access_token" in tokenResponse) {
@@ -68,5 +71,6 @@ export class ClientCredentials extends TokenHandler {
                 return null;
             }    
         }
+        return null;
     }
 }

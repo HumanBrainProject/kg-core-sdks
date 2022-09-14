@@ -39,7 +39,7 @@ class JavascriptClientGenerator(ClientGenerator):
         "id": "instanceId",
         "property": "propertyName"
     }
-    target = "kgCoreJs/kg.js"
+    target = "kgCoreJs/kg.ts"
 
     def __init__(self, kg_root:str, open_api_spec_subpath:str, id_namespace:str):
         super(JavascriptClientGenerator, self).__init__(kg_root, open_api_spec_subpath, id_namespace)
@@ -49,7 +49,7 @@ class JavascriptClientGenerator(ClientGenerator):
             loader=PackageLoader("generator"),
             autoescape=select_autoescape()
         )
-        template = env.get_template("kg.js.j2")
+        template = env.get_template("kg.ts.j2")
         api_version = None
 
         all_specs: List[Dict[str, Dict[str, Any]]] = []
