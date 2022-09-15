@@ -85,7 +85,7 @@ export class KGConfig {
   }
 }
 
-class KGRequestWithResponseContext {
+export class KGRequestWithResponseContext {
   content: any | null;
   requestArguments: any | null;
   requestPayload: any | null;

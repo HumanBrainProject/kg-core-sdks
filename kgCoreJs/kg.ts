@@ -22,7 +22,7 @@
 import { SimpleToken, ClientCredentials } from "./oauth";
 import { KGConfig, CallableTokenHandler, TokenHandler, RequestsWithTokenHandler } from "./communication";
 import { ResponseConfiguration, ExtendedResponseConfiguration, Pagination, Stage, ReleaseTreeScope } from "./request";
-
+import { Result, Instance, JsonLdDocument, ResultsById, ResultPage, ReleaseStatus, KGError, translateError, User, Scope, SpaceInformation, TypeInformation, TermsOfUse, ListOfUUID, ListOfReducedUserInformation } from "./response";
 
 const _calculateBaseUrl = (host:string) => `http${host.startsWith('localhost')?'':'s'}://${host}/v3-beta/`;
 
@@ -53,183 +53,165 @@ class Admin extends RequestsWithTokenHandler {
     }
 
     /*Assign a type to a space*/
-    assignTypeToSpace(space: string, targetType: string):Error|null {
+    assignTypeToSpace(space: string, targetType: string):KGError|null {
         const params = { 
             "type": targetType
         }
         const result = this._put(`spaces/${space}/types`, null, params);
-        return result;
-        //return translate_error(result)
+        return translateError(result);
     }
 
     /*Update invitation scope for this instance*/
-    calculateInstanceInvitationScope(instanceId: string):Error|null {
+    calculateInstanceInvitationScope(instanceId: string):KGError|null {
         const params = {}
         const result = this._put(`instances/${instanceId}/invitationScope`, null, params);
-        return result;
-        //return translate_error(result)
+        return translateError(result);
     }
 
     /*Explicitly specify a space*/
-    createSpaceDefinition(space: string, autorelease: boolean = false, clientSpace: boolean = false, deferCache: boolean = false):Error|null {
+    createSpaceDefinition(space: string, autorelease: boolean = false, clientSpace: boolean = false, deferCache: boolean = false):KGError|null {
         const params = { 
             "autorelease": autorelease,
             "clientSpace": clientSpace,
             "deferCache": deferCache
         }
         const result = this._put(`spaces/${space}/specification`, null, params);
-        return result;
-        //return translate_error(result)
+        return translateError(result);
     }
 
     /*Specify a type*/
-    createTypeDefinition(payload: any, targetType: string, isGlobal: boolean|null = null):Error|null {
+    createTypeDefinition(payload: any, targetType: string, isGlobal: boolean|null = null):KGError|null {
         const params = { 
             "global": isGlobal,
             "type": targetType
         }
         const result = this._put("types/specification", payload, params);
-        return result;
-        //return translate_error(result)
+        return translateError(result);
     }
 
     /*Upload a property specification either globally or for the requesting client*/
-    defineProperty(payload: any, propertyName: string, isGlobal: boolean|null = null):Error|null {
+    defineProperty(payload: any, propertyName: string, isGlobal: boolean|null = null):KGError|null {
         const params = { 
             "global": isGlobal,
             "property": propertyName
         }
         const result = this._put("properties", payload, params);
-        return result;
-        //return translate_error(result)
+        return translateError(result);
     }
 
     /*Define a property specification either globally for the requesting client*/
-    definePropertyForType(payload: any, propertyName: string, targetType: string, isGlobal: boolean|null = null):Error|null {
+    definePropertyForType(payload: any, propertyName: string, targetType: string, isGlobal: boolean|null = null):KGError|null {
         const params = { 
             "global": isGlobal,
             "property": propertyName,
             "type": targetType
         }
         const result = this._put("propertiesForType", payload, params);
-        return result;
-        //return translate_error(result)
+        return translateError(result);
     }
 
     /*Upload a property specification either globally or for the requesting client*/
-    deprecateProperty(propertyName: string, isGlobal: boolean|null = null):Error|null {
+    deprecateProperty(propertyName: string, isGlobal: boolean|null = null):KGError|null {
         const params = { 
             "global": isGlobal,
             "property": propertyName
         }
         const result = this._delete("properties", params);
-        return result;
-        //return translate_error(result)
+        return translateError(result);
     }
 
     /*Deprecate a property specification for a specific type either globally or for the requesting client*/
-    deprecatePropertyForType(propertyName: string, targetType: string, isGlobal: boolean|null = null):Error|null {
+    deprecatePropertyForType(propertyName: string, targetType: string, isGlobal: boolean|null = null):KGError|null {
         const params = { 
             "global": isGlobal,
             "property": propertyName,
             "type": targetType
         }
         const result = this._delete("propertiesForType", params);
-        return result;
-        //return translate_error(result)
+        return translateError(result);
     }
 
     
-    getAllRoleDefinitions():Error|null {
+    getAllRoleDefinitions():KGError|null {
         const params = {}
         const result = this._get("setup/permissions", params);
-        return result;
-        //return translate_error(result)
+        return translateError(result);
     }
 
     
-    getClaimForRole(role: string, space: string|null = null):Error|null {
+    getClaimForRole(role: string, space: string|null = null):KGError|null {
         const params = { 
             "space": space
         }
         const result = this._get(`setup/permissions/${role}`, params);
-        return result;
-        //return translate_error(result)
+        return translateError(result);
     }
 
     /*List instances with invitations*/
     listInstancesWithInvitations():Result[ListOfUUID] {
         const params = {}
         const result = this._get("instancesWithInvitations", params);
-        return result;
-        //return Result[ListOfUUID](response=result, constructor=ListOfUUID)
+        return Result[ListOfUUID](response=result, constructor=ListOfUUID);
     }
 
     
-    registerTermsOfUse(payload: any):Error|null {
+    registerTermsOfUse(payload: any):KGError|null {
         const params = {}
         const result = this._put("setup/termsOfUse", payload, params);
-        return result;
-        //return translate_error(result)
+        return translateError(result);
     }
 
     /*Remove a space definition*/
-    removeSpaceDefinition(space: string):Error|null {
+    removeSpaceDefinition(space: string):KGError|null {
         const params = {}
         const result = this._delete(`spaces/${space}/specification`, params);
-        return result;
-        //return translate_error(result)
+        return translateError(result);
     }
 
     /*Remove a type definition*/
-    removeTypeDefinition(isGlobal: boolean|null = null, targetType: string|null = null):Error|null {
+    removeTypeDefinition(isGlobal: boolean|null = null, targetType: string|null = null):KGError|null {
         const params = { 
             "type": targetType,
             "global": isGlobal
         }
         const result = this._delete("types/specification", params);
-        return result;
-        //return translate_error(result)
+        return translateError(result);
     }
 
     /*Remove a type in space definition*/
-    removeTypeFromSpace(space: string, targetType: string):Error|null {
+    removeTypeFromSpace(space: string, targetType: string):KGError|null {
         const params = { 
             "type": targetType
         }
         const result = this._delete(`spaces/${space}/types`, params);
-        return result;
-        //return translate_error(result)
+        return translateError(result);
     }
 
     /*Trigger a rerun of the events of this space*/
-    rerunEvents(space: string):Error|null {
+    rerunEvents(space: string):KGError|null {
         const params = {}
         const result = this._put(`spaces/${space}/eventHistory`, null, params);
-        return result;
-        //return translate_error(result)
+        return translateError(result);
     }
 
     /*Triggers the inference of all documents of the given space*/
-    triggerInference(space: string, identifier: string|null = null, isAsync: boolean = false):Error|null {
+    triggerInference(space: string, identifier: string|null = null, isAsync: boolean = false):KGError|null {
         const params = { 
             "identifier": identifier,
             "async": isAsync
         }
         const result = this._post(`spaces/${space}/inference`, null, params);
-        return result;
-        //return translate_error(result)
+        return translateError(result);
     }
 
     
-    updateClaimForRole(payload: any, remove: boolean, role: string, space: string|null = null):Error|null {
+    updateClaimForRole(payload: any, remove: boolean, role: string, space: string|null = null):KGError|null {
         const params = { 
             "space": space,
             "remove": remove
         }
         const result = this._patch(`setup/permissions/${role}`, payload, params);
-        return result;
-        //return translate_error(result)
+        return translateError(result);
     }
 
 }
@@ -250,8 +232,7 @@ class Instances extends RequestsWithTokenHandler {
             "returnEmbedded": extendedResponseConfiguration.returnEmbedded
         }
         const result = this._put(`instances/${instanceId}`, payload, params);
-        return result;
-        //return Result[Instance](response=result, constructor=Instance)
+        return Result[Instance](response=result, constructor=Instance);
     }
 
     /*Partially update contribution to an existing instance*/
@@ -265,8 +246,7 @@ class Instances extends RequestsWithTokenHandler {
             "returnEmbedded": extendedResponseConfiguration.returnEmbedded
         }
         const result = this._patch(`instances/${instanceId}`, payload, params);
-        return result;
-        //return Result[Instance](response=result, constructor=Instance)
+        return Result[Instance](response=result, constructor=Instance);
     }
 
     /*Create new instance with a system generated id*/
@@ -281,8 +261,7 @@ class Instances extends RequestsWithTokenHandler {
             "returnEmbedded": extendedResponseConfiguration.returnEmbedded
         }
         const result = this._post("instances", payload, params);
-        return result;
-        //return Result[Instance](response=result, constructor=Instance)
+        return Result[Instance](response=result, constructor=Instance);
     }
 
     /*Create new instance with a client defined id*/
@@ -297,16 +276,14 @@ class Instances extends RequestsWithTokenHandler {
             "returnEmbedded": extendedResponseConfiguration.returnEmbedded
         }
         const result = this._post(`instances/${instanceId}`, payload, params);
-        return result;
-        //return Result[Instance](response=result, constructor=Instance)
+        return Result[Instance](response=result, constructor=Instance);
     }
 
     /*Delete an instance*/
-    delete(instanceId: string):Error|null {
+    delete(instanceId: string):KGError|null {
         const params = {}
         const result = this._delete(`instances/${instanceId}`, params);
-        return result;
-        //return translate_error(result)
+        return translateError(result);
     }
 
     /*Get the instance*/
@@ -321,8 +298,7 @@ class Instances extends RequestsWithTokenHandler {
             "returnEmbedded": extendedResponseConfiguration.returnEmbedded
         }
         const result = this._get(`instances/${instanceId}`, params);
-        return result;
-        //return Result[Instance](response=result, constructor=Instance)
+        return Result[Instance](response=result, constructor=Instance);
     }
 
     /*Read instances by the given list of (external) identifiers*/
@@ -337,8 +313,7 @@ class Instances extends RequestsWithTokenHandler {
             "returnEmbedded": extendedResponseConfiguration.returnEmbedded
         }
         const result = this._post("instancesByIdentifiers", payload, params);
-        return result;
-        //return ResultsById[Instance](response=result, constructor=Instance)
+        return ResultsById[Instance](response=result, constructor=Instance);
     }
 
     /*Bulk operation of /instances/{id} to read instances by their UUIDs*/
@@ -353,8 +328,7 @@ class Instances extends RequestsWithTokenHandler {
             "returnEmbedded": extendedResponseConfiguration.returnEmbedded
         }
         const result = this._post("instancesByIds", payload, params);
-        return result;
-        //return ResultsById[Instance](response=result, constructor=Instance)
+        return ResultsById[Instance](response=result, constructor=Instance);
     }
 
     /*Get incoming links for a specific instance (paginated)*/
@@ -368,8 +342,7 @@ class Instances extends RequestsWithTokenHandler {
             "returnTotalResults": pagination.returnTotalResults
         }
         const result = this._get(`instances/${instanceId}/incomingLinks`, params);
-        return result;
-        //return ResultPage[Instance](response=result, constructor=Instance)
+        return ResultPage[Instance](response=result, constructor=Instance);
     }
 
     /*Get the release status for an instance*/
@@ -378,8 +351,7 @@ class Instances extends RequestsWithTokenHandler {
             "releaseTreeScope": releaseTreeScope
         }
         const result = this._get(`instances/${instanceId}/release/status`, params);
-        return result;
-        //return Result[ReleaseStatus](response=result, constructor=ReleaseStatus)
+        return Result[ReleaseStatus](response=result, constructor=ReleaseStatus);
     }
 
     /*Get the release status for multiple instances*/
@@ -388,8 +360,7 @@ class Instances extends RequestsWithTokenHandler {
             "releaseTreeScope": releaseTreeScope
         }
         const result = this._post("instancesByIds/release/status", payload, params);
-        return result;
-        //return ResultsById[ReleaseStatus](response=result, constructor=ReleaseStatus)
+        return ResultsById[ReleaseStatus](response=result, constructor=ReleaseStatus);
     }
 
     /*Get the scope for the instance by its KG-internal ID*/
@@ -400,16 +371,14 @@ class Instances extends RequestsWithTokenHandler {
             "applyRestrictions": applyRestrictions
         }
         const result = this._get(`instances/${instanceId}/scope`, params);
-        return result;
-        //return Result[Scope](response=result, constructor=Scope)
+        return Result[Scope](response=result, constructor=Scope);
     }
 
     /*Create or update an invitation for the given user to review the given instance*/
-    inviteUserFor(instanceId: string, userId: string):Error|null {
+    inviteUserFor(instanceId: string, userId: string):KGError|null {
         const params = {}
         const result = this._put(`instances/${instanceId}/invitedUsers/${userId}`, null, params);
-        return result;
-        //return translate_error(result)
+        return translateError(result);
     }
 
     /*Returns a list of instances according to their types*/
@@ -430,16 +399,14 @@ class Instances extends RequestsWithTokenHandler {
             "returnTotalResults": pagination.returnTotalResults
         }
         const result = this._get("instances", params);
-        return result;
-        //return ResultPage[Instance](response=result, constructor=Instance)
+        return ResultPage[Instance](response=result, constructor=Instance);
     }
 
     /*List invitations for review for the given instance*/
     listInvitations(instanceId: string):Result[ListOfReducedUserInformation] {
         const params = {}
         const result = this._get(`instances/${instanceId}/invitedUsers`, params);
-        return result;
-        //return Result[ListOfReducedUserInformation](response=result, constructor=ListOfReducedUserInformation)
+        return Result[ListOfReducedUserInformation](response=result, constructor=ListOfReducedUserInformation);
     }
 
     /*Move an instance to another space*/
@@ -453,34 +420,30 @@ class Instances extends RequestsWithTokenHandler {
             "returnEmbedded": extendedResponseConfiguration.returnEmbedded
         }
         const result = this._put(`instances/${instanceId}/spaces/${space}`, null, params);
-        return result;
-        //return Result[Instance](response=result, constructor=Instance)
+        return Result[Instance](response=result, constructor=Instance);
     }
 
     /*Release or re-release an instance*/
-    release(instanceId: string, revision: string|null = null):Error|null {
+    release(instanceId: string, revision: string|null = null):KGError|null {
         const params = { 
             "revision": revision
         }
         const result = this._put(`instances/${instanceId}/release`, null, params);
-        return result;
-        //return translate_error(result)
+        return translateError(result);
     }
 
     /*Revoke an invitation for the given user to review the given instance*/
-    revokeUserInvitation(instanceId: string, userId: string):Error|null {
+    revokeUserInvitation(instanceId: string, userId: string):KGError|null {
         const params = {}
         const result = this._delete(`instances/${instanceId}/invitedUsers/${userId}`, params);
-        return result;
-        //return translate_error(result)
+        return translateError(result);
     }
 
     /*Unrelease an instance*/
-    unrelease(instanceId: string):Error|null {
+    unrelease(instanceId: string):KGError|null {
         const params = {}
         const result = this._delete(`instances/${instanceId}/release`, params);
-        return result;
-        //return translate_error(result)
+        return translateError(result);
     }
 
 }
@@ -491,11 +454,10 @@ class Jsonld extends RequestsWithTokenHandler {
     }
 
     /*Normalizes the passed payload according to the EBRAINS KG conventions*/
-    normalizePayload(payload: any):Error|null {
+    normalizePayload(payload: any):KGError|null {
         const params = {}
         const result = this._post("jsonld/normalizedPayload", payload, params);
-        return result;
-        //return translate_error(result)
+        return translateError(result);
     }
 
 }
@@ -517,16 +479,14 @@ class Queries extends RequestsWithTokenHandler {
             "additionalRequestParams": additionalRequestParams
         }
         const result = this._get(`queries/${queryId}/instances`, params);
-        return result;
-        //return ResultPage[JsonLdDocument](response=result, constructor=JsonLdDocument)
+        return ResultPage[JsonLdDocument](response=result, constructor=JsonLdDocument);
     }
 
     /*Get the query specification with the given query id in a specific space*/
     getQuerySpecification(queryId: string):Result[Instance] {
         const params = {}
         const result = this._get(`queries/${queryId}`, params);
-        return result;
-        //return Result[Instance](response=result, constructor=Instance)
+        return Result[Instance](response=result, constructor=Instance);
     }
 
     /*List the queries and filter them by root type and/or text in the label, name or description*/
@@ -539,16 +499,14 @@ class Queries extends RequestsWithTokenHandler {
             "search": search
         }
         const result = this._get("queries", params);
-        return result;
-        //return ResultPage[Instance](response=result, constructor=Instance)
+        return ResultPage[Instance](response=result, constructor=Instance);
     }
 
     /*Remove a query specification*/
-    removeQuery(queryId: string):Error|null {
+    removeQuery(queryId: string):KGError|null {
         const params = {}
         const result = this._delete(`queries/${queryId}`, params);
-        return result;
-        //return translate_error(result)
+        return translateError(result);
     }
 
     /*Create or save a query specification*/
@@ -557,8 +515,7 @@ class Queries extends RequestsWithTokenHandler {
             "space": space
         }
         const result = this._put(`queries/${queryId}`, payload, params);
-        return result;
-        //return Result[Instance](response=result, constructor=Instance)
+        return Result[Instance](response=result, constructor=Instance);
     }
 
     /*Execute the query in the payload in test mode (e.g. for execution before saving with the KG QueryBuilder)*/
@@ -573,8 +530,7 @@ class Queries extends RequestsWithTokenHandler {
             "additionalRequestParams": additionalRequestParams
         }
         const result = this._post("queries", payload, params);
-        return result;
-        //return ResultPage[JsonLdDocument](response=result, constructor=JsonLdDocument)
+        return ResultPage[JsonLdDocument](response=result, constructor=JsonLdDocument);
     }
 
 }
@@ -590,8 +546,7 @@ class Spaces extends RequestsWithTokenHandler {
             "permissions": permissions
         }
         const result = this._get(`spaces/${space}`, params);
-        return result;
-        //return Result[SpaceInformation](response=result, constructor=SpaceInformation)
+        return Result[SpaceInformation](response=result, constructor=SpaceInformation);
     }
 
     
@@ -603,8 +558,7 @@ class Spaces extends RequestsWithTokenHandler {
             "permissions": permissions
         }
         const result = this._get("spaces", params);
-        return result;
-        //return ResultPage[SpaceInformation](response=result, constructor=SpaceInformation)
+        return ResultPage[SpaceInformation](response=result, constructor=SpaceInformation);
     }
 
 }
@@ -623,8 +577,7 @@ class Types extends RequestsWithTokenHandler {
             "space": space
         }
         const result = this._post("typesByName", payload, params);
-        return result;
-        //return ResultsById[TypeInformation](response=result, constructor=TypeInformation)
+        return ResultsById[TypeInformation](response=result, constructor=TypeInformation);
     }
 
     /*Returns the types available - either with property information or without*/
@@ -639,8 +592,7 @@ class Types extends RequestsWithTokenHandler {
             "returnTotalResults": pagination.returnTotalResults
         }
         const result = this._get("types", params);
-        return result;
-        //return ResultPage[TypeInformation](response=result, constructor=TypeInformation)
+        return ResultPage[TypeInformation](response=result, constructor=TypeInformation);
     }
 
 }
@@ -651,35 +603,31 @@ class Users extends RequestsWithTokenHandler {
     }
 
     /*Accept the terms of use in the given version*/
-    acceptTermsOfUse(version: string):Error|null {
+    acceptTermsOfUse(version: string):KGError|null {
         const params = {}
         const result = this._post(`users/termsOfUse/${version}/accept`, null, params);
-        return result;
-        //return translate_error(result)
+        return translateError(result);
     }
 
     /*Get the endpoint of the openid configuration*/
     getOpenIdConfigUrl():Result[JsonLdDocument] {
         const params = {}
         const result = this._get("users/authorization/config", params);
-        return result;
-        //return Result[JsonLdDocument](response=result, constructor=JsonLdDocument)
+        return Result[JsonLdDocument](response=result, constructor=JsonLdDocument);
     }
 
     /*Get the current terms of use*/
     getTermsOfUse():Optional[TermsOfUse] {
         const params = {}
         const result = this._get("users/termsOfUse", params);
-        return result;
-        //return null if not result.content else TermsOfUse(**result.content)
+        return result.content?new TermsOfUse(result.content):null;
     }
 
     /*Retrieve user information from the passed token (including detailed information such as e-mail address)*/
     myInfo():Result[User] {
         const params = {}
         const result = this._get("users/me", params);
-        return result;
-        //return Result[User](response=result, constructor=User)
+        return Result[User](response=result, constructor=User);
     }
 
 }

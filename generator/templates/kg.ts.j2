@@ -22,7 +22,7 @@
 import { SimpleToken, ClientCredentials } from "./oauth";
 import { KGConfig, CallableTokenHandler, TokenHandler, RequestsWithTokenHandler } from "./communication";
 import { ResponseConfiguration, ExtendedResponseConfiguration, Pagination, Stage, ReleaseTreeScope } from "./request";
-
+import { Result, Instance, JsonLdDocument, ResultsById, ResultPage, ReleaseStatus, KGError, translateError, User, Scope, SpaceInformation, TypeInformation, TermsOfUse, ListOfUUID, ListOfReducedUserInformation } from "./response";
 
 const _calculateBaseUrl = (host:string) => `http${host.startsWith('localhost')?'':'s'}://${host}/{{api_version}}/`;
 
@@ -48,7 +48,7 @@ class {{category.capitalize()}} extends RequestsWithTokenHandler {
     }
 {% for method in methods %}
     {% if method.summary %}/*{{method.summary}}*/{% endif %}
-    {{method.name}}({% if method.has_payload %}payload: any{%if method.parameters%}, {%endif%}{% endif %}{% for p in method.parameters %}{% if not p.replace %}{{p.name}}{% if p.type %}: {{p.type}}{% endif %}{% endif %}{% if not loop.last and not p.replace%}, {% endif %}{% endfor %}){% if method.response_type %}:{{method.response_type}}{% else %}:Error|null{% endif %} {
+    {{method.name}}({% if method.has_payload %}payload: any{%if method.parameters%}, {%endif%}{% endif %}{% for p in method.parameters %}{% if not p.replace %}{{p.name}}{% if p.type %}: {{p.type}}{% endif %}{% endif %}{% if not loop.last and not p.replace%}, {% endif %}{% endfor %}){% if method.response_type %}:{{method.response_type}}{% else %}:KGError|null{% endif %} {
         const params = {% if not method.query_parameters %}{}{% else %}{ {% for p in method.query_parameters %}
             "{{p.name}}": {% if p.replace %}{{p.replace}}.{% endif %}{{p.param}}{% if not loop.last %},{% endif %}{% endfor %}
         }{% endif %}{% if method.dynamic_parameters %}
@@ -58,8 +58,7 @@ class {{category.capitalize()}} extends RequestsWithTokenHandler {
             }
         });{% endfor %}{% endif %}
         const result = this._{{method.operation}}({% if method.path.has_path_params %}`{{method.path.name|replace('{', '${')}}`{%else%}"{{method.path.name}}"{% endif %}, {% if method.has_payload %}payload, {%elif method.operation not in ['get', 'delete'] %}null, {% endif %}params);
-        return result;
-        //return {% if method.generic_response_type %}{% if 'Optional[' in method.response_type %}null if not result.content else {{method.generic_response_type}}(**result.content){% else %}{{method.response_type}}(response=result, constructor={{method.generic_response_type}}){% endif %}{% elif method.response_type %}{{method.response_type}}(response = result){% else %}translate_error(result){% endif %}
+        return {% if method.generic_response_type %}{% if 'Optional[' in method.response_type %}result.content?new {{method.generic_response_type}}(result.content):null{% else %}{{method.response_type}}(response=result, constructor={{method.generic_response_type}}){% endif %}{% elif method.response_type %}{{method.response_type}}(response = result){% else %}translateError(result){% endif %};
     }
 {% endfor %}
 }
