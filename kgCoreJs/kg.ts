@@ -53,164 +53,164 @@ class Admin extends RequestsWithTokenHandler {
     }
 
     /*Assign a type to a space*/
-    assignTypeToSpace(space: string, targetType: string):KGError|null {
+    async assignTypeToSpace(space: string, targetType: string):Promise<KGError|null> {
         const params = { 
             "type": targetType
-        }
-        const result = this._put(`spaces/${space}/types`, null, params);
+        };
+        const result = await this._put(`spaces/${space}/types`, null, params);
         return translateError(result);
     }
 
     /*Update invitation scope for this instance*/
-    calculateInstanceInvitationScope(instanceId: string):KGError|null {
-        const params = {}
-        const result = this._put(`instances/${instanceId}/invitationScope`, null, params);
+    async calculateInstanceInvitationScope(instanceId: string):Promise<KGError|null> {
+        const params = {};
+        const result = await this._put(`instances/${instanceId}/invitationScope`, null, params);
         return translateError(result);
     }
 
     /*Explicitly specify a space*/
-    createSpaceDefinition(space: string, autorelease: boolean = false, clientSpace: boolean = false, deferCache: boolean = false):KGError|null {
+    async createSpaceDefinition(space: string, autorelease: boolean = false, clientSpace: boolean = false, deferCache: boolean = false):Promise<KGError|null> {
         const params = { 
             "autorelease": autorelease,
             "clientSpace": clientSpace,
             "deferCache": deferCache
-        }
-        const result = this._put(`spaces/${space}/specification`, null, params);
+        };
+        const result = await this._put(`spaces/${space}/specification`, null, params);
         return translateError(result);
     }
 
     /*Specify a type*/
-    createTypeDefinition(payload: any, targetType: string, isGlobal: boolean|null = null):KGError|null {
+    async createTypeDefinition(payload: any, targetType: string, isGlobal: boolean|null = null):Promise<KGError|null> {
         const params = { 
             "global": isGlobal,
             "type": targetType
-        }
-        const result = this._put("types/specification", payload, params);
+        };
+        const result = await this._put("types/specification", payload, params);
         return translateError(result);
     }
 
     /*Upload a property specification either globally or for the requesting client*/
-    defineProperty(payload: any, propertyName: string, isGlobal: boolean|null = null):KGError|null {
+    async defineProperty(payload: any, propertyName: string, isGlobal: boolean|null = null):Promise<KGError|null> {
         const params = { 
             "global": isGlobal,
             "property": propertyName
-        }
-        const result = this._put("properties", payload, params);
+        };
+        const result = await this._put("properties", payload, params);
         return translateError(result);
     }
 
     /*Define a property specification either globally for the requesting client*/
-    definePropertyForType(payload: any, propertyName: string, targetType: string, isGlobal: boolean|null = null):KGError|null {
+    async definePropertyForType(payload: any, propertyName: string, targetType: string, isGlobal: boolean|null = null):Promise<KGError|null> {
         const params = { 
             "global": isGlobal,
             "property": propertyName,
             "type": targetType
-        }
-        const result = this._put("propertiesForType", payload, params);
+        };
+        const result = await this._put("propertiesForType", payload, params);
         return translateError(result);
     }
 
     /*Upload a property specification either globally or for the requesting client*/
-    deprecateProperty(propertyName: string, isGlobal: boolean|null = null):KGError|null {
+    async deprecateProperty(propertyName: string, isGlobal: boolean|null = null):Promise<KGError|null> {
         const params = { 
             "global": isGlobal,
             "property": propertyName
-        }
-        const result = this._delete("properties", params);
+        };
+        const result = await this._delete("properties", params);
         return translateError(result);
     }
 
     /*Deprecate a property specification for a specific type either globally or for the requesting client*/
-    deprecatePropertyForType(propertyName: string, targetType: string, isGlobal: boolean|null = null):KGError|null {
+    async deprecatePropertyForType(propertyName: string, targetType: string, isGlobal: boolean|null = null):Promise<KGError|null> {
         const params = { 
             "global": isGlobal,
             "property": propertyName,
             "type": targetType
-        }
-        const result = this._delete("propertiesForType", params);
+        };
+        const result = await this._delete("propertiesForType", params);
         return translateError(result);
     }
 
     
-    getAllRoleDefinitions():KGError|null {
-        const params = {}
-        const result = this._get("setup/permissions", params);
+    async getAllRoleDefinitions():Promise<KGError|null> {
+        const params = {};
+        const result = await this._get("setup/permissions", params);
         return translateError(result);
     }
 
     
-    getClaimForRole(role: string, space: string|null = null):KGError|null {
+    async getClaimForRole(role: string, space: string|null = null):Promise<KGError|null> {
         const params = { 
             "space": space
-        }
-        const result = this._get(`setup/permissions/${role}`, params);
+        };
+        const result = await this._get(`setup/permissions/${role}`, params);
         return translateError(result);
     }
 
     /*List instances with invitations*/
-    listInstancesWithInvitations():Result[ListOfUUID] {
-        const params = {}
-        const result = this._get("instancesWithInvitations", params);
-        return Result[ListOfUUID](response=result, constructor=ListOfUUID);
+    async listInstancesWithInvitations():Promise<Result<ListOfUUID>> {
+        const params = {};
+        const result = await this._get("instancesWithInvitations", params);
+        return new Result<ListOfUUID>(result, ListOfUUID);
     }
 
     
-    registerTermsOfUse(payload: any):KGError|null {
-        const params = {}
-        const result = this._put("setup/termsOfUse", payload, params);
+    async registerTermsOfUse(payload: any):Promise<KGError|null> {
+        const params = {};
+        const result = await this._put("setup/termsOfUse", payload, params);
         return translateError(result);
     }
 
     /*Remove a space definition*/
-    removeSpaceDefinition(space: string):KGError|null {
-        const params = {}
-        const result = this._delete(`spaces/${space}/specification`, params);
+    async removeSpaceDefinition(space: string):Promise<KGError|null> {
+        const params = {};
+        const result = await this._delete(`spaces/${space}/specification`, params);
         return translateError(result);
     }
 
     /*Remove a type definition*/
-    removeTypeDefinition(isGlobal: boolean|null = null, targetType: string|null = null):KGError|null {
+    async removeTypeDefinition(isGlobal: boolean|null = null, targetType: string|null = null):Promise<KGError|null> {
         const params = { 
             "type": targetType,
             "global": isGlobal
-        }
-        const result = this._delete("types/specification", params);
+        };
+        const result = await this._delete("types/specification", params);
         return translateError(result);
     }
 
     /*Remove a type in space definition*/
-    removeTypeFromSpace(space: string, targetType: string):KGError|null {
+    async removeTypeFromSpace(space: string, targetType: string):Promise<KGError|null> {
         const params = { 
             "type": targetType
-        }
-        const result = this._delete(`spaces/${space}/types`, params);
+        };
+        const result = await this._delete(`spaces/${space}/types`, params);
         return translateError(result);
     }
 
     /*Trigger a rerun of the events of this space*/
-    rerunEvents(space: string):KGError|null {
-        const params = {}
-        const result = this._put(`spaces/${space}/eventHistory`, null, params);
+    async rerunEvents(space: string):Promise<KGError|null> {
+        const params = {};
+        const result = await this._put(`spaces/${space}/eventHistory`, null, params);
         return translateError(result);
     }
 
     /*Triggers the inference of all documents of the given space*/
-    triggerInference(space: string, identifier: string|null = null, isAsync: boolean = false):KGError|null {
+    async triggerInference(space: string, identifier: string|null = null, isAsync: boolean = false):Promise<KGError|null> {
         const params = { 
             "identifier": identifier,
             "async": isAsync
-        }
-        const result = this._post(`spaces/${space}/inference`, null, params);
+        };
+        const result = await this._post(`spaces/${space}/inference`, null, params);
         return translateError(result);
     }
 
     
-    updateClaimForRole(payload: any, remove: boolean, role: string, space: string|null = null):KGError|null {
+    async updateClaimForRole(payload: any, remove: boolean, role: string, space: string|null = null):Promise<KGError|null> {
         const params = { 
             "space": space,
             "remove": remove
-        }
-        const result = this._patch(`setup/permissions/${role}`, payload, params);
+        };
+        const result = await this._patch(`setup/permissions/${role}`, payload, params);
         return translateError(result);
     }
 
@@ -222,7 +222,7 @@ class Instances extends RequestsWithTokenHandler {
     }
 
     /*Replace contribution to an existing instance*/
-    contributeToFullReplacement(payload: any, instanceId: string, extendedResponseConfiguration: ExtendedResponseConfiguration = new ExtendedResponseConfiguration()):Result[Instance] {
+    async contributeToFullReplacement(payload: any, instanceId: string, extendedResponseConfiguration: ExtendedResponseConfiguration = new ExtendedResponseConfiguration()):Promise<Result<Instance>> {
         const params = { 
             "returnIncomingLinks": extendedResponseConfiguration.returnIncomingLinks,
             "incomingLinksPageSize": extendedResponseConfiguration.incomingLinksPageSize,
@@ -230,13 +230,13 @@ class Instances extends RequestsWithTokenHandler {
             "returnPermissions": extendedResponseConfiguration.returnPermissions,
             "returnAlternatives": extendedResponseConfiguration.returnAlternatives,
             "returnEmbedded": extendedResponseConfiguration.returnEmbedded
-        }
-        const result = this._put(`instances/${instanceId}`, payload, params);
-        return Result[Instance](response=result, constructor=Instance);
+        };
+        const result = await this._put(`instances/${instanceId}`, payload, params);
+        return new Result<Instance>(result, Instance);
     }
 
     /*Partially update contribution to an existing instance*/
-    contributeToPartialReplacement(payload: any, instanceId: string, extendedResponseConfiguration: ExtendedResponseConfiguration = new ExtendedResponseConfiguration()):Result[Instance] {
+    async contributeToPartialReplacement(payload: any, instanceId: string, extendedResponseConfiguration: ExtendedResponseConfiguration = new ExtendedResponseConfiguration()):Promise<Result<Instance>> {
         const params = { 
             "returnIncomingLinks": extendedResponseConfiguration.returnIncomingLinks,
             "incomingLinksPageSize": extendedResponseConfiguration.incomingLinksPageSize,
@@ -244,13 +244,13 @@ class Instances extends RequestsWithTokenHandler {
             "returnPermissions": extendedResponseConfiguration.returnPermissions,
             "returnAlternatives": extendedResponseConfiguration.returnAlternatives,
             "returnEmbedded": extendedResponseConfiguration.returnEmbedded
-        }
-        const result = this._patch(`instances/${instanceId}`, payload, params);
-        return Result[Instance](response=result, constructor=Instance);
+        };
+        const result = await this._patch(`instances/${instanceId}`, payload, params);
+        return new Result<Instance>(result, Instance);
     }
 
     /*Create new instance with a system generated id*/
-    createNew(payload: any, space: string, extendedResponseConfiguration: ExtendedResponseConfiguration = new ExtendedResponseConfiguration()):Result[Instance] {
+    async createNew(payload: any, space: string, extendedResponseConfiguration: ExtendedResponseConfiguration = new ExtendedResponseConfiguration()):Promise<Result<Instance>> {
         const params = { 
             "space": space,
             "returnIncomingLinks": extendedResponseConfiguration.returnIncomingLinks,
@@ -259,13 +259,13 @@ class Instances extends RequestsWithTokenHandler {
             "returnPermissions": extendedResponseConfiguration.returnPermissions,
             "returnAlternatives": extendedResponseConfiguration.returnAlternatives,
             "returnEmbedded": extendedResponseConfiguration.returnEmbedded
-        }
-        const result = this._post("instances", payload, params);
-        return Result[Instance](response=result, constructor=Instance);
+        };
+        const result = await this._post("instances", payload, params);
+        return new Result<Instance>(result, Instance);
     }
 
     /*Create new instance with a client defined id*/
-    createNewWithId(payload: any, instanceId: string, space: string, extendedResponseConfiguration: ExtendedResponseConfiguration = new ExtendedResponseConfiguration()):Result[Instance] {
+    async createNewWithId(payload: any, instanceId: string, space: string, extendedResponseConfiguration: ExtendedResponseConfiguration = new ExtendedResponseConfiguration()):Promise<Result<Instance>> {
         const params = { 
             "space": space,
             "returnIncomingLinks": extendedResponseConfiguration.returnIncomingLinks,
@@ -274,20 +274,20 @@ class Instances extends RequestsWithTokenHandler {
             "returnPermissions": extendedResponseConfiguration.returnPermissions,
             "returnAlternatives": extendedResponseConfiguration.returnAlternatives,
             "returnEmbedded": extendedResponseConfiguration.returnEmbedded
-        }
-        const result = this._post(`instances/${instanceId}`, payload, params);
-        return Result[Instance](response=result, constructor=Instance);
+        };
+        const result = await this._post(`instances/${instanceId}`, payload, params);
+        return new Result<Instance>(result, Instance);
     }
 
     /*Delete an instance*/
-    delete(instanceId: string):KGError|null {
-        const params = {}
-        const result = this._delete(`instances/${instanceId}`, params);
+    async delete(instanceId: string):Promise<KGError|null> {
+        const params = {};
+        const result = await this._delete(`instances/${instanceId}`, params);
         return translateError(result);
     }
 
     /*Get the instance*/
-    getById(instanceId: string, stage: Stage = Stage.RELEASED, extendedResponseConfiguration: ExtendedResponseConfiguration = new ExtendedResponseConfiguration()):Result[Instance] {
+    async getById(instanceId: string, stage: Stage = Stage.RELEASED, extendedResponseConfiguration: ExtendedResponseConfiguration = new ExtendedResponseConfiguration()):Promise<Result<Instance>> {
         const params = { 
             "stage": stage,
             "returnIncomingLinks": extendedResponseConfiguration.returnIncomingLinks,
@@ -296,13 +296,13 @@ class Instances extends RequestsWithTokenHandler {
             "returnPermissions": extendedResponseConfiguration.returnPermissions,
             "returnAlternatives": extendedResponseConfiguration.returnAlternatives,
             "returnEmbedded": extendedResponseConfiguration.returnEmbedded
-        }
-        const result = this._get(`instances/${instanceId}`, params);
-        return Result[Instance](response=result, constructor=Instance);
+        };
+        const result = await this._get(`instances/${instanceId}`, params);
+        return new Result<Instance>(result, Instance);
     }
 
     /*Read instances by the given list of (external) identifiers*/
-    getByIdentifiers(payload: any, stage: Stage = Stage.RELEASED, extendedResponseConfiguration: ExtendedResponseConfiguration = new ExtendedResponseConfiguration()):ResultsById[Instance] {
+    async getByIdentifiers(payload: any, stage: Stage = Stage.RELEASED, extendedResponseConfiguration: ExtendedResponseConfiguration = new ExtendedResponseConfiguration()):Promise<ResultsById<Instance>> {
         const params = { 
             "stage": stage,
             "returnIncomingLinks": extendedResponseConfiguration.returnIncomingLinks,
@@ -311,13 +311,13 @@ class Instances extends RequestsWithTokenHandler {
             "returnPermissions": extendedResponseConfiguration.returnPermissions,
             "returnAlternatives": extendedResponseConfiguration.returnAlternatives,
             "returnEmbedded": extendedResponseConfiguration.returnEmbedded
-        }
-        const result = this._post("instancesByIdentifiers", payload, params);
-        return ResultsById[Instance](response=result, constructor=Instance);
+        };
+        const result = await this._post("instancesByIdentifiers", payload, params);
+        return new ResultsById<Instance>(result, Instance);
     }
 
     /*Bulk operation of /instances/{id} to read instances by their UUIDs*/
-    getByIds(payload: any, stage: Stage = Stage.RELEASED, extendedResponseConfiguration: ExtendedResponseConfiguration = new ExtendedResponseConfiguration()):ResultsById[Instance] {
+    async getByIds(payload: any, stage: Stage = Stage.RELEASED, extendedResponseConfiguration: ExtendedResponseConfiguration = new ExtendedResponseConfiguration()):Promise<ResultsById<Instance>> {
         const params = { 
             "stage": stage,
             "returnIncomingLinks": extendedResponseConfiguration.returnIncomingLinks,
@@ -326,13 +326,13 @@ class Instances extends RequestsWithTokenHandler {
             "returnPermissions": extendedResponseConfiguration.returnPermissions,
             "returnAlternatives": extendedResponseConfiguration.returnAlternatives,
             "returnEmbedded": extendedResponseConfiguration.returnEmbedded
-        }
-        const result = this._post("instancesByIds", payload, params);
-        return ResultsById[Instance](response=result, constructor=Instance);
+        };
+        const result = await this._post("instancesByIds", payload, params);
+        return new ResultsById<Instance>(result, Instance);
     }
 
     /*Get incoming links for a specific instance (paginated)*/
-    getIncomingLinks(instanceId: string, propertyName: string, targetType: string, stage: Stage = Stage.RELEASED, pagination: Pagination = new Pagination()):ResultPage[Instance] {
+    async getIncomingLinks(instanceId: string, propertyName: string, targetType: string, stage: Stage = Stage.RELEASED, pagination: Pagination = new Pagination()):Promise<ResultPage<Instance>> {
         const params = { 
             "stage": stage,
             "property": propertyName,
@@ -340,49 +340,49 @@ class Instances extends RequestsWithTokenHandler {
             "from": pagination.start,
             "size": pagination.size,
             "returnTotalResults": pagination.returnTotalResults
-        }
-        const result = this._get(`instances/${instanceId}/incomingLinks`, params);
-        return ResultPage[Instance](response=result, constructor=Instance);
+        };
+        const result = await this._get(`instances/${instanceId}/incomingLinks`, params);
+        return new ResultPage<Instance>(result, Instance);
     }
 
     /*Get the release status for an instance*/
-    getReleaseStatus(instanceId: string, releaseTreeScope: ReleaseTreeScope):Result[ReleaseStatus] {
+    async getReleaseStatus(instanceId: string, releaseTreeScope: ReleaseTreeScope):Promise<Result<ReleaseStatus>> {
         const params = { 
             "releaseTreeScope": releaseTreeScope
-        }
-        const result = this._get(`instances/${instanceId}/release/status`, params);
-        return Result[ReleaseStatus](response=result, constructor=ReleaseStatus);
+        };
+        const result = await this._get(`instances/${instanceId}/release/status`, params);
+        return new Result<ReleaseStatus>(result, ReleaseStatus);
     }
 
     /*Get the release status for multiple instances*/
-    getReleaseStatusByIds(payload: any, releaseTreeScope: ReleaseTreeScope):ResultsById[ReleaseStatus] {
+    async getReleaseStatusByIds(payload: any, releaseTreeScope: ReleaseTreeScope):Promise<ResultsById<ReleaseStatus>> {
         const params = { 
             "releaseTreeScope": releaseTreeScope
-        }
-        const result = this._post("instancesByIds/release/status", payload, params);
-        return ResultsById[ReleaseStatus](response=result, constructor=ReleaseStatus);
+        };
+        const result = await this._post("instancesByIds/release/status", payload, params);
+        return new ResultsById<ReleaseStatus>(result, ReleaseStatus);
     }
 
     /*Get the scope for the instance by its KG-internal ID*/
-    getScope(instanceId: string, applyRestrictions: boolean = false, returnPermissions: boolean = false, stage: Stage = Stage.RELEASED):Result[Scope] {
+    async getScope(instanceId: string, applyRestrictions: boolean = false, returnPermissions: boolean = false, stage: Stage = Stage.RELEASED):Promise<Result<Scope>> {
         const params = { 
             "stage": stage,
             "returnPermissions": returnPermissions,
             "applyRestrictions": applyRestrictions
-        }
-        const result = this._get(`instances/${instanceId}/scope`, params);
-        return Result[Scope](response=result, constructor=Scope);
+        };
+        const result = await this._get(`instances/${instanceId}/scope`, params);
+        return new Result<Scope>(result, Scope);
     }
 
     /*Create or update an invitation for the given user to review the given instance*/
-    inviteUserFor(instanceId: string, userId: string):KGError|null {
-        const params = {}
-        const result = this._put(`instances/${instanceId}/invitedUsers/${userId}`, null, params);
+    async inviteUserFor(instanceId: string, userId: string):Promise<KGError|null> {
+        const params = {};
+        const result = await this._put(`instances/${instanceId}/invitedUsers/${userId}`, null, params);
         return translateError(result);
     }
 
     /*Returns a list of instances according to their types*/
-    list(targetType: string, filterProperty: string|null = null, filterValue: string|null = null, searchByLabel: string|null = null, space: string|null = null, stage: Stage = Stage.RELEASED, responseConfiguration: ResponseConfiguration = new ResponseConfiguration(), pagination: Pagination = new Pagination()):ResultPage[Instance] {
+    async list(targetType: string, filterProperty: string|null = null, filterValue: string|null = null, searchByLabel: string|null = null, space: string|null = null, stage: Stage = Stage.RELEASED, responseConfiguration: ResponseConfiguration = new ResponseConfiguration(), pagination: Pagination = new Pagination()):Promise<ResultPage<Instance>> {
         const params = { 
             "stage": stage,
             "type": targetType,
@@ -397,20 +397,20 @@ class Instances extends RequestsWithTokenHandler {
             "from": pagination.start,
             "size": pagination.size,
             "returnTotalResults": pagination.returnTotalResults
-        }
-        const result = this._get("instances", params);
-        return ResultPage[Instance](response=result, constructor=Instance);
+        };
+        const result = await this._get("instances", params);
+        return new ResultPage<Instance>(result, Instance);
     }
 
     /*List invitations for review for the given instance*/
-    listInvitations(instanceId: string):Result[ListOfReducedUserInformation] {
-        const params = {}
-        const result = this._get(`instances/${instanceId}/invitedUsers`, params);
-        return Result[ListOfReducedUserInformation](response=result, constructor=ListOfReducedUserInformation);
+    async listInvitations(instanceId: string):Promise<Result<ListOfReducedUserInformation>> {
+        const params = {};
+        const result = await this._get(`instances/${instanceId}/invitedUsers`, params);
+        return new Result<ListOfReducedUserInformation>(result, ListOfReducedUserInformation);
     }
 
     /*Move an instance to another space*/
-    move(instanceId: string, space: string, extendedResponseConfiguration: ExtendedResponseConfiguration = new ExtendedResponseConfiguration()):Result[Instance] {
+    async move(instanceId: string, space: string, extendedResponseConfiguration: ExtendedResponseConfiguration = new ExtendedResponseConfiguration()):Promise<Result<Instance>> {
         const params = { 
             "returnIncomingLinks": extendedResponseConfiguration.returnIncomingLinks,
             "incomingLinksPageSize": extendedResponseConfiguration.incomingLinksPageSize,
@@ -418,31 +418,31 @@ class Instances extends RequestsWithTokenHandler {
             "returnPermissions": extendedResponseConfiguration.returnPermissions,
             "returnAlternatives": extendedResponseConfiguration.returnAlternatives,
             "returnEmbedded": extendedResponseConfiguration.returnEmbedded
-        }
-        const result = this._put(`instances/${instanceId}/spaces/${space}`, null, params);
-        return Result[Instance](response=result, constructor=Instance);
+        };
+        const result = await this._put(`instances/${instanceId}/spaces/${space}`, null, params);
+        return new Result<Instance>(result, Instance);
     }
 
     /*Release or re-release an instance*/
-    release(instanceId: string, revision: string|null = null):KGError|null {
+    async release(instanceId: string, revision: string|null = null):Promise<KGError|null> {
         const params = { 
             "revision": revision
-        }
-        const result = this._put(`instances/${instanceId}/release`, null, params);
+        };
+        const result = await this._put(`instances/${instanceId}/release`, null, params);
         return translateError(result);
     }
 
     /*Revoke an invitation for the given user to review the given instance*/
-    revokeUserInvitation(instanceId: string, userId: string):KGError|null {
-        const params = {}
-        const result = this._delete(`instances/${instanceId}/invitedUsers/${userId}`, params);
+    async revokeUserInvitation(instanceId: string, userId: string):Promise<KGError|null> {
+        const params = {};
+        const result = await this._delete(`instances/${instanceId}/invitedUsers/${userId}`, params);
         return translateError(result);
     }
 
     /*Unrelease an instance*/
-    unrelease(instanceId: string):KGError|null {
-        const params = {}
-        const result = this._delete(`instances/${instanceId}/release`, params);
+    async unrelease(instanceId: string):Promise<KGError|null> {
+        const params = {};
+        const result = await this._delete(`instances/${instanceId}/release`, params);
         return translateError(result);
     }
 
@@ -454,9 +454,9 @@ class Jsonld extends RequestsWithTokenHandler {
     }
 
     /*Normalizes the passed payload according to the EBRAINS KG conventions*/
-    normalizePayload(payload: any):KGError|null {
-        const params = {}
-        const result = this._post("jsonld/normalizedPayload", payload, params);
+    async normalizePayload(payload: any):Promise<KGError|null> {
+        const params = {};
+        const result = await this._post("jsonld/normalizedPayload", payload, params);
         return translateError(result);
     }
 
@@ -468,7 +468,7 @@ class Queries extends RequestsWithTokenHandler {
     }
 
     /*Execute a stored query to receive the instances*/
-    executeQueryById(queryId: string, additionalRequestParams: any = {}, instanceId: string|null = null, restrictToSpaces: Array<string>|null = null, stage: Stage = Stage.RELEASED, pagination: Pagination = new Pagination()):ResultPage[JsonLdDocument] {
+    async executeQueryById(queryId: string, additionalRequestParams: any = {}, instanceId: string|null = null, restrictToSpaces: Array<string>|null = null, stage: Stage = Stage.RELEASED, pagination: Pagination = new Pagination()):Promise<ResultPage<JsonLdDocument>> {
         const params = { 
             "from": pagination.start,
             "size": pagination.size,
@@ -477,49 +477,49 @@ class Queries extends RequestsWithTokenHandler {
             "instanceId": instanceId,
             "restrictToSpaces": restrictToSpaces,
             "additionalRequestParams": additionalRequestParams
-        }
-        const result = this._get(`queries/${queryId}/instances`, params);
-        return ResultPage[JsonLdDocument](response=result, constructor=JsonLdDocument);
+        };
+        const result = await this._get(`queries/${queryId}/instances`, params);
+        return new ResultPage<JsonLdDocument>(result, JsonLdDocument);
     }
 
     /*Get the query specification with the given query id in a specific space*/
-    getQuerySpecification(queryId: string):Result[Instance] {
-        const params = {}
-        const result = this._get(`queries/${queryId}`, params);
-        return Result[Instance](response=result, constructor=Instance);
+    async getQuerySpecification(queryId: string):Promise<Result<Instance>> {
+        const params = {};
+        const result = await this._get(`queries/${queryId}`, params);
+        return new Result<Instance>(result, Instance);
     }
 
     /*List the queries and filter them by root type and/or text in the label, name or description*/
-    listPerRootType(search: string|null = null, targetType: string|null = null, pagination: Pagination = new Pagination()):ResultPage[Instance] {
+    async listPerRootType(search: string|null = null, targetType: string|null = null, pagination: Pagination = new Pagination()):Promise<ResultPage<Instance>> {
         const params = { 
             "from": pagination.start,
             "size": pagination.size,
             "returnTotalResults": pagination.returnTotalResults,
             "type": targetType,
             "search": search
-        }
-        const result = this._get("queries", params);
-        return ResultPage[Instance](response=result, constructor=Instance);
+        };
+        const result = await this._get("queries", params);
+        return new ResultPage<Instance>(result, Instance);
     }
 
     /*Remove a query specification*/
-    removeQuery(queryId: string):KGError|null {
-        const params = {}
-        const result = this._delete(`queries/${queryId}`, params);
+    async removeQuery(queryId: string):Promise<KGError|null> {
+        const params = {};
+        const result = await this._delete(`queries/${queryId}`, params);
         return translateError(result);
     }
 
     /*Create or save a query specification*/
-    saveQuery(payload: any, queryId: string, space: string|null = null):Result[Instance] {
+    async saveQuery(payload: any, queryId: string, space: string|null = null):Promise<Result<Instance>> {
         const params = { 
             "space": space
-        }
-        const result = this._put(`queries/${queryId}`, payload, params);
-        return Result[Instance](response=result, constructor=Instance);
+        };
+        const result = await this._put(`queries/${queryId}`, payload, params);
+        return new Result<Instance>(result, Instance);
     }
 
     /*Execute the query in the payload in test mode (e.g. for execution before saving with the KG QueryBuilder)*/
-    testQuery(payload: any, additionalRequestParams: any = {}, instanceId: string|null = null, restrictToSpaces: Array<string>|null = null, stage: Stage = Stage.RELEASED, pagination: Pagination = new Pagination()):ResultPage[JsonLdDocument] {
+    async testQuery(payload: any, additionalRequestParams: any = {}, instanceId: string|null = null, restrictToSpaces: Array<string>|null = null, stage: Stage = Stage.RELEASED, pagination: Pagination = new Pagination()):Promise<ResultPage<JsonLdDocument>> {
         const params = { 
             "from": pagination.start,
             "size": pagination.size,
@@ -528,9 +528,9 @@ class Queries extends RequestsWithTokenHandler {
             "instanceId": instanceId,
             "restrictToSpaces": restrictToSpaces,
             "additionalRequestParams": additionalRequestParams
-        }
-        const result = this._post("queries", payload, params);
-        return ResultPage[JsonLdDocument](response=result, constructor=JsonLdDocument);
+        };
+        const result = await this._post("queries", payload, params);
+        return new ResultPage<JsonLdDocument>(result, JsonLdDocument);
     }
 
 }
@@ -541,24 +541,24 @@ class Spaces extends RequestsWithTokenHandler {
     }
 
     
-    get(space: string, permissions: boolean = false):Result[SpaceInformation] {
+    async get(space: string, permissions: boolean = false):Promise<Result<SpaceInformation>> {
         const params = { 
             "permissions": permissions
-        }
-        const result = this._get(`spaces/${space}`, params);
-        return Result[SpaceInformation](response=result, constructor=SpaceInformation);
+        };
+        const result = await this._get(`spaces/${space}`, params);
+        return new Result<SpaceInformation>(result, SpaceInformation);
     }
 
     
-    list(permissions: boolean = false, pagination: Pagination = new Pagination()):ResultPage[SpaceInformation] {
+    async list(permissions: boolean = false, pagination: Pagination = new Pagination()):Promise<ResultPage<SpaceInformation>> {
         const params = { 
             "from": pagination.start,
             "size": pagination.size,
             "returnTotalResults": pagination.returnTotalResults,
             "permissions": permissions
-        }
-        const result = this._get("spaces", params);
-        return ResultPage[SpaceInformation](response=result, constructor=SpaceInformation);
+        };
+        const result = await this._get("spaces", params);
+        return new ResultPage<SpaceInformation>(result, SpaceInformation);
     }
 
 }
@@ -569,19 +569,19 @@ class Types extends RequestsWithTokenHandler {
     }
 
     /*Returns the types according to the list of names - either with property information or without*/
-    getByName(payload: any, space: string|null = null, stage: Stage = Stage.RELEASED, withIncomingLinks: boolean = false, withProperties: boolean = false):ResultsById[TypeInformation] {
+    async getByName(payload: any, space: string|null = null, stage: Stage = Stage.RELEASED, withIncomingLinks: boolean = false, withProperties: boolean = false):Promise<ResultsById<TypeInformation>> {
         const params = { 
             "stage": stage,
             "withProperties": withProperties,
             "withIncomingLinks": withIncomingLinks,
             "space": space
-        }
-        const result = this._post("typesByName", payload, params);
-        return ResultsById[TypeInformation](response=result, constructor=TypeInformation);
+        };
+        const result = await this._post("typesByName", payload, params);
+        return new ResultsById<TypeInformation>(result, TypeInformation);
     }
 
     /*Returns the types available - either with property information or without*/
-    list(space: string|null = null, stage: Stage = Stage.RELEASED, withIncomingLinks: boolean = false, withProperties: boolean = false, pagination: Pagination = new Pagination()):ResultPage[TypeInformation] {
+    async list(space: string|null = null, stage: Stage = Stage.RELEASED, withIncomingLinks: boolean = false, withProperties: boolean = false, pagination: Pagination = new Pagination()):Promise<ResultPage<TypeInformation>> {
         const params = { 
             "stage": stage,
             "space": space,
@@ -590,9 +590,9 @@ class Types extends RequestsWithTokenHandler {
             "from": pagination.start,
             "size": pagination.size,
             "returnTotalResults": pagination.returnTotalResults
-        }
-        const result = this._get("types", params);
-        return ResultPage[TypeInformation](response=result, constructor=TypeInformation);
+        };
+        const result = await this._get("types", params);
+        return new ResultPage<TypeInformation>(result, TypeInformation);
     }
 
 }
@@ -603,31 +603,31 @@ class Users extends RequestsWithTokenHandler {
     }
 
     /*Accept the terms of use in the given version*/
-    acceptTermsOfUse(version: string):KGError|null {
-        const params = {}
-        const result = this._post(`users/termsOfUse/${version}/accept`, null, params);
+    async acceptTermsOfUse(version: string):Promise<KGError|null> {
+        const params = {};
+        const result = await this._post(`users/termsOfUse/${version}/accept`, null, params);
         return translateError(result);
     }
 
     /*Get the endpoint of the openid configuration*/
-    getOpenIdConfigUrl():Result[JsonLdDocument] {
-        const params = {}
-        const result = this._get("users/authorization/config", params);
-        return Result[JsonLdDocument](response=result, constructor=JsonLdDocument);
+    async getOpenIdConfigUrl():Promise<Result<JsonLdDocument>> {
+        const params = {};
+        const result = await this._get("users/authorization/config", params);
+        return new Result<JsonLdDocument>(result, JsonLdDocument);
     }
 
     /*Get the current terms of use*/
-    getTermsOfUse():Optional[TermsOfUse] {
-        const params = {}
-        const result = this._get("users/termsOfUse", params);
+    async getTermsOfUse():Promise<TermsOfUse|null> {
+        const params = {};
+        const result = await this._get("users/termsOfUse", params);
         return result.content?new TermsOfUse(result.content):null;
     }
 
     /*Retrieve user information from the passed token (including detailed information such as e-mail address)*/
-    myInfo():Result[User] {
-        const params = {}
-        const result = this._get("users/me", params);
-        return Result[User](response=result, constructor=User);
+    async myInfo():Promise<Result<User>> {
+        const params = {};
+        const result = await this._get("users/me", params);
+        return new Result<User>(result, User);
     }
 
 }

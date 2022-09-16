@@ -131,10 +131,9 @@ class JavascriptClientGenerator(ClientGenerator):
                     response_type = self._response_type(definition["responses"] if "responses" in definition else {})
                     generic_response_type = None
                     if response_type:
-                        generics = re.findall(f"(?<=\[).*(?=])", response_type)
+                        generics = re.findall(f"(?<=\<).*(?=>)", response_type)
                         if len(generics) > 0:
                             generic_response_type = generics[0]
-
                     method: Dict[str, Any] = {"operation": operation, "summary": definition["summary"] if "summary" in definition else None, "has_payload": "requestBody" in definition and definition["requestBody"],
                               "path": {"name": self._translate_path(relative_path, path_parameters), "has_path_params": len(path_parameters) > 0}, "name": method_name,
                               "parameters": method_parameters, "query_parameters": query_parameters, "dynamic_parameters": dynamic_parameters, "response_type": response_type, "generic_response_type": generic_response_type}
@@ -242,39 +241,39 @@ class JavascriptClientGenerator(ClientGenerator):
                             response_reference = schema["$ref"]
         if response_reference:
             if response_reference == "#/components/schemas/ResultNormalizedJsonLd":
-                return "Result[Instance]"
+                return "Result<Instance>"
             elif response_reference == "#/components/schemas/ResultMapStringResultNormalizedJsonLd":
-                return "ResultsById[Instance]"
+                return "ResultsById<Instance>"
             elif response_reference == "#/components/schemas/PaginatedResultNormalizedJsonLd":
-                return "ResultPage[Instance]"
+                return "ResultPage<Instance>"
             elif response_reference == "#/components/schemas/PaginatedStreamResultJsonLdDoc":
-                return "ResultPage[JsonLdDocument]"
+                return "ResultPage<JsonLdDocument>"
             elif response_reference == "#/components/schemas/ResultListUUID":
-                return "Result[ListOfUUID]"
+                return "Result<ListOfUUID>"
             elif response_reference == "#/components/schemas/ResultReleaseStatus":
-                return "Result[ReleaseStatus]"
+                return "Result<ReleaseStatus>"
             elif response_reference == "#/components/schemas/ResultMapUUIDResultReleaseStatus":
-                return "ResultsById[ReleaseStatus]"
+                return "ResultsById<ReleaseStatus>"
             elif response_reference == "#/components/schemas/ResultListReducedUserInformation":
-                return "Result[ListOfReducedUserInformation]"
+                return "Result<ListOfReducedUserInformation>"
             elif response_reference == "#/components/schemas/ResultUser":
-                return "Result[User]"
+                return "Result<User>"
             elif response_reference == "#/components/schemas/ResultUserWithRoles":
-                return "Result[UserWithRoles]"
+                return "Result<UserWithRoles>"
             elif response_reference == "#/components/schemas/ResultScopeElement":
-                return "Result[Scope]"
+                return "Result<Scope>"
             elif response_reference == "#/components/schemas/ResultJsonLdDoc":
-                return "Result[JsonLdDocument]"
+                return "Result<JsonLdDocument>"
             elif response_reference == "#/components/schemas/ResultSpaceInformation":
-                return "Result[SpaceInformation]"
+                return "Result<SpaceInformation>"
             elif response_reference == "#/components/schemas/PaginatedResultSpaceInformation":
-                return "ResultPage[SpaceInformation]"
+                return "ResultPage<SpaceInformation>"
             elif response_reference == "#/components/schemas/PaginatedResultTypeInformation":
-                return "ResultPage[TypeInformation]"
+                return "ResultPage<TypeInformation>"
             elif response_reference == "#/components/schemas/ResultMapStringResultTypeInformation":
-                return "ResultsById[TypeInformation]"
+                return "ResultsById<TypeInformation>"
             elif response_reference == "#/components/schemas/TermsOfUseResult":
-                return "Optional[TermsOfUse]"
+                return "Nullable<TermsOfUse>"
             # elif response_reference == "#/components/schemas/JsonLdDoc":
             #     return "ListOfJsonLdDocuments" if is_list else "JsonLdDocument"
             else:
