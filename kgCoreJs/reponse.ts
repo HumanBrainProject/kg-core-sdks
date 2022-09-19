@@ -210,6 +210,37 @@ class ResponseObjectConstructor {
   }
 }
 
+class ResultPageIterator<T> implements Iterator<T> {
+  resultPage: ResultPage<T>|null;
+  private counter: number = 0 ;
+  constructor(resultPage: ResultPage<T>|null) {
+    this.resultPage = resultPage;
+  }
+
+  next(): IteratorResult<T> {
+    if(this.resultPage) {
+      if(this.resultPage.error) {
+        throw new Error(this.resultPage?.error?.message ?? undefined);
+      } else if(this.resultPage.data) {
+        if(!this.resultPage.total || (this.resultPage.total && this.counter < this.resultPage.total)) {
+          if(this.resultPage.startFrom && this.resultPage.size) {
+            if(this.counter >= (this.resultPage.startFrom + this.resultPage.size) && this.resultPage.hasNextPage()) {
+              this.resultPage = this.resultPage.nextPage();
+            }
+          }
+          if(this.resultPage && this.resultPage.startFrom) {
+            const result = this.resultPage.data[this.counter-this.resultPage.startFrom];
+            this.counter++;
+            return {value: result, done: false};
+          }
+        }
+      }
+    }
+    return {value: null, done:true};
+  }
+}
+
+
 class ResultPage<T> extends _AbstractResultPage {
   data: Array<T>;
   _originalResponse: any;
@@ -227,7 +258,7 @@ class ResultPage<T> extends _AbstractResultPage {
 
   _getData(constructor, content, idNamespace) {
     if (content && content["data"]) {
-      return content["data"].map((c) =>
+      return content["data"].map(c =>
         ResponseObjectConstructor.initResponseObject(
           constructor,
           c,
@@ -235,7 +266,7 @@ class ResultPage<T> extends _AbstractResultPage {
         )
       );
     }
-    return ];
+    return [];
   }
 
   nextPage(): ResultPage<T> | null {
@@ -263,7 +294,7 @@ class ResultPage<T> extends _AbstractResultPage {
   }
 
   items() {
-    //TODO: Implement the iterator
+    return new ResultPageIterator<T>(this);
   }
 }
 
