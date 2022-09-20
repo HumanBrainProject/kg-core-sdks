@@ -18,7 +18,6 @@
  *  Specific Grant Agreements No. 720270, No. 785907, and No. 945539
  *  (Human Brain Project SGA1, SGA2 and SGA3).
  */
-
 import { KGRequestWithResponseContext } from "./communication";
 
 enum ReleaseStatus {
@@ -27,15 +26,24 @@ enum ReleaseStatus {
   HAS_CHANGED = "HAS_CHANGED",
 }
 
-// class JsonLdDocument  {
-//   constructor(seq, idNamespace)
-// }
-// class ListOfJsonLdDocuments extends JsonLdDocument {
-//   constructor(seq) {
-//     super(seq);
-//   }
+class JsonLdDocument {
+  [index: string]: any;
+  idNamespace: string|null
+  constructor(json:any, idNamespace: string|null = null) {
+    Object.keys( json ).forEach((key:string) => {
+        this[key] = json[key];
+      }
+    )
+    this.idNamespace = idNamespace;
+  }
+}
 
-// }
+class Instance extends JsonLdDocument {
+  constructor(data: any, idNamespace: string| null = null) {
+    super(data, idNamespace);
+    this.instanceId = this["@id"] ?? null;
+  }
+}
 
 export class TermsOfUse {
   accepted: boolean;
@@ -168,7 +176,7 @@ export const translateError = (response: KGRequestWithResponseContext) => {
     );
   } else {
     if (response.statusCode && response.statusCode >= 400) {
-      return new KGError(response.statusCode); //TODO: check what to do with the message
+      return new KGError(response.statusCode); //TODO: check what to do with the message http client
     }
   }
   return null;
@@ -201,12 +209,20 @@ class _AbstractResultPage extends _AbstractResult {
   }
 }
 
+
+// abstract class ListOfGenerics {
+//   abstract getClass():string;
+// }
 class ResponseObjectConstructor {
   static initResponseObject(constructor, data: any, idNamespace: any) {
     if (constructor === JsonLdDocument || constructor === Instance) {
-      return constructor(data, idNamespace);
-    }
-    return constructor(data);
+      return new constructor(data, idNamespace);
+    } 
+    // else if (constructor instanceof ListOfGenerics) {
+    //   const myClass = constructor.getClass();
+    //   return data.map(d => new myClass(d));
+    // }
+    return new constructor(data);
   }
 }
 
