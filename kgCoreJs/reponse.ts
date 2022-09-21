@@ -220,8 +220,6 @@ class ResponseObjectConstructor {
   static initResponseObject(constructor, data: any, idNamespace: any) {
     if (constructor === JsonLdDocument || constructor === Instance) {
       return new constructor(data, idNamespace);
-    }  else if (constructor === ListOfReducedUserInformation) {
-      return new constructor(data);
     }
     return new constructor(data);
   }
