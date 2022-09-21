@@ -22,7 +22,7 @@
 import { SimpleToken, ClientCredentials } from "./oauth";
 import { KGConfig, CallableTokenHandler, TokenHandler, RequestsWithTokenHandler } from "./communication";
 import { ResponseConfiguration, ExtendedResponseConfiguration, Pagination, Stage, ReleaseTreeScope } from "./request";
-import { Result, Instance, JsonLdDocument, ResultsById, ResultPage, ReleaseStatus, KGError, translateError, User, Scope, SpaceInformation, TypeInformation, TermsOfUse, ListOfUUID, ReducedUserInformation } from "./response";
+import { Result, Instance, JsonLdDocument, ResultsById, ResultPage, ReleaseStatus, KGError, translateError, User, Scope, SpaceInformation, TypeInformation, TermsOfUse, ListOfUUID, ListOfReducedUserInformation } from "./response";
 
 const _calculateBaseUrl = (host:string) => `http${host.startsWith('localhost')?'':'s'}://${host}/{{api_version}}/`;
 
@@ -58,18 +58,7 @@ class {{category.capitalize()}} extends RequestsWithTokenHandler {
             }
         });{% endfor %}{% endif %}
         const result = await this._{{method.operation}}({% if method.path.has_path_params %}`{{method.path.name|replace('{', '${')}}`{%else%}"{{method.path.name}}"{% endif %}, {% if method.has_payload %}payload, {%elif method.operation not in ['get', 'delete'] %}null, {% endif %}params);
-        {% if method.response_type and "Array<" in method.response_type %}   
-        {% set final_type  = method.response_type|replace("Result<Array<", "")|replace(">", "") %}
-        {% set class_final_type  = 'ListOf' + final_type %}
-        class {{class_final_type}} extends ListOfGenerics {{ "{" }}
-            getType() {{ "{" }}
-                return {{final_type}};
-            {{ "}" }};
-        {{ "}" }}
-        return new {{method.response_type}}(result, {{class_final_type}});
-        {%else%}
         return {% if method.generic_response_type %}{% if 'Nullable<' in method.response_type %}result.content?new {{method.generic_response_type}}(result.content):null{% else %}new {{method.response_type}}(result, {{method.generic_response_type}}){% endif %}{% elif method.response_type %}new {{method.response_type}}(result){% else %}translateError(result){% endif %};
-        {% endif %} 
     }
 {% endfor %}
 }

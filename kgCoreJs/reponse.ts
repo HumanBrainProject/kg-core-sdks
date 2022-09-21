@@ -210,18 +210,19 @@ class _AbstractResultPage extends _AbstractResult {
 }
 
 
-// abstract class ListOfGenerics {
-//   abstract getClass():string;
-// }
+class ListOfReducedUserInformation extends Array<ReducedUserInformation> {
+  constructor(items: Array<ReducedUserInformation>){
+    super(...items);
+    Object.setPrototypeOf(this, Array.prototype);
+  }
+}
 class ResponseObjectConstructor {
   static initResponseObject(constructor, data: any, idNamespace: any) {
     if (constructor === JsonLdDocument || constructor === Instance) {
       return new constructor(data, idNamespace);
-    } 
-    // else if (constructor instanceof ListOfGenerics) {
-    //   const myClass = constructor.getClass();
-    //   return data.map(d => new myClass(d));
-    // }
+    }  else if (constructor === ListOfReducedUserInformation) {
+      return new constructor(data);
+    }
     return new constructor(data);
   }
 }

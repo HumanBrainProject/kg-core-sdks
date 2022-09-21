@@ -255,7 +255,7 @@ class JavascriptClientGenerator(ClientGenerator):
             elif response_reference == "#/components/schemas/ResultMapUUIDResultReleaseStatus":
                 return "ResultsById<ReleaseStatus>"
             elif response_reference == "#/components/schemas/ResultListReducedUserInformation":
-                return "Result<Array<ReducedUserInformation>>"
+                return "Result<ListOfReducedUserInformation>"
             elif response_reference == "#/components/schemas/ResultUser":
                 return "Result<User>"
             elif response_reference == "#/components/schemas/ResultUserWithRoles":

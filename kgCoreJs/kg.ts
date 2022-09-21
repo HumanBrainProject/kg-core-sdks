@@ -22,7 +22,7 @@
 import { SimpleToken, ClientCredentials } from "./oauth";
 import { KGConfig, CallableTokenHandler, TokenHandler, RequestsWithTokenHandler } from "./communication";
 import { ResponseConfiguration, ExtendedResponseConfiguration, Pagination, Stage, ReleaseTreeScope } from "./request";
-import { Result, Instance, JsonLdDocument, ResultsById, ResultPage, ReleaseStatus, KGError, translateError, User, Scope, SpaceInformation, TypeInformation, TermsOfUse, ListOfUUID, ReducedUserInformation } from "./response";
+import { Result, Instance, JsonLdDocument, ResultsById, ResultPage, ReleaseStatus, KGError, translateError, User, Scope, SpaceInformation, TypeInformation, TermsOfUse, ListOfUUID, ListOfReducedUserInformation } from "./response";
 
 const _calculateBaseUrl = (host:string) => `http${host.startsWith('localhost')?'':'s'}://${host}/v3-beta/`;
 
@@ -58,18 +58,14 @@ class Admin extends RequestsWithTokenHandler {
             "type": targetType
         };
         const result = await this._put(`spaces/${space}/types`, null, params);
-        
         return translateError(result);
-         
     }
 
     /*Update invitation scope for this instance*/
     async calculateInstanceInvitationScope(instanceId: string):Promise<KGError|null> {
         const params = {};
         const result = await this._put(`instances/${instanceId}/invitationScope`, null, params);
-        
         return translateError(result);
-         
     }
 
     /*Explicitly specify a space*/
@@ -80,9 +76,7 @@ class Admin extends RequestsWithTokenHandler {
             "deferCache": deferCache
         };
         const result = await this._put(`spaces/${space}/specification`, null, params);
-        
         return translateError(result);
-         
     }
 
     /*Specify a type*/
@@ -92,9 +86,7 @@ class Admin extends RequestsWithTokenHandler {
             "type": targetType
         };
         const result = await this._put("types/specification", payload, params);
-        
         return translateError(result);
-         
     }
 
     /*Upload a property specification either globally or for the requesting client*/
@@ -104,9 +96,7 @@ class Admin extends RequestsWithTokenHandler {
             "property": propertyName
         };
         const result = await this._put("properties", payload, params);
-        
         return translateError(result);
-         
     }
 
     /*Define a property specification either globally for the requesting client*/
@@ -117,9 +107,7 @@ class Admin extends RequestsWithTokenHandler {
             "type": targetType
         };
         const result = await this._put("propertiesForType", payload, params);
-        
         return translateError(result);
-         
     }
 
     /*Upload a property specification either globally or for the requesting client*/
@@ -129,9 +117,7 @@ class Admin extends RequestsWithTokenHandler {
             "property": propertyName
         };
         const result = await this._delete("properties", params);
-        
         return translateError(result);
-         
     }
 
     /*Deprecate a property specification for a specific type either globally or for the requesting client*/
@@ -142,18 +128,14 @@ class Admin extends RequestsWithTokenHandler {
             "type": targetType
         };
         const result = await this._delete("propertiesForType", params);
-        
         return translateError(result);
-         
     }
 
     
     async getAllRoleDefinitions():Promise<KGError|null> {
         const params = {};
         const result = await this._get("setup/permissions", params);
-        
         return translateError(result);
-         
     }
 
     
@@ -162,36 +144,28 @@ class Admin extends RequestsWithTokenHandler {
             "space": space
         };
         const result = await this._get(`setup/permissions/${role}`, params);
-        
         return translateError(result);
-         
     }
 
     /*List instances with invitations*/
     async listInstancesWithInvitations():Promise<Result<ListOfUUID>> {
         const params = {};
         const result = await this._get("instancesWithInvitations", params);
-        
         return new Result<ListOfUUID>(result, ListOfUUID);
-         
     }
 
     
     async registerTermsOfUse(payload: any):Promise<KGError|null> {
         const params = {};
         const result = await this._put("setup/termsOfUse", payload, params);
-        
         return translateError(result);
-         
     }
 
     /*Remove a space definition*/
     async removeSpaceDefinition(space: string):Promise<KGError|null> {
         const params = {};
         const result = await this._delete(`spaces/${space}/specification`, params);
-        
         return translateError(result);
-         
     }
 
     /*Remove a type definition*/
@@ -201,9 +175,7 @@ class Admin extends RequestsWithTokenHandler {
             "global": isGlobal
         };
         const result = await this._delete("types/specification", params);
-        
         return translateError(result);
-         
     }
 
     /*Remove a type in space definition*/
@@ -212,18 +184,14 @@ class Admin extends RequestsWithTokenHandler {
             "type": targetType
         };
         const result = await this._delete(`spaces/${space}/types`, params);
-        
         return translateError(result);
-         
     }
 
     /*Trigger a rerun of the events of this space*/
     async rerunEvents(space: string):Promise<KGError|null> {
         const params = {};
         const result = await this._put(`spaces/${space}/eventHistory`, null, params);
-        
         return translateError(result);
-         
     }
 
     /*Triggers the inference of all documents of the given space*/
@@ -233,9 +201,7 @@ class Admin extends RequestsWithTokenHandler {
             "async": isAsync
         };
         const result = await this._post(`spaces/${space}/inference`, null, params);
-        
         return translateError(result);
-         
     }
 
     
@@ -245,9 +211,7 @@ class Admin extends RequestsWithTokenHandler {
             "remove": remove
         };
         const result = await this._patch(`setup/permissions/${role}`, payload, params);
-        
         return translateError(result);
-         
     }
 
 }
@@ -268,9 +232,7 @@ class Instances extends RequestsWithTokenHandler {
             "returnEmbedded": extendedResponseConfiguration.returnEmbedded
         };
         const result = await this._put(`instances/${instanceId}`, payload, params);
-        
         return new Result<Instance>(result, Instance);
-         
     }
 
     /*Partially update contribution to an existing instance*/
@@ -284,9 +246,7 @@ class Instances extends RequestsWithTokenHandler {
             "returnEmbedded": extendedResponseConfiguration.returnEmbedded
         };
         const result = await this._patch(`instances/${instanceId}`, payload, params);
-        
         return new Result<Instance>(result, Instance);
-         
     }
 
     /*Create new instance with a system generated id*/
@@ -301,9 +261,7 @@ class Instances extends RequestsWithTokenHandler {
             "returnEmbedded": extendedResponseConfiguration.returnEmbedded
         };
         const result = await this._post("instances", payload, params);
-        
         return new Result<Instance>(result, Instance);
-         
     }
 
     /*Create new instance with a client defined id*/
@@ -318,18 +276,14 @@ class Instances extends RequestsWithTokenHandler {
             "returnEmbedded": extendedResponseConfiguration.returnEmbedded
         };
         const result = await this._post(`instances/${instanceId}`, payload, params);
-        
         return new Result<Instance>(result, Instance);
-         
     }
 
     /*Delete an instance*/
     async delete(instanceId: string):Promise<KGError|null> {
         const params = {};
         const result = await this._delete(`instances/${instanceId}`, params);
-        
         return translateError(result);
-         
     }
 
     /*Get the instance*/
@@ -344,9 +298,7 @@ class Instances extends RequestsWithTokenHandler {
             "returnEmbedded": extendedResponseConfiguration.returnEmbedded
         };
         const result = await this._get(`instances/${instanceId}`, params);
-        
         return new Result<Instance>(result, Instance);
-         
     }
 
     /*Read instances by the given list of (external) identifiers*/
@@ -361,9 +313,7 @@ class Instances extends RequestsWithTokenHandler {
             "returnEmbedded": extendedResponseConfiguration.returnEmbedded
         };
         const result = await this._post("instancesByIdentifiers", payload, params);
-        
         return new ResultsById<Instance>(result, Instance);
-         
     }
 
     /*Bulk operation of /instances/{id} to read instances by their UUIDs*/
@@ -378,9 +328,7 @@ class Instances extends RequestsWithTokenHandler {
             "returnEmbedded": extendedResponseConfiguration.returnEmbedded
         };
         const result = await this._post("instancesByIds", payload, params);
-        
         return new ResultsById<Instance>(result, Instance);
-         
     }
 
     /*Get incoming links for a specific instance (paginated)*/
@@ -394,9 +342,7 @@ class Instances extends RequestsWithTokenHandler {
             "returnTotalResults": pagination.returnTotalResults
         };
         const result = await this._get(`instances/${instanceId}/incomingLinks`, params);
-        
         return new ResultPage<Instance>(result, Instance);
-         
     }
 
     /*Get the release status for an instance*/
@@ -405,9 +351,7 @@ class Instances extends RequestsWithTokenHandler {
             "releaseTreeScope": releaseTreeScope
         };
         const result = await this._get(`instances/${instanceId}/release/status`, params);
-        
         return new Result<ReleaseStatus>(result, ReleaseStatus);
-         
     }
 
     /*Get the release status for multiple instances*/
@@ -416,9 +360,7 @@ class Instances extends RequestsWithTokenHandler {
             "releaseTreeScope": releaseTreeScope
         };
         const result = await this._post("instancesByIds/release/status", payload, params);
-        
         return new ResultsById<ReleaseStatus>(result, ReleaseStatus);
-         
     }
 
     /*Get the scope for the instance by its KG-internal ID*/
@@ -429,18 +371,14 @@ class Instances extends RequestsWithTokenHandler {
             "applyRestrictions": applyRestrictions
         };
         const result = await this._get(`instances/${instanceId}/scope`, params);
-        
         return new Result<Scope>(result, Scope);
-         
     }
 
     /*Create or update an invitation for the given user to review the given instance*/
     async inviteUserFor(instanceId: string, userId: string):Promise<KGError|null> {
         const params = {};
         const result = await this._put(`instances/${instanceId}/invitedUsers/${userId}`, null, params);
-        
         return translateError(result);
-         
     }
 
     /*Returns a list of instances according to their types*/
@@ -461,23 +399,14 @@ class Instances extends RequestsWithTokenHandler {
             "returnTotalResults": pagination.returnTotalResults
         };
         const result = await this._get("instances", params);
-        
         return new ResultPage<Instance>(result, Instance);
-         
     }
 
     /*List invitations for review for the given instance*/
-    async listInvitations(instanceId: string):Promise<Result<Array<ReducedUserInformation>>> {
+    async listInvitations(instanceId: string):Promise<Result<ListOfReducedUserInformation>> {
         const params = {};
         const result = await this._get(`instances/${instanceId}/invitedUsers`, params);
-           
-        
-        
-        class ListOfReducedUserInformation extends Array {
-            static type = ReducedUserInformation;
-        }
-        return new Result<Array<ReducedUserInformation>>(result, ListOfReducedUserInformation);
-         
+        return new Result<ListOfReducedUserInformation>(result, ListOfReducedUserInformation);
     }
 
     /*Move an instance to another space*/
@@ -491,9 +420,7 @@ class Instances extends RequestsWithTokenHandler {
             "returnEmbedded": extendedResponseConfiguration.returnEmbedded
         };
         const result = await this._put(`instances/${instanceId}/spaces/${space}`, null, params);
-        
         return new Result<Instance>(result, Instance);
-         
     }
 
     /*Release or re-release an instance*/
@@ -502,27 +429,21 @@ class Instances extends RequestsWithTokenHandler {
             "revision": revision
         };
         const result = await this._put(`instances/${instanceId}/release`, null, params);
-        
         return translateError(result);
-         
     }
 
     /*Revoke an invitation for the given user to review the given instance*/
     async revokeUserInvitation(instanceId: string, userId: string):Promise<KGError|null> {
         const params = {};
         const result = await this._delete(`instances/${instanceId}/invitedUsers/${userId}`, params);
-        
         return translateError(result);
-         
     }
 
     /*Unrelease an instance*/
     async unrelease(instanceId: string):Promise<KGError|null> {
         const params = {};
         const result = await this._delete(`instances/${instanceId}/release`, params);
-        
         return translateError(result);
-         
     }
 
 }
@@ -536,9 +457,7 @@ class Jsonld extends RequestsWithTokenHandler {
     async normalizePayload(payload: any):Promise<KGError|null> {
         const params = {};
         const result = await this._post("jsonld/normalizedPayload", payload, params);
-        
         return translateError(result);
-         
     }
 
 }
@@ -560,18 +479,14 @@ class Queries extends RequestsWithTokenHandler {
             "additionalRequestParams": additionalRequestParams
         };
         const result = await this._get(`queries/${queryId}/instances`, params);
-        
         return new ResultPage<JsonLdDocument>(result, JsonLdDocument);
-         
     }
 
     /*Get the query specification with the given query id in a specific space*/
     async getQuerySpecification(queryId: string):Promise<Result<Instance>> {
         const params = {};
         const result = await this._get(`queries/${queryId}`, params);
-        
         return new Result<Instance>(result, Instance);
-         
     }
 
     /*List the queries and filter them by root type and/or text in the label, name or description*/
@@ -584,18 +499,14 @@ class Queries extends RequestsWithTokenHandler {
             "search": search
         };
         const result = await this._get("queries", params);
-        
         return new ResultPage<Instance>(result, Instance);
-         
     }
 
     /*Remove a query specification*/
     async removeQuery(queryId: string):Promise<KGError|null> {
         const params = {};
         const result = await this._delete(`queries/${queryId}`, params);
-        
         return translateError(result);
-         
     }
 
     /*Create or save a query specification*/
@@ -604,9 +515,7 @@ class Queries extends RequestsWithTokenHandler {
             "space": space
         };
         const result = await this._put(`queries/${queryId}`, payload, params);
-        
         return new Result<Instance>(result, Instance);
-         
     }
 
     /*Execute the query in the payload in test mode (e.g. for execution before saving with the KG QueryBuilder)*/
@@ -621,9 +530,7 @@ class Queries extends RequestsWithTokenHandler {
             "additionalRequestParams": additionalRequestParams
         };
         const result = await this._post("queries", payload, params);
-        
         return new ResultPage<JsonLdDocument>(result, JsonLdDocument);
-         
     }
 
 }
@@ -639,9 +546,7 @@ class Spaces extends RequestsWithTokenHandler {
             "permissions": permissions
         };
         const result = await this._get(`spaces/${space}`, params);
-        
         return new Result<SpaceInformation>(result, SpaceInformation);
-         
     }
 
     
@@ -653,9 +558,7 @@ class Spaces extends RequestsWithTokenHandler {
             "permissions": permissions
         };
         const result = await this._get("spaces", params);
-        
         return new ResultPage<SpaceInformation>(result, SpaceInformation);
-         
     }
 
 }
@@ -674,9 +577,7 @@ class Types extends RequestsWithTokenHandler {
             "space": space
         };
         const result = await this._post("typesByName", payload, params);
-        
         return new ResultsById<TypeInformation>(result, TypeInformation);
-         
     }
 
     /*Returns the types available - either with property information or without*/
@@ -691,9 +592,7 @@ class Types extends RequestsWithTokenHandler {
             "returnTotalResults": pagination.returnTotalResults
         };
         const result = await this._get("types", params);
-        
         return new ResultPage<TypeInformation>(result, TypeInformation);
-         
     }
 
 }
@@ -707,36 +606,28 @@ class Users extends RequestsWithTokenHandler {
     async acceptTermsOfUse(version: string):Promise<KGError|null> {
         const params = {};
         const result = await this._post(`users/termsOfUse/${version}/accept`, null, params);
-        
         return translateError(result);
-         
     }
 
     /*Get the endpoint of the openid configuration*/
     async getOpenIdConfigUrl():Promise<Result<JsonLdDocument>> {
         const params = {};
         const result = await this._get("users/authorization/config", params);
-        
         return new Result<JsonLdDocument>(result, JsonLdDocument);
-         
     }
 
     /*Get the current terms of use*/
     async getTermsOfUse():Promise<TermsOfUse|null> {
         const params = {};
         const result = await this._get("users/termsOfUse", params);
-        
         return result.content?new TermsOfUse(result.content):null;
-         
     }
 
     /*Retrieve user information from the passed token (including detailed information such as e-mail address)*/
     async myInfo():Promise<Result<User>> {
         const params = {};
         const result = await this._get("users/me", params);
-        
         return new Result<User>(result, User);
-         
     }
 
 }
