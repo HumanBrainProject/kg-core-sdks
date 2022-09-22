@@ -20,15 +20,15 @@
  */
 import { KGRequestWithResponseContext } from "./communication";
 
-enum ReleaseStatus {
-  RELEASED = "RELEASED",
-  UNRELEASED = "UNRELEASED",
-  HAS_CHANGED = "HAS_CHANGED",
+export const ReleaseStatus = {
+  RELEASED:"RELEASED",
+  UNRELEASED:"UNRELEASED",
+  HAS_CHANGED:"HAS_CHANGED",
 }
 
 type UUID = string;
 
-class JsonLdDocument {
+export class JsonLdDocument {
   [index: string]: any;
   idNamespace: string|null
   constructor(json:any, idNamespace: string|null = null) {
@@ -50,7 +50,7 @@ class JsonLdDocument {
   }
 }
 
-class Instance extends JsonLdDocument {
+export class Instance extends JsonLdDocument {
   uuid: UUID|null;
   constructor(data: any, idNamespace: string| null = null) {
     super(data, idNamespace);
@@ -128,7 +128,7 @@ export class TypeInformation {
   }
 }
 
-export class ReducedUserInformation {
+class ReducedUserInformation {
   alternateName: string | null;
   name: string | null;
   uuid: UUID | null;
@@ -139,19 +139,19 @@ export class ReducedUserInformation {
   }
 }
 
-class ListOfUUID extends Array<string> { //WARNING: Do not extend this class
+export class ListOfUUID extends Array<string> { //WARNING: Do not extend this class
   constructor(items: Array<string>){
     super(...items);
     Object.setPrototypeOf(this, Array.prototype);
   }
 }
-class ListOfReducedUserInformation extends Array<ReducedUserInformation> { //WARNING: Do not extend this class
+export class ListOfReducedUserInformation extends Array<ReducedUserInformation> { //WARNING: Do not extend this class
   constructor(items: Array<ReducedUserInformation>){
     super(...items);
     Object.setPrototypeOf(this, Array.prototype);
   }
 }
-class User {
+export class User {
   alternateName: string | null;
   name: string | null;
   email: string | null;
@@ -240,6 +240,8 @@ class ResponseObjectConstructor {
   static initResponseObject(constructor, data: any, idNamespace: any) {
     if (constructor === JsonLdDocument || constructor === Instance) {
       return new constructor(data, idNamespace);
+    } else if (constructor === ReleaseStatus) {
+      return constructor[data];
     }
     return new constructor(data);
   }
@@ -276,7 +278,7 @@ class ResultPageIterator<T> implements Iterator<T> {
 }
 
 
-class ResultPage<T> extends _AbstractResultPage {
+export class ResultPage<T> extends _AbstractResultPage {
   data: Array<T>;
   _originalResponse: any;
   _originalConstructor: any;
@@ -333,7 +335,7 @@ class ResultPage<T> extends _AbstractResultPage {
   }
 }
 
-class Result<T> extends _AbstractResult {
+export class Result<T> extends _AbstractResult {
   data: T|null;
   constructor(response: KGRequestWithResponseContext, constructor) {
     super(response);
@@ -347,7 +349,7 @@ class Result<T> extends _AbstractResult {
   }
 }
 
-class ResultsById<T> extends _AbstractResult {
+export class ResultsById<T> extends _AbstractResult {
   constructor(response: KGRequestWithResponseContext, constructor) {
     super(response);
     this.data = response?.content["data"] ? this._getData(response.content["data"], response, constructor):null;
