@@ -26,6 +26,8 @@ enum ReleaseStatus {
   HAS_CHANGED = "HAS_CHANGED",
 }
 
+type UUID = string;
+
 class JsonLdDocument {
   [index: string]: any;
   idNamespace: string|null
@@ -36,12 +38,24 @@ class JsonLdDocument {
     )
     this.idNamespace = idNamespace;
   }
+
+  toUuid(value: string): UUID| null {
+    if(this.idNamespace) {
+      if(value && value.startsWith(this.idNamespace) ) {
+        const r = value.split("/");
+        return r[r.length -1];
+      }
+    }
+    return null;
+  }
 }
 
 class Instance extends JsonLdDocument {
+  uuid: UUID|null;
   constructor(data: any, idNamespace: string| null = null) {
     super(data, idNamespace);
     this.instanceId = this["@id"] ?? null;
+    this.uuid = this.toUuid(this.instanceId);
   }
 }
 
@@ -59,11 +73,11 @@ export class TermsOfUse {
 export class KGError {
   code: number | null;
   message: string | null;
-  uuid: string | null;
+  uuid: UUID | null;
   constructor(
     code: number | null,
     message: string | null = null,
-    uuid: string | null = null
+    uuid: UUID | null = null
   ) {
     this.code = code;
     this.message = message;
@@ -72,7 +86,7 @@ export class KGError {
 }
 
 export class Scope {
-  uuid: string | null;
+  uuid: UUID | null;
   label: string | null;
   space: string | null;
   types: Array<string> | null;
@@ -117,7 +131,7 @@ export class TypeInformation {
 export class ReducedUserInformation {
   alternateName: string | null;
   name: string | null;
-  uuid: string | null;
+  uuid: UUID | null;
   constructor(data: any) {
     this.alternateName = data["http://schema.org/alternateName"] ?? null;
     this.name = data["http://schema.org/name"] ?? null;
@@ -125,6 +139,18 @@ export class ReducedUserInformation {
   }
 }
 
+class ListOfUUID extends Array<string> { //WARNING: Do not extend this class
+  constructor(items: Array<string>){
+    super(...items);
+    Object.setPrototypeOf(this, Array.prototype);
+  }
+}
+class ListOfReducedUserInformation extends Array<ReducedUserInformation> { //WARNING: Do not extend this class
+  constructor(items: Array<ReducedUserInformation>){
+    super(...items);
+    Object.setPrototypeOf(this, Array.prototype);
+  }
+}
 class User {
   alternateName: string | null;
   name: string | null;
@@ -210,12 +236,6 @@ class _AbstractResultPage extends _AbstractResult {
 }
 
 
-class ListOfReducedUserInformation extends Array<ReducedUserInformation> {
-  constructor(items: Array<ReducedUserInformation>){
-    super(...items);
-    Object.setPrototypeOf(this, Array.prototype);
-  }
-}
 class ResponseObjectConstructor {
   static initResponseObject(constructor, data: any, idNamespace: any) {
     if (constructor === JsonLdDocument || constructor === Instance) {
