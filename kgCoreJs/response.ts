@@ -43,7 +43,7 @@ export class JsonLdDocument {
     if(this.idNamespace) {
       if(value && value.startsWith(this.idNamespace) ) {
         const r = value.split("/");
-        return r[r.length -1];
+        return r[r.length-1];
       }
     }
     return null;
