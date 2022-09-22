@@ -202,7 +202,7 @@ export const translateError = (response: KGRequestWithResponseContext) => {
     );
   } else {
     if (response.statusCode && response.statusCode >= 400) {
-      return new KGError(response.statusCode); //TODO: check what to do with the message http client
+      return new KGError(response.statusCode, response.content["error"]);
     }
   }
   return null;
