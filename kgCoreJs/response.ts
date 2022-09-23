@@ -20,10 +20,10 @@
  */
 import { KGRequestWithResponseContext } from "./communication";
 
-export const ReleaseStatus = {
-  RELEASED:"RELEASED",
-  UNRELEASED:"UNRELEASED",
-  HAS_CHANGED:"HAS_CHANGED",
+export enum ReleaseStatus {
+  RELEASED = "RELEASED",
+  UNRELEASED = "UNRELEASED",
+  HAS_CHANGED ="HAS_CHANGED",
 }
 
 type UUID = string;
@@ -241,7 +241,7 @@ class ResponseObjectConstructor {
     if (constructor === JsonLdDocument || constructor === Instance) {
       return new constructor(data, idNamespace);
     } else if (constructor === ReleaseStatus) {
-      return constructor[data];
+      return constructor.data;
     }
     return new constructor(data);
   }
