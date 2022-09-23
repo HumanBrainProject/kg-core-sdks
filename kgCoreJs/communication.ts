@@ -18,69 +18,12 @@
  *  Specific Grant Agreements No. 720270, No. 785907, and No. 945539
  *  (Human Brain Project SGA1, SGA2 and SGA3).
  */
-
-export abstract class TokenHandler {
-  authEndpoint: string | null;
-  token: string | null;
-  constructor() {
-    this.authEndpoint = null;
-    this.token = null;
-  }
-
-  getToken(forceFetch: boolean = false) {
-    if (!this.token || forceFetch) {
-      this.token = this.fetchToken();
-    }
-    return this.token;
-  }
-
-  abstract fetchToken(): string | null;
-
-  async defineEndpoint(kgEndpoint: string) {
-    if (!this.authEndpoint && kgEndpoint) {
-      const authEndpointResponse = await fetch(
-        `${kgEndpoint}/users/authorization/tokenEndpoint`
-      );
-      if (authEndpointResponse.status === 200) {
-        const authEndpoint = await authEndpointResponse.json();
-        if (
-          authEndpoint &&
-          authEndpoint["data"] &&
-          authEndpoint["data"]["endpoint"]
-        ) {
-          this.authEndpoint = authEndpoint["data"]["endpoint"];
-        }
-      }
-    }
-  }
-}
-
-export class CallableTokenHandler extends TokenHandler {
-  constructor(callable) {
-    super();
-    this._callable = callable;
-  }
-
-  fetchToken() {
-    return this._callable();
-  }
-}
-
 export class KGConfig {
   endpoint: string;
-  tokenHandler: TokenHandler;
-  clientTokenHandler: TokenHandler | null;
   idNamespace: string;
 
-  constructor(
-    endpoint: string,
-    tokenHandler: TokenHandler,
-    clientTokenHandler: TokenHandler | null,
-    idNamespace: string
-  ) {
+  constructor(endpoint: string, idNamespace: string) {
     this.endpoint = endpoint;
-    this.tokenHandler = tokenHandler;
-    this.clientTokenHandler = clientTokenHandler;
     this.idNamespace = idNamespace;
   }
 }
@@ -145,28 +88,17 @@ export abstract class RequestsWithTokenHandler {
   kgConfig: KGConfig;
   constructor(kgConfig: KGConfig) {
     this.kgConfig = kgConfig;
-    this.kgConfig.tokenHandler.defineEndpoint(this.kgConfig.endpoint);
-    if (this.kgConfig.clientTokenHandler) {
-      this.kgConfig.clientTokenHandler.defineEndpoint(this.kgConfig.endpoint);
-    }
   }
 
-  _setHeaders(args: any, forceFetchToken: boolean) {
-    if (this.kgConfig.tokenHandler) {
-      const token = this.kgConfig.tokenHandler.getToken(forceFetchToken);
-      if (token) {
-        args["headers"] = {
-          Authorization: `"Bearer ${token}`,
-        };
-      }
-      if (this.kgConfig.clientTokenHandler) {
-        const clientToken =
-          this.kgConfig.clientTokenHandler.getToken(forceFetchToken);
-        if (clientToken) {
-          args["headers"]["Client-Authorization"] = `Bearer ${clientToken}`;
-        }
-      }
-    }
+  _setHeaders(args: any) {
+    // if (this.kgConfig.tokenHandler) {
+    //   const token = this.kgConfig.tokenHandler.getToken(forceFetchToken);
+    //   if (token) {
+    //     args["headers"] = {
+    //       Authorization: `"Bearer ${token}`,
+    //     };
+    //   }
+    // }
   }
 
   _request(
@@ -188,7 +120,7 @@ export abstract class RequestsWithTokenHandler {
     args: any,
     payload: any | null
   ): Promise<KGRequestWithResponseContext> {
-    this._setHeaders(args, false);
+    this._setHeaders(args);
     const url = args["url"];
     delete args["url"];
     if (payload) {
@@ -196,7 +128,7 @@ export abstract class RequestsWithTokenHandler {
     }
     let r = await fetch(url, args);
     if (r.status === 401) {
-      this._setHeaders(args, true);
+      this._setHeaders(args);
       r = await fetch(url, args);
     }
     let response = null;

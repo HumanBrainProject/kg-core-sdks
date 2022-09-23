@@ -20,30 +20,28 @@
  */
 import { KGRequestWithResponseContext } from "./communication";
 
+type UUID = string;
+
 export enum ReleaseStatus {
   RELEASED = "RELEASED",
   UNRELEASED = "UNRELEASED",
-  HAS_CHANGED ="HAS_CHANGED",
+  HAS_CHANGED = "HAS_CHANGED",
 }
-
-type UUID = string;
-
 export class JsonLdDocument {
   [index: string]: any;
-  idNamespace: string|null
-  constructor(json:any, idNamespace: string|null = null) {
-    Object.keys( json ).forEach((key:string) => {
-        this[key] = json[key];
-      }
-    )
+  idNamespace: string | null;
+  constructor(json: any, idNamespace: string | null = null) {
+    Object.keys(json).forEach((key: string) => {
+      this[key] = json[key];
+    });
     this.idNamespace = idNamespace;
   }
 
-  toUuid(value: string): UUID| null {
-    if(this.idNamespace) {
-      if(value && value.startsWith(this.idNamespace) ) {
+  toUuid(value: string): UUID | null {
+    if (this.idNamespace) {
+      if (value && value.startsWith(this.idNamespace)) {
         const r = value.split("/");
-        return r[r.length-1];
+        return r[r.length - 1];
       }
     }
     return null;
@@ -51,8 +49,8 @@ export class JsonLdDocument {
 }
 
 export class Instance extends JsonLdDocument {
-  uuid: UUID|null;
-  constructor(data: any, idNamespace: string| null = null) {
+  uuid: UUID | null;
+  constructor(data: any, idNamespace: string | null = null) {
     super(data, idNamespace);
     this.instanceId = this["@id"] ?? null;
     this.uuid = this.toUuid(this.instanceId);
@@ -139,14 +137,16 @@ class ReducedUserInformation {
   }
 }
 
-export class ListOfUUID extends Array<string> { //WARNING: Do not extend this class
-  constructor(items: Array<string>){
+export class ListOfUUID extends Array<string> {
+  //WARNING: Do not extend this class
+  constructor(items: Array<string>) {
     super(...items);
     Object.setPrototypeOf(this, Array.prototype);
   }
 }
-export class ListOfReducedUserInformation extends Array<ReducedUserInformation> { //WARNING: Do not extend this class
-  constructor(items: Array<ReducedUserInformation>){
+export class ListOfReducedUserInformation extends Array<ReducedUserInformation> {
+  //WARNING: Do not extend this class
+  constructor(items: Array<ReducedUserInformation>) {
     super(...items);
     Object.setPrototypeOf(this, Array.prototype);
   }
@@ -235,7 +235,6 @@ class _AbstractResultPage extends _AbstractResult {
   }
 }
 
-
 class ResponseObjectConstructor {
   static initResponseObject(constructor, data: any, idNamespace: any) {
     if (constructor === JsonLdDocument || constructor === Instance) {
@@ -248,35 +247,42 @@ class ResponseObjectConstructor {
 }
 
 class ResultPageIterator<T> implements Iterator<T> {
-  resultPage: ResultPage<T>|null;
-  private counter: number = 0 ;
-  constructor(resultPage: ResultPage<T>|null) {
+  resultPage: ResultPage<T> | null;
+  private counter: number = 0;
+  constructor(resultPage: ResultPage<T> | null) {
     this.resultPage = resultPage;
   }
 
   next(): IteratorResult<T> {
-    if(this.resultPage) {
-      if(this.resultPage.error) {
+    if (this.resultPage) {
+      if (this.resultPage.error) {
         throw new Error(this.resultPage?.error?.message ?? undefined);
-      } else if(this.resultPage.data) {
-        if(!this.resultPage.total || (this.resultPage.total && this.counter < this.resultPage.total)) {
-          if(this.resultPage.startFrom && this.resultPage.size) {
-            if(this.counter >= (this.resultPage.startFrom + this.resultPage.size) && this.resultPage.hasNextPage()) {
+      } else if (this.resultPage.data) {
+        if (
+          !this.resultPage.total ||
+          (this.resultPage.total && this.counter < this.resultPage.total)
+        ) {
+          if (this.resultPage.startFrom && this.resultPage.size) {
+            if (
+              this.counter >=
+                this.resultPage.startFrom + this.resultPage.size &&
+              this.resultPage.hasNextPage()
+            ) {
               this.resultPage = this.resultPage.nextPage();
             }
           }
-          if(this.resultPage && this.resultPage.startFrom) {
-            const result = this.resultPage.data[this.counter-this.resultPage.startFrom];
+          if (this.resultPage && this.resultPage.startFrom) {
+            const result =
+              this.resultPage.data[this.counter - this.resultPage.startFrom];
             this.counter++;
-            return {value: result, done: false};
+            return { value: result, done: false };
           }
         }
       }
     }
-    return {value: null, done:true};
+    return { value: null, done: true };
   }
 }
-
 
 export class ResultPage<T> extends _AbstractResultPage {
   data: Array<T>;
@@ -295,7 +301,7 @@ export class ResultPage<T> extends _AbstractResultPage {
 
   _getData(constructor, content, idNamespace) {
     if (content && content["data"]) {
-      return content["data"].map(c =>
+      return content["data"].map((c) =>
         ResponseObjectConstructor.initResponseObject(
           constructor,
           c,
@@ -336,7 +342,7 @@ export class ResultPage<T> extends _AbstractResultPage {
 }
 
 export class Result<T> extends _AbstractResult {
-  data: T|null;
+  data: T | null;
   constructor(response: KGRequestWithResponseContext, constructor) {
     super(response);
     this.data = response?.content["data"]
@@ -352,7 +358,9 @@ export class Result<T> extends _AbstractResult {
 export class ResultsById<T> extends _AbstractResult {
   constructor(response: KGRequestWithResponseContext, constructor) {
     super(response);
-    this.data = response?.content["data"] ? this._getData(response.content["data"], response, constructor):null;
+    this.data = response?.content["data"]
+      ? this._getData(response.content["data"], response, constructor)
+      : null;
   }
 
   _getData(data, response, constructor) {

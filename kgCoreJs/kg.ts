@@ -19,24 +19,27 @@
 *  (Human Brain Project SGA1, SGA2 and SGA3).
 */
 
-import { SimpleToken, ClientCredentials } from "./oauth";
-import { KGConfig, CallableTokenHandler, TokenHandler, RequestsWithTokenHandler } from "./communication";
+import { KGConfig, RequestsWithTokenHandler } from "./communication";
 import { ResponseConfiguration, ExtendedResponseConfiguration, Pagination, Stage, ReleaseTreeScope } from "./request";
 import { Result, Instance, JsonLdDocument, ResultsById, ResultPage, ReleaseStatus, KGError, translateError, User, Scope, SpaceInformation, TypeInformation, TermsOfUse, ListOfUUID, ListOfReducedUserInformation } from "./response";
 
 const _calculateBaseUrl = (host:string) => `http${host.startsWith('localhost')?'':'s'}://${host}/v3-beta/`;
 
-
-const _createKgConfig = (host:string, tokenHandler: TokenHandler, clientTokenHandler: TokenHandler | null = null):KGConfig => new KGConfig(_calculateBaseUrl(host), tokenHandler, clientTokenHandler, "https://kg.ebrains.eu/api/instances/");
+const _createKgConfig = (host:string):KGConfig => new KGConfig(_calculateBaseUrl(host), "https://kg.ebrains.eu/api/instances/");
 
 class Client {
-    constructor(host:string, tokenHandler: TokenHandler, clientTokenHandler: TokenHandler | null = null) {
+    instances: Instances;
+    jsonld: Jsonld;
+    queries: Queries;
+    spaces: Spaces;
+    types: Types;
+    users: Users;
+    
+    constructor(host:string) {
         if(!host) {
             throw new Error("No hostname specified");
-        } else if(!tokenHandler) {
-            throw new Error("No token provided");
         }
-        const kgConfig = _createKgConfig(host, tokenHandler, clientTokenHandler);
+        const kgConfig = _createKgConfig(host);
         this.instances = new Instances(kgConfig);
         this.jsonld = new Jsonld(kgConfig);
         this.queries = new Queries(kgConfig);
@@ -635,53 +638,16 @@ class Users extends RequestsWithTokenHandler {
 
 class ClientBuilder {
     _hostName: string;
-    _tokenHandler: TokenHandler | null = null;
-    _clientTokenHandler: TokenHandler | null;
     constructor(hostName: string) {
         this._hostName = hostName;
-        this._tokenHandler = null;
-        this._clientTokenHandler = null;
-    }
-
-    _resolveClientTokenHandler():TokenHandler|null {
-        if(!this._clientTokenHandler) {
-            if("KG_CLIENT_ID" in process.env && "KG_CLIENT_SECRET" in process.env){
-                return new ClientCredentials(process.env["KG_CLIENT_ID"], process.env["KG_CLIENT_SECRET"]);
-            } else if("KG_CLIENT_TOKEN" in process.env) {
-                return new SimpleToken(process.env["KG_CLIENT_TOKEN"]);
-            } else {
-                return null;
-            }
-        } 
-        return this._clientTokenHandler;
-    }
-
-    withToken(token:string|null = null):ClientBuilder {
-        this._tokenHandler = new SimpleToken(token?token:process.env["KG_TOKEN"]);
-        return this;
-    }
-
-    withCustomTokenProvider(tokenProvider):ClientBuilder {
-        this._tokenHandler = new CallableTokenHandler(tokenProvider);
-        return this;
-    }
-
-    withCredentials(client_id:string|null = null, client_secret:string|null = null):ClientBuilder{
-        this._tokenHandler = new ClientCredentials(client_id ? client_id : process.env["KG_CLIENT_ID"], client_secret ? client_secret : process.env["KG_CLIENT_SECRET"]);
-        return this;
-    }
-
-    addClientAuthentication(client_id:string|null = null, client_secret:string|null = null):ClientBuilder {
-        this._clientTokenHandler = new ClientCredentials(client_id ? client_id : process.env["KG_CLIENT_ID"], client_secret ? client_secret : process.env["KG_CLIENT_SECRET"]);
-        return this;
     }
         
     build():Client {
-        return new Client(this._hostName, this._tokenHandler, this._resolveClientTokenHandler());
+        return new Client(this._hostName);
     }
 
     buildAdmin():Admin {
-        return new Admin(_createKgConfig(this._hostName, this._tokenHandler, this._resolveClientTokenHandler()));
+        return new Admin(_createKgConfig(this._hostName));
     }
         
 }
