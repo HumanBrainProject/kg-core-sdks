@@ -29,35 +29,29 @@ export class KGConfig {
 }
 
 export class KGRequestWithResponseContext {
-  content: any | null;
-  requestArguments: any | null;
-  requestPayload: any | null;
-  statusCode: number | null;
+  content?: any;
+  requestArguments?: any;
+  requestPayload?: any;
+  statusCode?: number;
   idNamespace: string;
   kgConfig: KGConfig;
   constructor(
-    content: any | null,
-    requestArguments: any | null,
-    requestPayload: any | null,
-    statusCode: number | null,
-    kgConfig: KGConfig
+    kgConfig: KGConfig,
+    content?: any,
+    requestArguments?: any,
+    requestPayload?: any,
+    statusCode?: number,
   ) {
+    this.kgConfig = kgConfig;
     this.content = content;
     this.requestArguments = requestArguments ? requestArguments : {};
     this.requestPayload = requestPayload;
     this.statusCode = statusCode;
     this.idNamespace = kgConfig.idNamespace;
-    this.kgConfig = kgConfig;
   }
 
   copyContext(content: any): KGRequestWithResponseContext {
-    return new KGRequestWithResponseContext(
-      content,
-      null,
-      null,
-      null,
-      this.kgConfig
-    );
+    return new KGRequestWithResponseContext(this.kgConfig, content);
   }
 
   nextPage(
@@ -139,11 +133,11 @@ export abstract class RequestsWithTokenHandler {
     }
     delete args["headers"];
     return new KGRequestWithResponseContext(
+      this.kgConfig,
       response,
       args,
       payload,
-      r.status,
-      this.kgConfig
+      r.status
     );
   }
 

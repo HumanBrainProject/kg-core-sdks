@@ -1,0 +1,11 @@
+{
+  "name": "@ebrains/kgcorejs",
+  "version": "0.0.1",
+  "description": "This is a client library to access the EBRAINS KG core API via javascript.",
+  "main": "kg.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC"
+}

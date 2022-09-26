@@ -47,15 +47,15 @@ export class Pagination {
 }
 
 export class ResponseConfiguration {
-  returnAlternatives: boolean | null;
-  returnEmbedded: boolean | null;
-  returnPayload: boolean | null;
-  returnPermissions: boolean | null;
+  returnAlternatives?: boolean;
+  returnEmbedded?: boolean;
+  returnPayload?: boolean;
+  returnPermissions?: boolean;
   constructor(
-    returnAlternatives: boolean | null = null,
-    returnEmbedded: boolean | null = null,
-    returnPayload: boolean | null = null,
-    returnPermissions: boolean | null = null
+    returnAlternatives?: boolean,
+    returnEmbedded?: boolean,
+    returnPayload?: boolean,
+    returnPermissions?: boolean
   ) {
     this.returnAlternatives = returnAlternatives;
     this.returnEmbedded = returnEmbedded;
@@ -65,15 +65,15 @@ export class ResponseConfiguration {
 }
 
 export class ExtendedResponseConfiguration extends ResponseConfiguration {
-  incomingLinksPageSize: number | null;
-  returnIncomingLinks: boolean | null;
+  incomingLinksPageSize?: number;
+  returnIncomingLinks?: boolean;
   constructor(
-    incomingLinksPageSize: number | null = null,
-    returnAlternatives: boolean | null = null,
-    returnEmbedded: boolean | null = null,
-    returnIncomingLinks: boolean | null = null,
-    returnPayload: boolean | null = null,
-    returnPermissions: boolean | null = null
+    incomingLinksPageSize?: number,
+    returnAlternatives?: boolean,
+    returnEmbedded?: boolean,
+    returnIncomingLinks?: boolean,
+    returnPayload?: boolean,
+    returnPermissions?: boolean
   ) {
     super(returnAlternatives, returnEmbedded, returnPayload, returnPermissions);
     this.incomingLinksPageSize = incomingLinksPageSize;

@@ -29,8 +29,8 @@ export enum ReleaseStatus {
 }
 export class JsonLdDocument {
   [index: string]: any;
-  idNamespace: string | null;
-  constructor(json: any, idNamespace: string | null = null) {
+  idNamespace?: string;
+  constructor(json: any, idNamespace?: string) {
     Object.keys(json).forEach((key: string) => {
       this[key] = json[key];
     });
@@ -50,7 +50,7 @@ export class JsonLdDocument {
 
 export class Instance extends JsonLdDocument {
   uuid: UUID | null;
-  constructor(data: any, idNamespace: string | null = null) {
+  constructor(data: any, idNamespace?: string) {
     super(data, idNamespace);
     this.instanceId = this["@id"] ?? null;
     this.uuid = this.toUuid(this.instanceId);
@@ -69,13 +69,13 @@ export class TermsOfUse {
 }
 
 export class KGError {
-  code: number | null;
-  message: string | null;
-  uuid: UUID | null;
+  code?: number;
+  message?: string;
+  uuid?: UUID;
   constructor(
-    code: number | null,
-    message: string | null = null,
-    uuid: UUID | null = null
+    code?: number,
+    message?: string,
+    uuid?: UUID
   ) {
     this.code = code;
     this.message = message;
@@ -84,56 +84,54 @@ export class KGError {
 }
 
 export class Scope {
-  uuid: UUID | null;
-  label: string | null;
-  space: string | null;
-  types: Array<string> | null;
-  children: Array<Scope> | null;
-  permissions: Array<string> | null;
+  uuid?: UUID;
+  label?: string;
+  space?: string;
+  types?: Array<string>;
+  children?: Array<Scope>;
+  permissions?: Array<string>;
   constructor(data: any) {
-    this.uuid = data["id"] ?? null;
-    this.label = data["label"] ?? null;
-    this.space = data["space"] ?? null;
-    this.types = data["types"] ?? null;
-    this.children = data["children"] ?? null;
-    this.permissions = data["permissions"] ?? null;
+    this.uuid = data["id"];
+    this.label = data["label"];
+    this.space = data["space"];
+    this.types = data["types"];
+    this.children = data["children"];
+    this.permissions = data["permissions"];
   }
 }
 
 export class SpaceInformation {
-  identifier: string | null;
-  name: string | null;
-  permissions: Array<string> | null;
+  identifier?: string;
+  name?: string;
+  permissions?: Array<string>;
   constructor(data: any) {
-    this.identifier = data["http://schema.org/identifier"] ?? null;
-    this.name = data["http://schema.org/name"] ?? null;
-    this.permissions =
-      data["https://core.kg.ebrains.eu/vocab/meta/permissions"] ?? null;
+    this.identifier = data["http://schema.org/identifier"];
+    this.name = data["http://schema.org/name"];
+    this.permissions = data["https://core.kg.ebrains.eu/vocab/meta/permissions"];
   }
 }
 
 export class TypeInformation {
-  identifier: string | null;
-  description: string | null;
-  name: string | null;
-  occurrences: number | null;
+  identifier?: string;
+  description?: string;
+  name?: string;
+  occurrences?: number;
   constructor(data: any) {
-    this.identifier = data["http://schema.org/identifier"] ?? null;
-    this.description = data["http://schema.org/description"] ?? null;
-    this.name = data["http://schema.org/name"] ?? null;
-    this.occurrences =
-      data["https://core.kg.ebrains.eu/vocab/meta/occurrences"] ?? null;
+    this.identifier = data["http://schema.org/identifier"];
+    this.description = data["http://schema.org/description"];
+    this.name = data["http://schema.org/name"];
+    this.occurrences = data["https://core.kg.ebrains.eu/vocab/meta/occurrences"];
   }
 }
 
 class ReducedUserInformation {
-  alternateName: string | null;
-  name: string | null;
-  uuid: UUID | null;
+  alternateName?: string;
+  name?: string;
+  uuid?: UUID;
   constructor(data: any) {
-    this.alternateName = data["http://schema.org/alternateName"] ?? null;
-    this.name = data["http://schema.org/name"] ?? null;
-    this.uuid = data["@id"] ?? null;
+    this.alternateName = data["http://schema.org/alternateName"];
+    this.name = data["http://schema.org/name"];
+    this.uuid = data["@id"];
   }
 }
 
@@ -152,34 +150,34 @@ export class ListOfReducedUserInformation extends Array<ReducedUserInformation> 
   }
 }
 export class User {
-  alternateName: string | null;
-  name: string | null;
-  email: string | null;
-  givenName: string | null;
-  familyName: string | null;
-  identifiers: Array<string> | null;
+  alternateName?: string;
+  name?: string;
+  email?: string;
+  givenName?: string;
+  familyName?: string;
+  identifiers?: Array<string>;
   constructor(user: any) {
-    this.alternateName = user["http://schema.org/alternateName"] ?? null;
-    this.name = user["http://schema.org/name"] ?? null;
-    this.email = user["http://schema.org/email"] ?? null;
-    this.givenName = user["http://schema.org/givenName"] ?? null;
-    this.familyName = user["http://schema.org/familyName"] ?? null;
-    this.identifiers = user["http://schema.org/identifier"] ?? null;
+    this.alternateName = user["http://schema.org/alternateName"];
+    this.name = user["http://schema.org/name"];
+    this.email = user["http://schema.org/email"];
+    this.givenName = user["http://schema.org/givenName"];
+    this.familyName = user["http://schema.org/familyName"];
+    this.identifiers = user["http://schema.org/identifier"];
   }
 }
 
 class UserWithRoles {
   user: User;
-  clientRoles: Array<string> | null;
-  userRoles: Array<string> | null;
-  invitations: Array<string> | null;
-  clientId: string | null;
+  clientRoles?: Array<string>;
+  userRoles?: Array<string>;
+  invitations?: Array<string>;
+  clientId?: string;
   constructor(
     user: User,
-    clientRoles: Array<string> | null = null,
-    userRoles: Array<string> | null = null,
-    invitations: Array<string> | null = null,
-    clientId: string | null = null
+    clientRoles?: Array<string>,
+    userRoles?: Array<string>,
+    invitations?: Array<string>,
+    clientId?: string
   ) {
     this.user = user;
     this.clientRoles = clientRoles;
@@ -209,29 +207,29 @@ export const translateError = (response: KGRequestWithResponseContext) => {
 };
 
 abstract class _AbstractResult {
-  message: string | null;
-  startTime: number | null;
-  durationInMs: number | null;
-  transactionId: number | null;
+  message?: string;
+  startTime?: number;
+  durationInMs?: number;
+  transactionId?: number;
   error: KGError | null;
   constructor(response: KGRequestWithResponseContext) {
-    this.message = response?.content["message"] ?? null;
-    this.startTime = response?.content["startTime"] ?? null;
-    this.durationInMs = response?.content["durationInMs"] ?? null;
-    this.transactionId = response?.content["transactionId"] ?? null;
+    this.message = response?.content["message"];
+    this.startTime = response?.content["startTime"];
+    this.durationInMs = response?.content["durationInMs"];
+    this.transactionId = response?.content["transactionId"];
     this.error = translateError(response);
   }
 }
 
 class _AbstractResultPage extends _AbstractResult {
-  total: number | null;
-  size: number | null;
-  startFrom: number | null;
+  total?: number;
+  size?: number;
+  startFrom?: number;
   constructor(response: KGRequestWithResponseContext) {
     super(response);
-    this.total = response?.content["total"] ?? null;
-    this.size = response?.content["size"] ?? null;
-    this.startFrom = response?.content["from"] ?? null;
+    this.total = response?.content["total"];
+    this.size = response?.content["size"];
+    this.startFrom = response?.content["from"];
   }
 }
 
@@ -239,8 +237,8 @@ class ResponseObjectConstructor {
   static initResponseObject(constructor, data: any, idNamespace: any) {
     if (constructor === JsonLdDocument || constructor === Instance) {
       return new constructor(data, idNamespace);
-    } else if (constructor === ReleaseStatus) { //TODO: Check if this is enough, otherwise create an enum-like class
-      return constructor.data;
+    } else if (constructor === ReleaseStatus) {
+      return constructor[data];
     }
     return new constructor(data);
   }
@@ -355,7 +353,12 @@ export class Result<T> extends _AbstractResult {
   }
 }
 
+interface ResultById<T> {
+  [index:string]: Result<T>
+};
+
 export class ResultsById<T> extends _AbstractResult {
+  data: ResultById<T>|null;
   constructor(response: KGRequestWithResponseContext, constructor) {
     super(response);
     this.data = response?.content["data"]
@@ -363,7 +366,7 @@ export class ResultsById<T> extends _AbstractResult {
       : null;
   }
 
-  _getData(data, response, constructor) {
+  _getData(data:any, response:KGRequestWithResponseContext, constructor) {
     return Object.entries(data).reduce((newObj, [key, val]) => {
       newObj[key] = new Result<T>(response.copyContext(val), constructor);
       return newObj;
