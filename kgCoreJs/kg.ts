@@ -19,13 +19,12 @@
 *  (Human Brain Project SGA1, SGA2 and SGA3).
 */
 
-import { KGConfig, RequestsWithTokenHandler } from "./communication";
-import { ResponseConfiguration, ExtendedResponseConfiguration, Pagination, Stage, ReleaseTreeScope } from "./request";
-import { Result, Instance, JsonLdDocument, ResultsById, ResultPage, ReleaseStatus, KGError, translateError, User, Scope, SpaceInformation, TypeInformation, TermsOfUse, ListOfUUID, ListOfReducedUserInformation } from "./response";
+import { KGConfig, RequestsWithTokenHandler, TokenHandler, CallableTokenHandler } from "./communication";
+import { ResponseConfiguration, ExtendedResponseConfiguration, Pagination, Stage, ReleaseTreeScope } from "./request";import { Result, Instance, JsonLdDocument, ResultsById, ResultPage, ReleaseStatus, KGError, translateError, User, Scope, SpaceInformation, TypeInformation, TermsOfUse, ListOfUUID, ListOfReducedUserInformation } from "./response";
 
 const _calculateBaseUrl = (host:string) => `http${host.startsWith('localhost')?'':'s'}://${host}/v3-beta/`;
 
-const _createKgConfig = (host:string):KGConfig => new KGConfig(_calculateBaseUrl(host), "https://kg.ebrains.eu/api/instances/");
+const _createKgConfig = (host:string, tokenHandler: TokenHandler):KGConfig => new KGConfig(_calculateBaseUrl(host), tokenHandler, "https://kg.ebrains.eu/api/instances/");
 
 class Client {
     instances: Instances;
@@ -35,11 +34,11 @@ class Client {
     types: Types;
     users: Users;
     
-    constructor(host:string) {
+    constructor(host:string, tokenHandler: TokenHandler) {
         if(!host) {
             throw new Error("No hostname specified");
         }
-        const kgConfig = _createKgConfig(host);
+        const kgConfig = _createKgConfig(host, tokenHandler);
         this.instances = new Instances(kgConfig);
         this.jsonld = new Jsonld(kgConfig);
         this.queries = new Queries(kgConfig);
@@ -638,19 +637,29 @@ class Users extends RequestsWithTokenHandler {
 
 class ClientBuilder {
     _hostName: string;
+    _tokenHandler?: TokenHandler; 
     constructor(hostName: string) {
+        this._tokenHandler = undefined;
         this._hostName = hostName;
     }
-        
+
+    _resolveTokenHandler(): TokenHandler | undefined{
+        return this._tokenHandler;
+    }
+
+    withCustomTokenProvider(tokenProvider: () => string): ClientBuilder {
+        this._tokenHandler = new CallableTokenHandler(tokenProvider);
+        return this;
+    }
+    
     build():Client {
-        return new Client(this._hostName);
+        return new Client(this._hostName, this._resolveTokenHandler());
     }
 
     buildAdmin():Admin {
-        return new Admin(_createKgConfig(this._hostName));
+        return new Admin(_createKgConfig(this._hostName, this._resolveTokenHandler()));
     }
-        
+    
 }
 
 export const kg = (host:string = "core.kg.ebrains.eu"):ClientBuilder => new ClientBuilder(host);
-    

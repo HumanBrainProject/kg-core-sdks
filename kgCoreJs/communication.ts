@@ -18,12 +18,28 @@
  *  Specific Grant Agreements No. 720270, No. 785907, and No. 945539
  *  (Human Brain Project SGA1, SGA2 and SGA3).
  */
+
+export interface TokenHandler {
+  fetchToken():string;
+}
+
+export class CallableTokenHandler implements TokenHandler {
+  _callable:() => string;
+  constructor(callable: () => string) {
+    this._callable = callable;
+  }
+
+  fetchToken(): string {
+      return this._callable();
+  }
+}
 export class KGConfig {
   endpoint: string;
   idNamespace: string;
-
-  constructor(endpoint: string, idNamespace: string) {
+  tokenHandler: TokenHandler;
+  constructor(endpoint: string, tokenHandler: TokenHandler, idNamespace: string) {
     this.endpoint = endpoint;
+    this.tokenHandler = tokenHandler;
     this.idNamespace = idNamespace;
   }
 }
@@ -85,14 +101,14 @@ export abstract class RequestsWithTokenHandler {
   }
 
   _setHeaders(args: any) {
-    // if (this.kgConfig.tokenHandler) {
-    //   const token = this.kgConfig.tokenHandler.getToken(forceFetchToken);
-    //   if (token) {
-    //     args["headers"] = {
-    //       Authorization: `"Bearer ${token}`,
-    //     };
-    //   }
-    // }
+    if (this.kgConfig.tokenHandler) {
+      const token = this.kgConfig.tokenHandler.fetchToken();
+      if (token) {
+        args["headers"] = {
+          Authorization: `Bearer ${token}`,
+        };
+      }
+    }
   }
 
   _request(

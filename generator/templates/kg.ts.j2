@@ -19,22 +19,21 @@
 *  (Human Brain Project SGA1, SGA2 and SGA3).
 */
 
-import { KGConfig, RequestsWithTokenHandler } from "./communication";
-import { ResponseConfiguration, ExtendedResponseConfiguration, Pagination, Stage, ReleaseTreeScope } from "./request";
-import { Result, Instance, JsonLdDocument, ResultsById, ResultPage, ReleaseStatus, KGError, translateError, User, Scope, SpaceInformation, TypeInformation, TermsOfUse, ListOfUUID, ListOfReducedUserInformation } from "./response";
+import { KGConfig, RequestsWithTokenHandler, TokenHandler, CallableTokenHandler } from "./communication";
+import { ResponseConfiguration, ExtendedResponseConfiguration, Pagination, Stage, ReleaseTreeScope } from "./request";import { Result, Instance, JsonLdDocument, ResultsById, ResultPage, ReleaseStatus, KGError, translateError, User, Scope, SpaceInformation, TypeInformation, TermsOfUse, ListOfUUID, ListOfReducedUserInformation } from "./response";
 
 const _calculateBaseUrl = (host:string) => `http${host.startsWith('localhost')?'':'s'}://${host}/{{api_version}}/`;
 
-const _createKgConfig = (host:string):KGConfig => new KGConfig(_calculateBaseUrl(host), "{{id_namespace}}");
+const _createKgConfig = (host:string, tokenHandler: TokenHandler):KGConfig => new KGConfig(_calculateBaseUrl(host), tokenHandler, "{{id_namespace}}");
 
 class Client {
     {% for category, methods in methods_by_category %}{% if category != 'admin' %}{{category}}: {{category.capitalize()}};
     {% endif %}{% endfor %}
-    constructor(host:string) {
+    constructor(host:string, tokenHandler: TokenHandler) {
         if(!host) {
             throw new Error("No hostname specified");
         }
-        const kgConfig = _createKgConfig(host);
+        const kgConfig = _createKgConfig(host, tokenHandler);
         {% for category, methods in methods_by_category %}{% if category != 'admin' %}this.{{category}} = new {{category.capitalize()}}(kgConfig);
         {% endif %}{% endfor %}
     }
@@ -64,20 +63,30 @@ class {{category.capitalize()}} extends RequestsWithTokenHandler {
 
 class ClientBuilder {
     _hostName: string;
+    _tokenHandler?: TokenHandler; 
     constructor(hostName: string) {
+        this._tokenHandler = undefined;
         this._hostName = hostName;
     }
-        
+
+    _resolveTokenHandler(): TokenHandler | undefined{
+        return this._tokenHandler;
+    }
+
+    withCustomTokenProvider(tokenProvider: () => string): ClientBuilder {
+        this._tokenHandler = new CallableTokenHandler(tokenProvider);
+        return this;
+    }
+    
     build():Client {
-        return new Client(this._hostName);
+        return new Client(this._hostName, this._resolveTokenHandler());
     }
 
     buildAdmin():Admin {
-        return new Admin(_createKgConfig(this._hostName));
+        return new Admin(_createKgConfig(this._hostName, this._resolveTokenHandler()));
     }
-        
+    
 }
 
 export const kg = (host:string = "{{ default_kg_root }}"):ClientBuilder => new ClientBuilder(host);
-    
 
