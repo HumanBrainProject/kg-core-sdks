@@ -24,9 +24,9 @@ import { ResponseConfiguration, ExtendedResponseConfiguration, Pagination, Stage
 
 const _calculateBaseUrl = (host:string) => `http${host.startsWith('localhost')?'':'s'}://${host}/v3-beta/`;
 
-const _createKgConfig = (host:string, tokenHandler: TokenHandler):KGConfig => new KGConfig(_calculateBaseUrl(host), tokenHandler, "https://kg.ebrains.eu/api/instances/");
+const _createKgConfig = (host:string, tokenHandler: TokenHandler|null):KGConfig => new KGConfig(_calculateBaseUrl(host), tokenHandler, "https://kg.ebrains.eu/api/instances/");
 
-class Client {
+export class Client {
     instances: Instances;
     jsonld: Jsonld;
     queries: Queries;
@@ -34,7 +34,7 @@ class Client {
     types: Types;
     users: Users;
     
-    constructor(host:string, tokenHandler: TokenHandler) {
+    constructor(host:string, tokenHandler: TokenHandler|null) {
         if(!host) {
             throw new Error("No hostname specified");
         }
@@ -49,7 +49,7 @@ class Client {
     }
 }
 
-class Admin extends RequestsWithTokenHandler {
+export class Admin extends RequestsWithTokenHandler {
     constructor(config: KGConfig) {
         super(config);
     }
@@ -218,7 +218,7 @@ class Admin extends RequestsWithTokenHandler {
 
 }
 
-class Instances extends RequestsWithTokenHandler {
+export class Instances extends RequestsWithTokenHandler {
     constructor(config: KGConfig) {
         super(config);
     }
@@ -450,7 +450,7 @@ class Instances extends RequestsWithTokenHandler {
 
 }
 
-class Jsonld extends RequestsWithTokenHandler {
+export class Jsonld extends RequestsWithTokenHandler {
     constructor(config: KGConfig) {
         super(config);
     }
@@ -464,7 +464,7 @@ class Jsonld extends RequestsWithTokenHandler {
 
 }
 
-class Queries extends RequestsWithTokenHandler {
+export class Queries extends RequestsWithTokenHandler {
     constructor(config: KGConfig) {
         super(config);
     }
@@ -537,7 +537,7 @@ class Queries extends RequestsWithTokenHandler {
 
 }
 
-class Spaces extends RequestsWithTokenHandler {
+export class Spaces extends RequestsWithTokenHandler {
     constructor(config: KGConfig) {
         super(config);
     }
@@ -565,7 +565,7 @@ class Spaces extends RequestsWithTokenHandler {
 
 }
 
-class Types extends RequestsWithTokenHandler {
+export class Types extends RequestsWithTokenHandler {
     constructor(config: KGConfig) {
         super(config);
     }
@@ -599,7 +599,7 @@ class Types extends RequestsWithTokenHandler {
 
 }
 
-class Users extends RequestsWithTokenHandler {
+export class Users extends RequestsWithTokenHandler {
     constructor(config: KGConfig) {
         super(config);
     }
@@ -637,17 +637,17 @@ class Users extends RequestsWithTokenHandler {
 
 class ClientBuilder {
     _hostName: string;
-    _tokenHandler?: TokenHandler; 
+    _tokenHandler: TokenHandler|null; 
     constructor(hostName: string) {
-        this._tokenHandler = undefined;
+        this._tokenHandler = null;
         this._hostName = hostName;
     }
 
-    _resolveTokenHandler(): TokenHandler | undefined{
+    _resolveTokenHandler(): TokenHandler | null{
         return this._tokenHandler;
     }
 
-    withCustomTokenProvider(tokenProvider: () => string): ClientBuilder {
+    withCustomTokenProvider(tokenProvider: () => string|null): ClientBuilder {
         this._tokenHandler = new CallableTokenHandler(tokenProvider);
         return this;
     }

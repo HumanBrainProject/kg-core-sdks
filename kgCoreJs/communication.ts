@@ -20,16 +20,16 @@
  */
 
 export interface TokenHandler {
-  fetchToken():string;
+  fetchToken():string|null;
 }
 
 export class CallableTokenHandler implements TokenHandler {
-  _callable:() => string;
-  constructor(callable: () => string) {
+  _callable:() => string|null;
+  constructor(callable: () => string|null) {
     this._callable = callable;
   }
 
-  fetchToken(): string {
+  fetchToken(): string|null {
       return this._callable();
   }
 }

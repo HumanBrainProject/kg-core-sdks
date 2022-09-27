@@ -24,12 +24,12 @@ import { ResponseConfiguration, ExtendedResponseConfiguration, Pagination, Stage
 
 const _calculateBaseUrl = (host:string) => `http${host.startsWith('localhost')?'':'s'}://${host}/{{api_version}}/`;
 
-const _createKgConfig = (host:string, tokenHandler: TokenHandler):KGConfig => new KGConfig(_calculateBaseUrl(host), tokenHandler, "{{id_namespace}}");
+const _createKgConfig = (host:string, tokenHandler: TokenHandler|null):KGConfig => new KGConfig(_calculateBaseUrl(host), tokenHandler, "{{id_namespace}}");
 
-class Client {
+export class Client {
     {% for category, methods in methods_by_category %}{% if category != 'admin' %}{{category}}: {{category.capitalize()}};
     {% endif %}{% endfor %}
-    constructor(host:string, tokenHandler: TokenHandler) {
+    constructor(host:string, tokenHandler: TokenHandler|null) {
         if(!host) {
             throw new Error("No hostname specified");
         }
@@ -39,7 +39,7 @@ class Client {
     }
 }
 {% for category, methods in methods_by_category %}
-class {{category.capitalize()}} extends RequestsWithTokenHandler {
+export class {{category.capitalize()}} extends RequestsWithTokenHandler {
     constructor(config: KGConfig) {
         super(config);
     }
@@ -63,17 +63,17 @@ class {{category.capitalize()}} extends RequestsWithTokenHandler {
 
 class ClientBuilder {
     _hostName: string;
-    _tokenHandler?: TokenHandler; 
+    _tokenHandler: TokenHandler|null; 
     constructor(hostName: string) {
-        this._tokenHandler = undefined;
+        this._tokenHandler = null;
         this._hostName = hostName;
     }
 
-    _resolveTokenHandler(): TokenHandler | undefined{
+    _resolveTokenHandler(): TokenHandler | null{
         return this._tokenHandler;
     }
 
-    withCustomTokenProvider(tokenProvider: () => string): ClientBuilder {
+    withCustomTokenProvider(tokenProvider: () => string|null): ClientBuilder {
         this._tokenHandler = new CallableTokenHandler(tokenProvider);
         return this;
     }
