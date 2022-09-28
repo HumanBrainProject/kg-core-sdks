@@ -36,8 +36,8 @@ export class CallableTokenHandler implements TokenHandler {
 export class KGConfig {
   endpoint: string;
   idNamespace: string;
-  tokenHandler: TokenHandler;
-  constructor(endpoint: string, tokenHandler: TokenHandler, idNamespace: string) {
+  tokenHandler: TokenHandler | null;
+  constructor(endpoint: string, tokenHandler: TokenHandler | null, idNamespace: string) {
     this.endpoint = endpoint;
     this.tokenHandler = tokenHandler;
     this.idNamespace = idNamespace;

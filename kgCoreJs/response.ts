@@ -234,7 +234,7 @@ class _AbstractResultPage extends _AbstractResult {
 }
 
 class ResponseObjectConstructor {
-  static initResponseObject(constructor, data: any, idNamespace: any) {
+  static initResponseObject(constructor: any, data: any, idNamespace: any) {
     if (constructor === JsonLdDocument || constructor === Instance) {
       return new constructor(data, idNamespace);
     } else if (constructor === ReleaseStatus) {
@@ -286,7 +286,7 @@ export class ResultPage<T> extends _AbstractResultPage {
   data: Array<T>;
   _originalResponse: any;
   _originalConstructor: any;
-  constructor(response: KGRequestWithResponseContext, constructor) {
+  constructor(response: KGRequestWithResponseContext, constructor: any) {
     super(response);
     this.data = this._getData(
       constructor,
@@ -297,9 +297,10 @@ export class ResultPage<T> extends _AbstractResultPage {
     this._originalConstructor = constructor;
   }
 
-  _getData(constructor, content, idNamespace) {
+  _getData(constructor:any, content: any, idNamespace:string) {
     if (content && content["data"]) {
-      return content["data"].map((c) =>
+      const d: Array<T> = content["data"];
+      return d.map(c =>
         ResponseObjectConstructor.initResponseObject(
           constructor,
           c,
@@ -341,7 +342,7 @@ export class ResultPage<T> extends _AbstractResultPage {
 
 export class Result<T> extends _AbstractResult {
   data: T | null;
-  constructor(response: KGRequestWithResponseContext, constructor) {
+  constructor(response: KGRequestWithResponseContext, constructor: any) {
     super(response);
     this.data = response?.content["data"]
       ? ResponseObjectConstructor.initResponseObject(
@@ -359,17 +360,17 @@ interface ResultById<T> {
 
 export class ResultsById<T> extends _AbstractResult {
   data: ResultById<T>|null;
-  constructor(response: KGRequestWithResponseContext, constructor) {
+  constructor(response: KGRequestWithResponseContext, constructor: any) {
     super(response);
     this.data = response?.content["data"]
       ? this._getData(response.content["data"], response, constructor)
       : null;
   }
 
-  _getData(data:any, response:KGRequestWithResponseContext, constructor) {
+  _getData(data:any, response:KGRequestWithResponseContext, constructor: any) {
     return Object.entries(data).reduce((newObj, [key, val]) => {
       newObj[key] = new Result<T>(response.copyContext(val), constructor);
       return newObj;
-    }, {});
+    }, {} as ResultById<T>);
   }
 }
