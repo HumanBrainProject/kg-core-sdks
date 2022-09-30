@@ -62,11 +62,11 @@ export class RequestsWithTokenHandler {
     constructor(kgConfig) {
         this.kgConfig = kgConfig;
     }
-    _setHeaders(args) {
+    _setHeaders(options) {
         if (this.kgConfig.tokenHandler) {
             const token = this.kgConfig.tokenHandler.fetchToken();
             if (token) {
-                args["headers"] = {
+                options.headers = {
                     Authorization: `Bearer ${token}`,
                 };
             }
@@ -81,17 +81,32 @@ export class RequestsWithTokenHandler {
         };
         return this._doRequest(args, payload);
     }
-    async _doRequest(args, payload) {
-        this._setHeaders(args);
-        const url = args["url"];
-        delete args["url"];
-        if (payload) {
-            args["body"] = JSON.stringify(payload);
+    _buildUrl(url, params) {
+        const urlObj = new URL(url);
+        if (params instanceof Object) {
+            Object.entries(params).forEach(([key, value]) => {
+                if (value !== null && value !== undefined) {
+                    const v = typeof value === "string" ? value : JSON.stringify(value);
+                    urlObj.searchParams.append(key, v);
+                }
+            });
         }
-        let r = await fetch(url, args);
+        return urlObj;
+    }
+    async _doRequest(args, payload) {
+        const options = {
+            method: args.method
+        };
+        this._setHeaders(options);
+        const url = this._buildUrl(args.url, args.params);
+        delete args.url;
+        if (payload) {
+            options.body = JSON.stringify(payload);
+        }
+        let r = await fetch(url, options);
         if (r.status === 401) {
-            this._setHeaders(args);
-            r = await fetch(url, args);
+            this._setHeaders(options);
+            r = await fetch(url, options);
         }
         let response = null;
         try {
@@ -100,7 +115,6 @@ export class RequestsWithTokenHandler {
         catch (e) {
             response = null;
         }
-        delete args["headers"];
         return new KGRequestWithResponseContext(this.kgConfig, response, args, payload, r.status);
     }
     _get(path, params) {

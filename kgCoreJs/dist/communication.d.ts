@@ -27,8 +27,9 @@ export declare class KGRequestWithResponseContext {
 export declare abstract class RequestsWithTokenHandler {
     kgConfig: KGConfig;
     constructor(kgConfig: KGConfig);
-    _setHeaders(args: any): void;
+    _setHeaders(options: RequestInit): void;
     _request(method: string, path: string, payload: any | null, params: any): Promise<KGRequestWithResponseContext>;
+    _buildUrl(url: string, params: any): URL;
     _doRequest(args: any, payload: any | null): Promise<KGRequestWithResponseContext>;
     _get(path: string, params: any): Promise<KGRequestWithResponseContext>;
     _post(path: string, payload: any | null, params: any): Promise<KGRequestWithResponseContext>;
