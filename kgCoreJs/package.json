@@ -1,6 +1,6 @@
 {
   "name": "ebrains-kg-core",
-  "version": "0.9.0",
+  "version": "0.9.1",
   "description": "This is a client library to access the EBRAINS KG core API via javascript.",
   "main": "dist/kg.ts",
   "types": "dist/kg.d.ts",

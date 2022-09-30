@@ -131,10 +131,18 @@ export abstract class RequestsWithTokenHandler {
     payload: any | null
   ): Promise<KGRequestWithResponseContext> {
     this._setHeaders(args);
-    const url = args["url"];
-    delete args["url"];
+    let url = new URL(args.url);
+    delete args.url;
     if (payload) {
-      args["body"] = JSON.stringify(payload);
+      args.body = JSON.stringify(payload);
+    }
+    if(args.method === "GET") {
+      Object.entries(args.params).forEach(([key, value]) => {
+        if(value !== null && value !== undefined) {
+          url.searchParams.append(key, JSON.stringify(value));
+        }
+      })
+      delete args.params;
     }
     let r = await fetch(url, args);
     if (r.status === 401) {
@@ -147,7 +155,7 @@ export abstract class RequestsWithTokenHandler {
     } catch (e) {
       response = null;
     }
-    delete args["headers"];
+    delete args.headers;
     return new KGRequestWithResponseContext(
       this.kgConfig,
       response,
