@@ -1,5 +1,5 @@
 import { useState, useEffect, useContext, useRef } from "react";
-import { Instance, ResultPage } from "ebrains-kg-core/response";
+import { Instance, ResultPage } from "@ebrains/kg-core/response";
 
 import kgClientContext from "./kgClientContext";
 
@@ -26,19 +26,17 @@ const useQueryInstancesByType = (type:string) => {
         setIsLoading(true);
       }
       setIsFetching(true);
-      try {
-        const r:ResultPage<Instance> = await kgClient.instances.list(type);
+      const r:ResultPage<Instance> = await kgClient.instances.list(type);
+      if (r.error) {
+        setIsError(true);
+        setError(r.error);
+      } else {
         const instances: Array<Instance> = r.data;
         setIsSuccess(true);
         setData(instances);
-        setIsLoading(false);
-        setIsFetching(false);
-      } catch (e) {
-        setIsError(true);
-        setError(e);
-        setIsLoading(false);
-        setIsFetching(false);
-      } 
+      }
+      setIsLoading(false);
+      setIsFetching(false);
     } else {
       setError("useQueryInstances request a kgClientContext to be defined.");
     }

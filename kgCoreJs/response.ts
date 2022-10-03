@@ -187,20 +187,69 @@ class UserWithRoles {
   }
 }
 
+export declare class ErrorStatusText {
+  [index: number]: string;
+}
+
+const errorStatusText: ErrorStatusText = {
+  400: "Bad Request",
+  401: "Unauthorized",
+  403: "Forbidden",
+  404: "Not Found",
+  405: "Method Not Allowed",
+  406: "Not Acceptable",
+  407: "Proxy Authentication Required",
+  408: "Request Timeout",
+  409: "Conflict",
+  410: "Gone",
+  411: "Length Required",
+  412: "Precondition Failed",
+  413: "Payload Too Large",
+  414: "URI Too Long",
+  415: "Unsupported Media Type",
+  416: "Range Not Satisfiable",
+  417: "Expectation Failed",
+  421: "Misdirected Request",
+  425: "Too Early",
+  426: "Upgrade Required",
+  428: "Precondition Required",
+  429: "Too Many Requests",
+  431: "Request Header Fields Too Large",
+  451: "Unavailable For Legal Reasons",
+  500: "Internal Server Error",
+  501: "Not Implemented",
+  502: "Bad Gateway",
+  503: "Service Unavailable",
+  504: "Gateway Timeout",
+  505: "HTTP Version Not Supported",
+  506: "Variant Also Negotiates",
+  510: "Not Extended",
+  511: "Network Authentication Required",
+  420: "Method Failure",
+  598: "Network read timeout",
+  599: "Network Connect Timeout",
+  440: "Login Time-out",
+  444: "No Response",
+  494: "Request header too large",
+  495: "SSL Certificate Error",
+  496: "SSL Certificate Required",
+  497: "HTTP Request Sent to HTTPS Port",
+  499: "Client Closed Request"
+};
+
 export const translateError = (response: KGRequestWithResponseContext) => {
   if (
-    response.content &&
-    response.content["error"] &&
-    !(response.content["error"] instanceof String)
+    response?.content?.error &&
+    !(response.content.error instanceof String)
   ) {
     return new KGError(
       response.statusCode,
-      response.content["error"],
+      response.content.error,
       response.idNamespace
     );
   } else {
     if (response.statusCode && response.statusCode >= 400) {
-      return new KGError(response.statusCode, response.content["error"]);
+      return new KGError(response.statusCode, errorStatusText[response.statusCode]);
     }
   }
   return null;
@@ -213,10 +262,10 @@ abstract class _AbstractResult {
   transactionId?: number;
   error: KGError | null;
   constructor(response: KGRequestWithResponseContext) {
-    this.message = response?.content["message"];
-    this.startTime = response?.content["startTime"];
-    this.durationInMs = response?.content["durationInMs"];
-    this.transactionId = response?.content["transactionId"];
+    this.message = response?.content?.message;
+    this.startTime = response?.content?.startTime;
+    this.durationInMs = response?.content?.durationInMs;
+    this.transactionId = response?.content?.transactionId;
     this.error = translateError(response);
   }
 }
@@ -227,9 +276,9 @@ class _AbstractResultPage extends _AbstractResult {
   startFrom?: number;
   constructor(response: KGRequestWithResponseContext) {
     super(response);
-    this.total = response?.content["total"];
-    this.size = response?.content["size"];
-    this.startFrom = response?.content["from"];
+    this.total = response?.content?.total;
+    this.size = response?.content?.size;
+    this.startFrom = response?.content?.from;
   }
 }
 
@@ -298,8 +347,8 @@ export class ResultPage<T> extends _AbstractResultPage {
   }
 
   _getData(constructor:any, content: any, idNamespace:string) {
-    if (content && content["data"]) {
-      const d: Array<T> = content["data"];
+    if (content?.data) {
+      const d: Array<T> = content.data;
       return d.map(c =>
         ResponseObjectConstructor.initResponseObject(
           constructor,
@@ -344,10 +393,10 @@ export class Result<T> extends _AbstractResult {
   data: T | null;
   constructor(response: KGRequestWithResponseContext, constructor: any) {
     super(response);
-    this.data = response?.content["data"]
+    this.data = response?.content?.data
       ? ResponseObjectConstructor.initResponseObject(
           constructor,
-          response.content["data"],
+          response.content?.data,
           response.idNamespace
         )
       : null;
@@ -362,8 +411,8 @@ export class ResultsById<T> extends _AbstractResult {
   data: ResultById<T>|null;
   constructor(response: KGRequestWithResponseContext, constructor: any) {
     super(response);
-    this.data = response?.content["data"]
-      ? this._getData(response.content["data"], response, constructor)
+    this.data = response?.content?.data
+      ? this._getData(response.content?.data, response, constructor)
       : null;
   }
 

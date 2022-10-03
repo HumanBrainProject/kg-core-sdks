@@ -1,5 +1,5 @@
 import express from "express";
-import { kg } from "ebrains-kg-core/kg";
+import { kg } from "@ebrains/kg-core/kg";
 const app = express()
 const port = 3000
 

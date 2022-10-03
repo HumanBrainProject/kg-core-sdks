@@ -109,34 +109,81 @@ class UserWithRoles {
         this.clientId = clientId;
     }
 }
+const errorStatusText = {
+    400: "Bad Request",
+    401: "Unauthorized",
+    403: "Forbidden",
+    404: "Not Found",
+    405: "Method Not Allowed",
+    406: "Not Acceptable",
+    407: "Proxy Authentication Required",
+    408: "Request Timeout",
+    409: "Conflict",
+    410: "Gone",
+    411: "Length Required",
+    412: "Precondition Failed",
+    413: "Payload Too Large",
+    414: "URI Too Long",
+    415: "Unsupported Media Type",
+    416: "Range Not Satisfiable",
+    417: "Expectation Failed",
+    421: "Misdirected Request",
+    425: "Too Early",
+    426: "Upgrade Required",
+    428: "Precondition Required",
+    429: "Too Many Requests",
+    431: "Request Header Fields Too Large",
+    451: "Unavailable For Legal Reasons",
+    500: "Internal Server Error",
+    501: "Not Implemented",
+    502: "Bad Gateway",
+    503: "Service Unavailable",
+    504: "Gateway Timeout",
+    505: "HTTP Version Not Supported",
+    506: "Variant Also Negotiates",
+    510: "Not Extended",
+    511: "Network Authentication Required",
+    420: "Method Failure",
+    598: "Network read timeout",
+    599: "Network Connect Timeout",
+    440: "Login Time-out",
+    444: "No Response",
+    494: "Request header too large",
+    495: "SSL Certificate Error",
+    496: "SSL Certificate Required",
+    497: "HTTP Request Sent to HTTPS Port",
+    499: "Client Closed Request"
+};
 export const translateError = (response) => {
-    if (response.content &&
-        response.content["error"] &&
-        !(response.content["error"] instanceof String)) {
-        return new KGError(response.statusCode, response.content["error"], response.idNamespace);
+    var _a;
+    if (((_a = response === null || response === void 0 ? void 0 : response.content) === null || _a === void 0 ? void 0 : _a.error) &&
+        !(response.content.error instanceof String)) {
+        return new KGError(response.statusCode, response.content.error, response.idNamespace);
     }
     else {
         if (response.statusCode && response.statusCode >= 400) {
-            return new KGError(response.statusCode, response.content["error"]);
+            return new KGError(response.statusCode, errorStatusText[response.statusCode]);
         }
     }
     return null;
 };
 class _AbstractResult {
     constructor(response) {
-        this.message = response === null || response === void 0 ? void 0 : response.content["message"];
-        this.startTime = response === null || response === void 0 ? void 0 : response.content["startTime"];
-        this.durationInMs = response === null || response === void 0 ? void 0 : response.content["durationInMs"];
-        this.transactionId = response === null || response === void 0 ? void 0 : response.content["transactionId"];
+        var _a, _b, _c, _d;
+        this.message = (_a = response === null || response === void 0 ? void 0 : response.content) === null || _a === void 0 ? void 0 : _a.message;
+        this.startTime = (_b = response === null || response === void 0 ? void 0 : response.content) === null || _b === void 0 ? void 0 : _b.startTime;
+        this.durationInMs = (_c = response === null || response === void 0 ? void 0 : response.content) === null || _c === void 0 ? void 0 : _c.durationInMs;
+        this.transactionId = (_d = response === null || response === void 0 ? void 0 : response.content) === null || _d === void 0 ? void 0 : _d.transactionId;
         this.error = translateError(response);
     }
 }
 class _AbstractResultPage extends _AbstractResult {
     constructor(response) {
+        var _a, _b, _c;
         super(response);
-        this.total = response === null || response === void 0 ? void 0 : response.content["total"];
-        this.size = response === null || response === void 0 ? void 0 : response.content["size"];
-        this.startFrom = response === null || response === void 0 ? void 0 : response.content["from"];
+        this.total = (_a = response === null || response === void 0 ? void 0 : response.content) === null || _a === void 0 ? void 0 : _a.total;
+        this.size = (_b = response === null || response === void 0 ? void 0 : response.content) === null || _b === void 0 ? void 0 : _b.size;
+        this.startFrom = (_c = response === null || response === void 0 ? void 0 : response.content) === null || _c === void 0 ? void 0 : _c.from;
     }
 }
 class ResponseObjectConstructor {
@@ -190,8 +237,8 @@ export class ResultPage extends _AbstractResultPage {
         this._originalConstructor = constructor;
     }
     _getData(constructor, content, idNamespace) {
-        if (content && content["data"]) {
-            const d = content["data"];
+        if (content === null || content === void 0 ? void 0 : content.data) {
+            const d = content.data;
             return d.map(c => ResponseObjectConstructor.initResponseObject(constructor, c, idNamespace));
         }
         return [];
@@ -223,18 +270,20 @@ export class ResultPage extends _AbstractResultPage {
 }
 export class Result extends _AbstractResult {
     constructor(response, constructor) {
+        var _a, _b;
         super(response);
-        this.data = (response === null || response === void 0 ? void 0 : response.content["data"])
-            ? ResponseObjectConstructor.initResponseObject(constructor, response.content["data"], response.idNamespace)
+        this.data = ((_a = response === null || response === void 0 ? void 0 : response.content) === null || _a === void 0 ? void 0 : _a.data)
+            ? ResponseObjectConstructor.initResponseObject(constructor, (_b = response.content) === null || _b === void 0 ? void 0 : _b.data, response.idNamespace)
             : null;
     }
 }
 ;
 export class ResultsById extends _AbstractResult {
     constructor(response, constructor) {
+        var _a, _b;
         super(response);
-        this.data = (response === null || response === void 0 ? void 0 : response.content["data"])
-            ? this._getData(response.content["data"], response, constructor)
+        this.data = ((_a = response === null || response === void 0 ? void 0 : response.content) === null || _a === void 0 ? void 0 : _a.data)
+            ? this._getData((_b = response.content) === null || _b === void 0 ? void 0 : _b.data, response, constructor)
             : null;
     }
     _getData(data, response, constructor) {

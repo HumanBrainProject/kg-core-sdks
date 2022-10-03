@@ -70,6 +70,9 @@ export declare class User {
     identifiers?: Array<string>;
     constructor(user: any);
 }
+export declare class ErrorStatusText {
+    [index: number]: string;
+}
 export declare const translateError: (response: KGRequestWithResponseContext) => KGError | null;
 declare abstract class _AbstractResult {
     message?: string;

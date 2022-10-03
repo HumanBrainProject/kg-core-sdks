@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Routes, Route, Navigate, useNavigate, useLocation } from "react-router-dom";
 import Container from "react-bootstrap/Container";
 import Form from "react-bootstrap/Form";
-import {kg, Client} from "ebrains-kg-core/kg";
+import {kg, Client} from "@ebrains/kg-core/kg";
 
 import kgClientContext from "./kgClientContext";
 import InstancesByType from "./InstancesByType/InstancesByType";
