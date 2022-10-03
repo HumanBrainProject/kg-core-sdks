@@ -1,7 +1,14 @@
-import React, { useState } from 'react';
-import './App.css';
+import React, { useState } from "react";
+import { Routes, Route, Navigate, useNavigate, useLocation } from "react-router-dom";
+import Container from "react-bootstrap/Container";
+import Form from "react-bootstrap/Form";
 import {kg, Client} from "ebrains-kg-core/kg";
-import { Instance, ResultPage } from "ebrains-kg-core/response";
+
+import kgClientContext from "./kgClientContext";
+import InstancesByType from "./InstancesByType/InstancesByType";
+
+import "bootstrap/dist/css/bootstrap.min.css";
+import "./App.css";
 
 let _token:string = "";
 
@@ -12,36 +19,57 @@ const fetchToken = ():string|null => {
 const client: Client = kg("localhost:8080").withCustomTokenProvider(fetchToken).build();
 
 
-function App() {
-  const [type, setType] = useState<string>("https://openminds.ebrains.eu/core/DatasetVersion");
-  const [data, setData] = useState<string>();
-  const [token, setToken] = useState<string>();
+const App = () => {
+  const [token, setToken] = useState("");
+
+  const navigate = useNavigate();
+  const location = useLocation();
 
   const handleChangeToken = (e:React.ChangeEvent<HTMLInputElement>) => {
     _token = e.target.value;
     setToken(_token);
   };
 
-  const handleChangeType = (e:React.ChangeEvent<HTMLInputElement>) => setType(e.target.value);
-
-  const handleOnFetchData = async () => {
-    const r:ResultPage<Instance> = await client.instances.list(type);
-    const instances: Array<Instance> = r.data;
-    setData(JSON.stringify(instances));
-  }
-
+  const handleChangeEndpoint = (e:React.ChangeEvent<HTMLSelectElement>) => {
+    const path = e.target.value;
+    navigate(path);
+  };
+  
   return (
-    <div>
-      <form>
-        <label>token:</label><br/>
-        <input type="text" value={token} onChange={handleChangeToken}/><br/>
-        <label>type:</label><br/>
-        <input type="text" value={type} onChange={handleChangeType}/><br/><br/>
-        <input type="button" value="Fetch data" onClick={handleOnFetchData}/>
-      </form>
-      <pre style={{whiteSpace: "pre-wrap"}}>{data}</pre>
-    </div>
+    <Container>
+    <br />
+    <br />
+      <Form>
+        <Form.Group className="mb-3">
+          <Form.Label>Token</Form.Label>
+          <Form.Control type="text" placeholder="Enter token" onChange={handleChangeToken} />
+          <Form.Text className="text-muted">
+            Please provide a valid user keyclock token.
+          </Form.Text>
+        </Form.Group>
+        {token && (
+          <Form.Group className="mb-3">
+            <Form.Label>Endpoint</Form.Label>
+            <Form.Select onChange={handleChangeEndpoint}>
+              {location.pathname === "/" && (
+                <option value="/" defaultValue="/">Please select an endpoint</option>
+              )}
+              <option value="/instancesByType">List instances by type</option>
+            </Form.Select>
+          </Form.Group>
+        )}
+      </Form>
+      <kgClientContext.Provider value={client}>
+          {token && (
+            <Routes>
+              <Route path="/" element={null} />
+              <Route path="/instancesByType" element={<InstancesByType />} />
+              <Route path="*" element={<Navigate to="/" replace={true} />} />
+            </Routes>
+          )}
+      </kgClientContext.Provider>
+    </Container>
   );
-}
+};
 
 export default App;

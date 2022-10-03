@@ -1,6 +1,10 @@
-/dev_triggers/**
+
+.DS_Store
 .venv/**
 ./test.py
 .idea
+/build
+/ebrains_kg_core.egg-info
+/dev_triggers/**
+/kg_core/__pycache__
 /kgCoreJs/node_modules
-.DS_Store
