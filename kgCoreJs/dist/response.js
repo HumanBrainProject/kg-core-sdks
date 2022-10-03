@@ -167,7 +167,7 @@ export const translateError = (response) => {
     }
     return null;
 };
-class _AbstractResult {
+class AbstractResult {
     constructor(response) {
         var _a, _b, _c, _d;
         this.message = (_a = response === null || response === void 0 ? void 0 : response.content) === null || _a === void 0 ? void 0 : _a.message;
@@ -175,15 +175,6 @@ class _AbstractResult {
         this.durationInMs = (_c = response === null || response === void 0 ? void 0 : response.content) === null || _c === void 0 ? void 0 : _c.durationInMs;
         this.transactionId = (_d = response === null || response === void 0 ? void 0 : response.content) === null || _d === void 0 ? void 0 : _d.transactionId;
         this.error = translateError(response);
-    }
-}
-class _AbstractResultPage extends _AbstractResult {
-    constructor(response) {
-        var _a, _b, _c;
-        super(response);
-        this.total = (_a = response === null || response === void 0 ? void 0 : response.content) === null || _a === void 0 ? void 0 : _a.total;
-        this.size = (_b = response === null || response === void 0 ? void 0 : response.content) === null || _b === void 0 ? void 0 : _b.size;
-        this.startFrom = (_c = response === null || response === void 0 ? void 0 : response.content) === null || _c === void 0 ? void 0 : _c.from;
     }
 }
 class ResponseObjectConstructor {
@@ -197,44 +188,14 @@ class ResponseObjectConstructor {
         return new constructor(data);
     }
 }
-class ResultPageIterator {
-    constructor(resultPage) {
-        this.counter = 0;
-        this.resultPage = resultPage;
-    }
-    next() {
-        var _a, _b, _c;
-        if (this.resultPage) {
-            if (this.resultPage.error) {
-                throw new Error((_c = (_b = (_a = this.resultPage) === null || _a === void 0 ? void 0 : _a.error) === null || _b === void 0 ? void 0 : _b.message) !== null && _c !== void 0 ? _c : undefined);
-            }
-            else if (this.resultPage.data) {
-                if (!this.resultPage.total ||
-                    (this.resultPage.total && this.counter < this.resultPage.total)) {
-                    if (this.resultPage.startFrom && this.resultPage.size) {
-                        if (this.counter >=
-                            this.resultPage.startFrom + this.resultPage.size &&
-                            this.resultPage.hasNextPage()) {
-                            this.resultPage = this.resultPage.nextPage();
-                        }
-                    }
-                    if (this.resultPage && this.resultPage.startFrom) {
-                        const result = this.resultPage.data[this.counter - this.resultPage.startFrom];
-                        this.counter++;
-                        return { value: result, done: false };
-                    }
-                }
-            }
-        }
-        return { value: null, done: true };
-    }
-}
-export class ResultPage extends _AbstractResultPage {
+export class ResultPage extends AbstractResult {
     constructor(response, constructor) {
+        var _a, _b, _c;
         super(response);
         this.data = this._getData(constructor, response.content, response.idNamespace);
-        this._originalResponse = response;
-        this._originalConstructor = constructor;
+        this.total = (_a = response === null || response === void 0 ? void 0 : response.content) === null || _a === void 0 ? void 0 : _a.total;
+        this.size = (_b = response === null || response === void 0 ? void 0 : response.content) === null || _b === void 0 ? void 0 : _b.size;
+        this.startFrom = (_c = response === null || response === void 0 ? void 0 : response.content) === null || _c === void 0 ? void 0 : _c.from;
     }
     _getData(constructor, content, idNamespace) {
         if (content === null || content === void 0 ? void 0 : content.data) {
@@ -243,32 +204,8 @@ export class ResultPage extends _AbstractResultPage {
         }
         return [];
     }
-    nextPage() {
-        const nextPage = this.hasNextPage();
-        if (nextPage === null || nextPage === true) {
-            const result = this._originalResponse.nextPage(this.startFrom, this.size);
-            const resultPage = new ResultPage(result, this._originalConstructor);
-            if (resultPage && resultPage.data) {
-                return resultPage;
-            }
-            return null;
-        }
-        return null;
-    }
-    hasNextPage() {
-        if (this.total) {
-            if (this.startFrom && this.size) {
-                return this.startFrom + this.size < this.total;
-            }
-            return false;
-        }
-        return null;
-    }
-    items() {
-        return new ResultPageIterator(this);
-    }
 }
-export class Result extends _AbstractResult {
+export class Result extends AbstractResult {
     constructor(response, constructor) {
         var _a, _b;
         super(response);
@@ -278,7 +215,7 @@ export class Result extends _AbstractResult {
     }
 }
 ;
-export class ResultsById extends _AbstractResult {
+export class ResultsById extends AbstractResult {
     constructor(response, constructor) {
         var _a, _b;
         super(response);

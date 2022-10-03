@@ -187,7 +187,7 @@ class UserWithRoles {
   }
 }
 
-export declare class ErrorStatusText {
+interface ErrorStatusText {
   [index: number]: string;
 }
 
@@ -255,7 +255,7 @@ export const translateError = (response: KGRequestWithResponseContext) => {
   return null;
 };
 
-abstract class _AbstractResult {
+abstract class AbstractResult {
   message?: string;
   startTime?: number;
   durationInMs?: number;
@@ -270,18 +270,6 @@ abstract class _AbstractResult {
   }
 }
 
-class _AbstractResultPage extends _AbstractResult {
-  total?: number;
-  size?: number;
-  startFrom?: number;
-  constructor(response: KGRequestWithResponseContext) {
-    super(response);
-    this.total = response?.content?.total;
-    this.size = response?.content?.size;
-    this.startFrom = response?.content?.from;
-  }
-}
-
 class ResponseObjectConstructor {
   static initResponseObject(constructor: any, data: any, idNamespace: any) {
     if (constructor === JsonLdDocument || constructor === Instance) {
@@ -293,48 +281,11 @@ class ResponseObjectConstructor {
   }
 }
 
-class ResultPageIterator<T> implements Iterator<T> {
-  resultPage: ResultPage<T> | null;
-  private counter: number = 0;
-  constructor(resultPage: ResultPage<T> | null) {
-    this.resultPage = resultPage;
-  }
-
-  next(): IteratorResult<T> {
-    if (this.resultPage) {
-      if (this.resultPage.error) {
-        throw new Error(this.resultPage?.error?.message ?? undefined);
-      } else if (this.resultPage.data) {
-        if (
-          !this.resultPage.total ||
-          (this.resultPage.total && this.counter < this.resultPage.total)
-        ) {
-          if (this.resultPage.startFrom && this.resultPage.size) {
-            if (
-              this.counter >=
-                this.resultPage.startFrom + this.resultPage.size &&
-              this.resultPage.hasNextPage()
-            ) {
-              this.resultPage = this.resultPage.nextPage();
-            }
-          }
-          if (this.resultPage && this.resultPage.startFrom) {
-            const result =
-              this.resultPage.data[this.counter - this.resultPage.startFrom];
-            this.counter++;
-            return { value: result, done: false };
-          }
-        }
-      }
-    }
-    return { value: null, done: true };
-  }
-}
-
-export class ResultPage<T> extends _AbstractResultPage {
+export class ResultPage<T> extends AbstractResult {
   data: Array<T>;
-  _originalResponse: any;
-  _originalConstructor: any;
+  total?: number;
+  size?: number;
+  startFrom?: number;
   constructor(response: KGRequestWithResponseContext, constructor: any) {
     super(response);
     this.data = this._getData(
@@ -342,8 +293,9 @@ export class ResultPage<T> extends _AbstractResultPage {
       response.content,
       response.idNamespace
     );
-    this._originalResponse = response;
-    this._originalConstructor = constructor;
+    this.total = response?.content?.total;
+    this.size = response?.content?.size;
+    this.startFrom = response?.content?.from;
   }
 
   _getData(constructor:any, content: any, idNamespace:string) {
@@ -359,37 +311,9 @@ export class ResultPage<T> extends _AbstractResultPage {
     }
     return [];
   }
-
-  nextPage(): ResultPage<T> | null {
-    const nextPage = this.hasNextPage();
-    if (nextPage === null || nextPage === true) {
-      const result = this._originalResponse.nextPage(this.startFrom, this.size);
-      const resultPage = new ResultPage<T>(result, this._originalConstructor);
-
-      if (resultPage && resultPage.data) {
-        return resultPage;
-      }
-      return null;
-    }
-    return null;
-  }
-
-  hasNextPage(): boolean | null {
-    if (this.total) {
-      if (this.startFrom && this.size) {
-        return this.startFrom + this.size < this.total;
-      }
-      return false;
-    }
-    return null;
-  }
-
-  items() {
-    return new ResultPageIterator<T>(this);
-  }
 }
 
-export class Result<T> extends _AbstractResult {
+export class Result<T> extends AbstractResult {
   data: T | null;
   constructor(response: KGRequestWithResponseContext, constructor: any) {
     super(response);
@@ -407,7 +331,7 @@ interface ResultById<T> {
   [index:string]: Result<T>
 };
 
-export class ResultsById<T> extends _AbstractResult {
+export class ResultsById<T> extends AbstractResult {
   data: ResultById<T>|null;
   constructor(response: KGRequestWithResponseContext, constructor: any) {
     super(response);

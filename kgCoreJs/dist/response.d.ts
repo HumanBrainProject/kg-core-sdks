@@ -70,11 +70,8 @@ export declare class User {
     identifiers?: Array<string>;
     constructor(user: any);
 }
-export declare class ErrorStatusText {
-    [index: number]: string;
-}
 export declare const translateError: (response: KGRequestWithResponseContext) => KGError | null;
-declare abstract class _AbstractResult {
+declare abstract class AbstractResult {
     message?: string;
     startTime?: number;
     durationInMs?: number;
@@ -82,36 +79,22 @@ declare abstract class _AbstractResult {
     error: KGError | null;
     constructor(response: KGRequestWithResponseContext);
 }
-declare class _AbstractResultPage extends _AbstractResult {
+export declare class ResultPage<T> extends AbstractResult {
+    data: Array<T>;
     total?: number;
     size?: number;
     startFrom?: number;
-    constructor(response: KGRequestWithResponseContext);
-}
-declare class ResultPageIterator<T> implements Iterator<T> {
-    resultPage: ResultPage<T> | null;
-    private counter;
-    constructor(resultPage: ResultPage<T> | null);
-    next(): IteratorResult<T>;
-}
-export declare class ResultPage<T> extends _AbstractResultPage {
-    data: Array<T>;
-    _originalResponse: any;
-    _originalConstructor: any;
     constructor(response: KGRequestWithResponseContext, constructor: any);
     _getData(constructor: any, content: any, idNamespace: string): any[];
-    nextPage(): ResultPage<T> | null;
-    hasNextPage(): boolean | null;
-    items(): ResultPageIterator<T>;
 }
-export declare class Result<T> extends _AbstractResult {
+export declare class Result<T> extends AbstractResult {
     data: T | null;
     constructor(response: KGRequestWithResponseContext, constructor: any);
 }
 interface ResultById<T> {
     [index: string]: Result<T>;
 }
-export declare class ResultsById<T> extends _AbstractResult {
+export declare class ResultsById<T> extends AbstractResult {
     data: ResultById<T> | null;
     constructor(response: KGRequestWithResponseContext, constructor: any);
     _getData(data: any, response: KGRequestWithResponseContext, constructor: any): ResultById<T>;
