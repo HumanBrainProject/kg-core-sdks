@@ -3,3 +3,4 @@
 ./test.py
 .idea
 /kgCoreJs/node_modules
+.DS_Store
