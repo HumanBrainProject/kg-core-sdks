@@ -12,15 +12,14 @@ const InstancesResult = ({ type}: { type: string}) => {
   if (isFetching) {
     return (
       <div>
-        <Spinner animation="border" role="status">
-        <span className="visually-hidden">Fetching instances for {type}..</span>
-      </Spinner>
+        <Spinner animation="border" size="sm" />
+        <span> Fetching instances for type {type}...</span>
      </div>
     );
   }
 
   if (isError) {
-    const message = error.toLocaleString?error.toLocaleString():JSON.stringify(error);
+    const message = `An error occurred while trying to retrieve instances of type ${type} (${error.code} : ${error.message})`;
     return (
       <div>
         <Alert variant="danger">{message}</Alert>
