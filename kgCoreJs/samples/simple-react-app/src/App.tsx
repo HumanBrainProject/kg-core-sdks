@@ -37,37 +37,37 @@ const App = () => {
   
   return (
     <Container>
-    <br />
-    <br />
-      <Form>
-        <Form.Group className="mb-3">
-          <Form.Label>Token</Form.Label>
-          <Form.Control type="text" placeholder="Enter token" onChange={handleChangeToken} />
-          <Form.Text className="text-muted">
-            Please provide a valid user keyclock token.
-          </Form.Text>
-        </Form.Group>
-        {token && (
+      <div className="main">
+        <Form>
           <Form.Group className="mb-3">
-            <Form.Label>Endpoint</Form.Label>
-            <Form.Select onChange={handleChangeEndpoint}>
-              {location.pathname === "/" && (
-                <option value="/" defaultValue="/">Please select an endpoint</option>
-              )}
-              <option value="/instancesByType">List instances by type</option>
-            </Form.Select>
+            <Form.Label>Token</Form.Label>
+            <Form.Control type="text" placeholder="Enter token" onChange={handleChangeToken} />
+            <Form.Text className="text-muted">
+              Please provide a valid user keyclock token.
+            </Form.Text>
           </Form.Group>
-        )}
-      </Form>
-      <kgClientContext.Provider value={client}>
           {token && (
-            <Routes>
-              <Route path="/" element={null} />
-              <Route path="/instancesByType" element={<InstancesByType />} />
-              <Route path="*" element={<Navigate to="/" replace={true} />} />
-            </Routes>
+            <Form.Group className="mb-3">
+              <Form.Label>Endpoint</Form.Label>
+              <Form.Select onChange={handleChangeEndpoint}>
+                {location.pathname === "/" && (
+                  <option value="/" defaultValue="/">Please select an endpoint</option>
+                )}
+                <option value="/instancesByType">List instances by type</option>
+              </Form.Select>
+            </Form.Group>
           )}
-      </kgClientContext.Provider>
+        </Form>
+        <kgClientContext.Provider value={client}>
+            {token && (
+              <Routes>
+                <Route path="/" element={null} />
+                <Route path="/instancesByType" element={<InstancesByType />} />
+                <Route path="*" element={<Navigate to="/" replace={true} />} />
+              </Routes>
+            )}
+        </kgClientContext.Provider>
+      </div>
     </Container>
   );
 };

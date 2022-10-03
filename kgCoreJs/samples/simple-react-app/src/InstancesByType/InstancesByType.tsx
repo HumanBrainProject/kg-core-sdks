@@ -4,9 +4,11 @@ import Button from "react-bootstrap/Button";
 
 import InstancesByTypeResult from "./InstancesByTypeResult";
 
+import "./InstancesByType.css";
+
 const defaultType = "https://openminds.ebrains.eu/core/DatasetVersion";
 
-function Instances() {
+const InstancesByType = () => {
   
   const [type, setType] = useState(defaultType);
   const [targetType, setTargetType] = useState("");
@@ -23,7 +25,7 @@ function Instances() {
   const fetched = trimmedType === targetType || trimmedType === "";
 
   return (
-    <div>
+    <div className="instancesByType">
       <Form>
         <Form.Group className="mb-3">
           <Form.Label>Type</Form.Label>
@@ -43,6 +45,6 @@ function Instances() {
       }
     </div>
   );
-}
+};
 
-export default Instances;
+export default InstancesByType;

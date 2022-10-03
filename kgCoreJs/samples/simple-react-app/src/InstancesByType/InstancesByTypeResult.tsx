@@ -3,6 +3,7 @@ import Spinner from "react-bootstrap/Spinner";
 import Alert from "react-bootstrap/Alert";
 
 import useQueryInstancesByType from "../useQueryInstancesByType";
+import DataViewer from "../DataViewer";
 
 const InstancesResult = ({ type}: { type: string}) => {
   
@@ -10,24 +11,25 @@ const InstancesResult = ({ type}: { type: string}) => {
 
   if (isFetching) {
     return (
-      <Spinner animation="border" role="status">
-       <span className="visually-hidden">Fetching instances for {type}..</span>
-     </Spinner>
+      <div>
+        <Spinner animation="border" role="status">
+        <span className="visually-hidden">Fetching instances for {type}..</span>
+      </Spinner>
+     </div>
     );
   }
 
   if (isError) {
     const message = error.toLocaleString?error.toLocaleString():JSON.stringify(error);
     return (
-      <Alert variant="danger">{message}</Alert>
+      <div>
+        <Alert variant="danger">{message}</Alert>
+      </div>
     );
   }
 
   return (
-    <>
-      <br />
-      <pre style={{whiteSpace: "pre-wrap"}}>{JSON.stringify(data)}</pre>
-    </>
+    <DataViewer data={data} />
   );
 };
 
