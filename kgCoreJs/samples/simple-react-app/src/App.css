@@ -1,18 +1,13 @@
-body {
-  height: 100vh;
-  overflow: hidden;
-}
-
-#root {
+.app {
   height: 100%;
 }
 
-#root > .container {
+.app > .container {
   max-height: unset !important;
   height: 100%;
 }
 
-.main {
+.app > .container > .main {
   display: grid;
   grid-template-rows: auto 1fr;
   position: relative;
