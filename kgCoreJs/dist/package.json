@@ -1,0 +1,16 @@
+{
+  "name": "@ebrains/kg-core",
+  "version": "0.9.4",
+  "description": "This is a client library to access the EBRAINS KG core API via javascript.",
+  "main": "dist/kg.ts",
+  "types": "dist/kg.d.ts",
+  "scripts": {
+    "build": "rm -rf ./dist && tsc &&  cp package.json dist && cp package-lock.json dist"
+  },
+  "keywords": [],
+  "author": "EBRAINS",
+  "license": "Apache-2.0",
+  "devDependencies": {
+    "typescript": "^4.8.4"
+  }
+}

@@ -1,0 +1,16 @@
+.app {
+  height: 100%;
+}
+
+.app > .container {
+  max-height: unset !important;
+  height: 100%;
+}
+
+.app > .container > .main {
+  display: grid;
+  grid-template-rows: auto 1fr;
+  position: relative;
+  height: 100%;
+  padding: 30px 0;
+}

@@ -24,13 +24,14 @@ from typing import Any, Dict, List, Optional
 
 import requests
 import re
+from generator.generator import ClientGenerator
 
 from kg_core.request import ResponseConfiguration, ExtendedResponseConfiguration, Pagination
 from jinja2 import Environment, PackageLoader, select_autoescape
 
 APPLICATION_JSON = "application/json"
 
-class ClientGenerator(object):
+class PythonClientGenerator(ClientGenerator):
     keyword_translations = {
         "global": "is_global",
         "from": "start",
@@ -39,14 +40,10 @@ class ClientGenerator(object):
         "id": "instance_id",
         "property": "property_name"
     }
-    specs = ["0%20simple", "1%20advanced"]
-    admin_spec = "2%20admin"
     target = "kg_core/kg.py"
 
     def __init__(self, kg_root:str, open_api_spec_subpath:str, id_namespace:str, default_client_id_for_device_flow:str):
-        self.default_kg_root:str = kg_root
-        self.spec_root:str = f"http{'s' if not kg_root.startswith('localhost') else ''}://{kg_root}/{open_api_spec_subpath}"
-        self.id_namespace:str = id_namespace
+        super(PythonClientGenerator, self).__init__(kg_root, open_api_spec_subpath, id_namespace)
         self.default_client_id_for_device_flow = default_client_id_for_device_flow
 
     def generate(self) -> None:
@@ -300,10 +297,10 @@ class ClientGenerator(object):
 
 
 if __name__ == "__main__":
-    localhost = ClientGenerator("localhost:8000", "v3/api-docs/", "https://kg.ebrains.eu/api/instances/", "kg-core-python")
-    dev = ClientGenerator("core.kg-dev.ebrains.eu", "v3/api-docs/", "https://kg.ebrains.eu/api/instances/", "kg-core-python")
-    ppd = ClientGenerator("core.kg-ppd.ebrains.eu", "v3/api-docs/", "https://kg.ebrains.eu/api/instances/", "kg-core-python")
-    prod = ClientGenerator("core.kg.ebrains.eu", "v3/api-docs/", "https://kg.ebrains.eu/api/instances/", "kg-core-python")
+    localhost = PythonClientGenerator("localhost:8000", "v3/api-docs/", "https://kg.ebrains.eu/api/instances/", "kg-core-python")
+    dev = PythonClientGenerator("core.kg-dev.ebrains.eu", "v3/api-docs/", "https://kg.ebrains.eu/api/instances/", "kg-core-python")
+    ppd = PythonClientGenerator("core.kg-ppd.ebrains.eu", "v3/api-docs/", "https://kg.ebrains.eu/api/instances/", "kg-core-python")
+    prod = PythonClientGenerator("core.kg.ebrains.eu", "v3/api-docs/", "https://kg.ebrains.eu/api/instances/", "kg-core-python")
 
     # localhost.generate()
     # dev.generate()

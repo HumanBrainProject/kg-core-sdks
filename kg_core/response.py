@@ -51,11 +51,6 @@ class JsonLdDocument(Dict[str, Any]):
             return None
 
 
-class ListOfJsonLdDocuments(List[JsonLdDocument]):
-    def __init__(self, seq: Iterable[JsonLdDocument] = ()):
-        super(ListOfJsonLdDocuments, self).__init__(seq)
-
-
 class Instance(JsonLdDocument):
     uuid: Optional[UUID] = None
 
