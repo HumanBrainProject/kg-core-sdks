@@ -21,7 +21,7 @@
 
 from abc import ABC, abstractmethod
 class ClientGenerator(ABC):
-    specs = ["0%20simple", "1%20advanced"]
+    specs = ["0%20simple", "1%20advanced", "4%20extra"]
     admin_spec = "2%20admin"
 
     def __init__(self, kg_root:str, open_api_spec_subpath:str, id_namespace:str):
