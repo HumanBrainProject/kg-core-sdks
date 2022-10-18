@@ -22,7 +22,8 @@
 from __future__ import annotations
 import os
 import requests
-from typing import List, Optional, Dict, Any, Callable
+import uuid
+from typing import List, Optional, Dict, Any, Callable, Union, cast
 from uuid import UUID
 
 from kg_core.__communication import TokenHandler, RequestsWithTokenHandler, KGConfig, CallableTokenHandler
@@ -54,6 +55,18 @@ class Client(object):
         self.types = Types(kg_config)
         self.users = Users(kg_config)
         
+    def uuid_from_absolute_id(self, identifier: Optional[Union[str, UUID]]) -> Optional[UUID]:
+        if identifier:
+            if type(identifier) == UUID:
+                return cast(UUID, identifier)
+            try:
+                id_str = cast(str, identifier)
+                if id_str.startswith("https://kg.ebrains.eu/api/instances/"):
+                    return uuid.UUID(id_str[len("https://kg.ebrains.eu/api/instances/"):])
+                return uuid.UUID(id_str)
+            except ValueError:
+                return None
+        return None
 
 class Admin(RequestsWithTokenHandler):
     def __init__(self, config: KGConfig):
@@ -319,6 +332,14 @@ class Instances(RequestsWithTokenHandler):
         result = self._get(path=f"instances/{instance_id}/incomingLinks", params=params)
         return ResultPage[Instance](response=result, constructor=Instance)
 
+    def get_neighbors(self, instance_id: UUID, stage: Stage = Stage.RELEASED) -> Optional[Error]:
+        """Get the neighborhood for the instance by its KG-internal ID"""
+        params = { 
+            "stage": stage
+        }
+        result = self._get(path=f"instances/{instance_id}/neighbors", params=params)
+        return translate_error(result)
+
     def get_release_status(self, instance_id: UUID, release_tree_scope: ReleaseTreeScope) -> Result[ReleaseStatus]:
         """Get the release status for an instance"""
         params = { 
@@ -344,6 +365,36 @@ class Instances(RequestsWithTokenHandler):
         }
         result = self._get(path=f"instances/{instance_id}/scope", params=params)
         return Result[Scope](response=result, constructor=Scope)
+
+    def get_suggested_links_for_property(self, payload: dict, instance_id: UUID, property_name: str, search: Optional[str] = None, source_type: Optional[str] = None, stage: Stage = Stage.RELEASED, target_type: Optional[str] = None, pagination: Pagination = Pagination()) -> Optional[Error]:
+        """Returns suggestions for an instance to be linked by the given property (e.g. for the KG Editor) - and takes into account the passed payload (already chosen values, reflection on dependencies between properties - e.g. providing only parcellations for an already chosen brain atlas)"""
+        params = { 
+            "stage": stage,
+            "property": property_name,
+            "sourceType": source_type,
+            "targetType": target_type,
+            "search": search,
+            "from": pagination.start,
+            "size": pagination.size,
+            "returnTotalResults": pagination.return_total_results
+        }
+        result = self._post(path=f"instances/{instance_id}/suggestedLinksForProperty", payload=payload, params=params)
+        return translate_error(result)
+
+    def get_suggested_links_for_property_1(self, instance_id: UUID, property_name: str, search: Optional[str] = None, source_type: Optional[str] = None, stage: Stage = Stage.RELEASED, target_type: Optional[str] = None, pagination: Pagination = Pagination()) -> Optional[Error]:
+        """Returns suggestions for an instance to be linked by the given property (e.g. for the KG Editor)"""
+        params = { 
+            "stage": stage,
+            "property": property_name,
+            "sourceType": source_type,
+            "targetType": target_type,
+            "search": search,
+            "from": pagination.start,
+            "size": pagination.size,
+            "returnTotalResults": pagination.return_total_results
+        }
+        result = self._get(path=f"instances/{instance_id}/suggestedLinksForProperty", params=params)
+        return translate_error(result)
 
     def invite_user_for(self, instance_id: UUID, user_id: UUID) -> Optional[Error]:
         """Create or update an invitation for the given user to review the given instance"""
@@ -553,11 +604,64 @@ class Users(RequestsWithTokenHandler):
         result = self._post(path=f"users/termsOfUse/{version}/accept", payload=None, params=params)
         return translate_error(result)
 
+    def define_picture(self, payload: dict, instance_id: UUID) -> Optional[Error]:
+        """Define a picture for a specific user"""
+        params = {}
+        result = self._put(path=f"users/{instance_id}/picture", payload=payload, params=params)
+        return translate_error(result)
+
+    def find(self, search: str) -> Result[ListOfReducedUserInformation]:
+        """Retrieve a list of users from IAM"""
+        params = { 
+            "search": search
+        }
+        result = self._get(path="users/fromIAM", params=params)
+        return Result[ListOfReducedUserInformation](response=result, constructor=ListOfReducedUserInformation)
+
+    def get_auth_endpoint(self) -> Result[JsonLdDocument]:
+        """Get the endpoint of the authentication service"""
+        params = {}
+        result = self._get(path="users/authorization", params=params)
+        return Result[JsonLdDocument](response=result, constructor=JsonLdDocument)
+
+    def get_list(self, pagination: Pagination = Pagination()) -> ResultPage[Instance]:
+        """Retrieve a list of users"""
+        params = { 
+            "from": pagination.start,
+            "size": pagination.size,
+            "returnTotalResults": pagination.return_total_results
+        }
+        result = self._get(path="users", params=params)
+        return ResultPage[Instance](response=result, constructor=Instance)
+
+    def get_list_limited(self, instance_id: Optional[str] = None, pagination: Pagination = Pagination()) -> ResultPage[Instance]:
+        """Retrieve a list of users without sensitive information"""
+        params = { 
+            "from": pagination.start,
+            "size": pagination.size,
+            "returnTotalResults": pagination.return_total_results,
+            "id": instance_id
+        }
+        result = self._get(path="users/limited", params=params)
+        return ResultPage[Instance](response=result, constructor=Instance)
+
     def get_open_id_config_url(self) -> Result[JsonLdDocument]:
         """Get the endpoint of the openid configuration"""
         params = {}
         result = self._get(path="users/authorization/config", params=params)
         return Result[JsonLdDocument](response=result, constructor=JsonLdDocument)
+
+    def get_picture(self, instance_id: UUID) -> Optional[Error]:
+        """Get a picture for a specific user"""
+        params = {}
+        result = self._get(path=f"users/{instance_id}/picture", params=params)
+        return translate_error(result)
+
+    def get_pictures(self, payload: dict) -> Optional[Error]:
+        """Get a pictures for a list of users (only found ones are returned)"""
+        params = {}
+        result = self._post(path="users/pictures", payload=payload, params=params)
+        return translate_error(result)
 
     def get_terms_of_use(self) -> Optional[TermsOfUse]:
         """Get the current terms of use"""
@@ -565,11 +669,23 @@ class Users(RequestsWithTokenHandler):
         result = self._get(path="users/termsOfUse", params=params)
         return None if not result.content else TermsOfUse(**result.content)
 
+    def get_token_endpoint(self) -> Result[JsonLdDocument]:
+        """Get the endpoint to retrieve your token (e.g. via client id and client secret)"""
+        params = {}
+        result = self._get(path="users/authorization/tokenEndpoint", params=params)
+        return Result[JsonLdDocument](response=result, constructor=JsonLdDocument)
+
     def my_info(self) -> Result[User]:
         """Retrieve user information from the passed token (including detailed information such as e-mail address)"""
         params = {}
         result = self._get(path="users/me", params=params)
         return Result[User](response=result, constructor=User)
+
+    def my_roles(self) -> Result[UserWithRoles]:
+        """Retrieve the roles for the current user"""
+        params = {}
+        result = self._get(path="users/me/roles", params=params)
+        return Result[UserWithRoles](response=result, constructor=UserWithRoles)
 
 
 class ClientBuilder(object):

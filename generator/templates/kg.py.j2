@@ -22,7 +22,8 @@
 from __future__ import annotations
 import os
 import requests
-from typing import List, Optional, Dict, Any, Callable
+import uuid
+from typing import List, Optional, Dict, Any, Callable, Union, cast
 from uuid import UUID
 
 from kg_core.__communication import TokenHandler, RequestsWithTokenHandler, KGConfig, CallableTokenHandler
@@ -49,6 +50,18 @@ class Client(object):
         kg_config = _create_kg_config(host, enable_profiling, token_handler, client_token_handler)
         {% for category, methods in methods_by_category %}{% if category != 'admin' %}self.{{category}} = {{category.capitalize()}}(kg_config)
         {% endif %}{% endfor %}
+    def uuid_from_absolute_id(self, identifier: Optional[Union[str, UUID]]) -> Optional[UUID]:
+        if identifier:
+            if type(identifier) == UUID:
+                return cast(UUID, identifier)
+            try:
+                id_str = cast(str, identifier)
+                if id_str.startswith("{{id_namespace}}"):
+                    return uuid.UUID(id_str[len("{{id_namespace}}"):])
+                return uuid.UUID(id_str)
+            except ValueError:
+                return None
+        return None
 {% for category, methods in methods_by_category %}
 class {{category.capitalize()}}(RequestsWithTokenHandler):
     def __init__(self, config: KGConfig):
