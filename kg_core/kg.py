@@ -422,11 +422,11 @@ class Instances(RequestsWithTokenHandler):
         result = self._get(path="instances", params=params)
         return ResultPage[Instance](response=result, constructor=Instance)
 
-    def list_invitations(self, instance_id: UUID) -> Result[ListOfReducedUserInformation]:
+    def list_invitations(self, instance_id: UUID) -> Result[ListOfUUID]:
         """List invitations for review for the given instance"""
         params = {}
         result = self._get(path=f"instances/{instance_id}/invitedUsers", params=params)
-        return Result[ListOfReducedUserInformation](response=result, constructor=ListOfReducedUserInformation)
+        return Result[ListOfUUID](response=result, constructor=ListOfUUID)
 
     def move(self, instance_id: UUID, space: str, extended_response_configuration: ExtendedResponseConfiguration = ExtendedResponseConfiguration()) -> Result[Instance]:
         """Move an instance to another space"""
