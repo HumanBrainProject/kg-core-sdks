@@ -101,7 +101,7 @@ class DeviceAuthenticationFlow(TokenHandler):
         verification_code = response["verification_uri_complete"]
         device_code = response["device_code"]
         print("************************************************************************")
-        print(f"To continue, you need to authenticate. To do so, please visit {verification_code}.")
+        print(f"To continue, you need to authenticate. To do so, please visit {verification_code}")
         print("*************************************************************************")
         return self._poll_for_token(device_code=device_code)
 
