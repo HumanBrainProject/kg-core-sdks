@@ -48,7 +48,7 @@ setup(
     package_data = {
         'kg_core': ['py.typed'],
     },
-    install_requires=['requests', 'pydantic'],
+    install_requires=['requests', 'pydantic==1.10.10'],
     author='EBRAINS',
     scripts=[],
     author_email = 'kg@ebrains.eu',
