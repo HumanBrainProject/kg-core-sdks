@@ -1,0 +1,85 @@
+/*  Copyright 2022 EBRAINS AISBL
+*
+*  Licensed under the Apache License, Version 2.0 (the "License");
+*  you may not use this file except in compliance with the License.
+*  You may obtain a copy of the License at
+*
+*  http://www.apache.org/licenses/LICENSE-2.0.
+*
+*  Unless required by applicable law or agreed to in writing, software
+*  distributed under the License is distributed on an "AS IS" BASIS,
+*  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+*  See the License for the specific language governing permissions and
+*  limitations under the License.
+*
+*  This open source software code was developed in part or in whole in the
+*  Human Brain Project, funded from the European Union's Horizon 2020
+*  Framework Programme for Research and Innovation under
+*  Specific Grant Agreements No. 720270, No. 785907, and No. 945539
+*  (Human Brain Project SGA1, SGA2 and SGA3).
+*/
+package eu.ebrains.kg.sdk;
+
+import eu.ebrains.kg.sdk.response.*;
+import eu.ebrains.kg.sdk.request.*;
+import eu.ebrains.kg.sdk.communication.*;
+import java.util.*;
+import eu.ebrains.kg.sdk.utils.KGConfig;
+import eu.ebrains.kg.sdk.utils.Translator;
+import eu.ebrains.kg.sdk.communication.tokenHandler.TokenHandler;
+
+public class KG {
+
+    public static Client createClient(String host, TokenHandler tokenHandler, TokenHandler clientTokenHandler, boolean enableProfiling) {
+        return new Client(KGConfig.buildConfig(host, tokenHandler, clientTokenHandler, enableProfiling));
+    }
+
+    public static Admin createAdmin(String host, TokenHandler tokenHandler, TokenHandler clientTokenHandler, boolean enableProfiling){
+        return new Admin(KGConfig.buildConfig(host, tokenHandler, clientTokenHandler, enableProfiling));
+    }
+
+    public static class Client {
+        {% for category, methods in methods_by_category %}{% if category != 'admin' %}public final {{category.capitalize()}} {{category}};
+        {% endif %}{% endfor %}
+        private Client(KGConfig kgConfig) {
+           {% for category, methods in methods_by_category %}{% if category != 'admin' %}this.{{category}} = new {{category.capitalize()}}(kgConfig);
+            {% endif %}{% endfor %}
+        }
+    }
+
+    {% for category, methods in methods_by_category %}
+    public static class {{category.capitalize()}} extends Communication {
+        private {{category.capitalize()}}(KGConfig config) {
+            super(config);
+        }
+    {% for method in methods %}
+        {% if method.summary %}/**
+        * {{method.summary}}
+        */{% endif %}
+        public {% if method.response_type %}{{method.response_type}}{% else %}Optional<KGError>{% endif %} {{method.name}}({% if method.has_payload %}Map<String, ?> payload{%if method.parameters%}, {%endif%}{% endif %}{% for p in method.parameters %}{% if not p.replace %}{% if p.type %}{{p.type}} {% endif %}{{p.name}}{% endif %}{% if not loop.last and not p.replace%}, {% endif %}{% endfor %}) {
+            Map<String, Object> params = new HashMap<>();
+            {% for p in method.parameters %}{% if not p.replace %}if({{p.name}} == null){
+                {{p.name}} = new {{p.type}}();
+            }
+            {% endif %}{% endfor %}
+            {% for p in method.query_parameters %}
+            params.put("{{p.name}}", {% if p.replace %}{{p.replace}}.{% endif %}{{p.param}});{% endfor %}
+            {% if method.dynamic_parameters %}
+            {% for dynamic in method.dynamic_parameters %}
+            Object.entries({{dynamic}}).forEach(([k, v]) => {
+                if(!params[k]) {
+                    params[k] = v;
+                }
+            });{% endfor %}{% endif %}
+            Optional<KGResponseWithRequest> result = {{method.operation}}({% if method.path.has_path_params %}"{{method.path.name|replace('{', '${')}}"{%else%}"{{method.path.name}}"{% endif %}, {% if method.has_payload %}payload, {%elif method.operation not in ['get', 'delete'] %}null, {% endif %}params);
+            return {% if method.raw_response_type %}{{ method.raw_response_type}}.translate(result.orElse(null), {% if method.generic_response_type %}{{method.generic_response_type}}{% elif method.response_type %}{{method.response_type}}{% endif %}.class){% else %}result.isPresent() ? Translator.translateError(result.get()) : Optional.empty(){% endif %};
+        }
+    {% endfor %}
+    }
+    {% endfor %}
+
+
+    public static KGClientBuilder kg(){
+        return new KGClientBuilder();
+    }
+}
