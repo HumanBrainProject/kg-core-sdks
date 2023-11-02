@@ -79,23 +79,30 @@ public class KG {
                 this.params.put("{{param.name}}", {{param.default}});{% endif %}{% endfor %}
             }
 
-            public {% if method.response_type %}{{method.response_type}}{% else %}Optional<KGError>{% endif %} invoke({% if method.has_payload %}Map<String, Object> payload{% endif %}){
+            public {% if method.response_type %}{{method.response_type}}{% else %}Optional<KGError>{% endif %} invoke({% if method.has_payload %}Map<String, Object> payload{% endif %}){{'{'}}{% if method.generic_response_type %}
+                return invoke({% if method.has_payload %}payload, {% endif %}{{method.generic_response_type}}.class);
+            }
+
+            public <T> {{method.raw_response_type}}<T> invoke({% if method.has_payload %}Map<String, Object> payload, {% endif %}Class<T> targetClass){{'{'}}{%endif%}
                 String path = "{{method.path.name}}";{%for path_param in method.path_parameters %}
                 path = path.replace("{{'{'}}{{path_param.name}}{{'}'}}", String.valueOf(this.{{path_param.name}}));{% endfor %}
                 Optional<KGResponseWithRequest> result = {{method.operation}}(path, {% if method.has_payload %}payload, {%elif method.operation not in ['get', 'delete'] %}null, {% endif %}params);
-                return {% if method.raw_response_type %}{{ method.raw_response_type}}.translate(result.orElse(null), {% if method.generic_response_type %}{{method.generic_response_type}}{% elif method.response_type %}{{method.response_type}}{% endif %}.class){% else %}result.isPresent() ? Translator.translateError(result.get()) : Optional.empty(){% endif %};
+                return {% if method.raw_response_type %}{{ method.raw_response_type}}.translate(result.orElse(null), {% if method.generic_response_type %}targetClass{% elif method.response_type %}{{method.response_type}}.class{% endif %}){% else %}result.isPresent() ? Translator.translateError(result.get()) : Optional.empty(){% endif %};
             }{% if method.raw_response_type == "ResultPage" %}
+            public void iterate({% if method.has_payload %}Map<String, Object> payload, {% endif %}Consumer<{{method.generic_response_type}}> consumer, Consumer<KGError> errorConsumer) {
+                iterate({{method.generic_response_type}}.class, {% if method.has_payload %}payload, {% endif %}consumer, errorConsumer);
+            }
 
-            public void iterate({% if method.has_payload %}Map<String, Object> payload, {% endif %}Consumer<? super {{method.generic_response_type}}> consumer, Consumer<KGError> errorConsumer) {
+            public <T> void iterate(Class<T> targetClass, {% if method.has_payload %}Map<String, Object> payload, {% endif %}Consumer<T> consumer, Consumer<KGError> errorConsumer) {
                 //For iteration, we don't need total result information. The opt-out will speed up execution.
                 returnTotalResults(false);
-                ResultPage<{{method.generic_response_type}}> result = invoke({% if method.has_payload %}payload{% endif %});
+                ResultPage<T> result = invoke({% if method.has_payload %}payload, {% endif %}targetClass);
                 while(result!=null) {
                     if (result.isSuccessful()) {
                         if (!result.getData().isEmpty()) {
                             result.getData().forEach(consumer);
                             from(result.getFrom() + result.getSize());
-                            result = invoke({% if method.has_payload %}payload{% endif %});
+                            result = invoke({% if method.has_payload %}payload, {% endif %}targetClass);
                         } else {
                             result = null;
                         }

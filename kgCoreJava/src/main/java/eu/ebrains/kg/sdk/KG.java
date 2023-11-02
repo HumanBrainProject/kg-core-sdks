@@ -630,10 +630,14 @@ public class KG {
             }
 
             public Result<Instance> invoke(Map<String, Object> payload){
+                return invoke(payload, Instance.class);
+            }
+
+            public <T> Result<T> invoke(Map<String, Object> payload, Class<T> targetClass){
                 String path = "instances/{id}";
                 path = path.replace("{id}", String.valueOf(this.id));
                 Optional<KGResponseWithRequest> result = put(path, payload, params);
-                return Result.translate(result.orElse(null), Instance.class);
+                return Result.translate(result.orElse(null), targetClass);
             }
             
             
@@ -680,10 +684,14 @@ public class KG {
             }
 
             public Result<Instance> invoke(Map<String, Object> payload){
+                return invoke(payload, Instance.class);
+            }
+
+            public <T> Result<T> invoke(Map<String, Object> payload, Class<T> targetClass){
                 String path = "instances/{id}";
                 path = path.replace("{id}", String.valueOf(this.id));
                 Optional<KGResponseWithRequest> result = patch(path, payload, params);
-                return Result.translate(result.orElse(null), Instance.class);
+                return Result.translate(result.orElse(null), targetClass);
             }
             
             
@@ -729,9 +737,13 @@ public class KG {
             }
 
             public Result<Instance> invoke(Map<String, Object> payload){
+                return invoke(payload, Instance.class);
+            }
+
+            public <T> Result<T> invoke(Map<String, Object> payload, Class<T> targetClass){
                 String path = "instances";
                 Optional<KGResponseWithRequest> result = post(path, payload, params);
-                return Result.translate(result.orElse(null), Instance.class);
+                return Result.translate(result.orElse(null), targetClass);
             }
             
             public CreateNewBuilder incomingLinksPageSize(int incomingLinksPageSize){
@@ -779,10 +791,14 @@ public class KG {
             }
 
             public Result<Instance> invoke(Map<String, Object> payload){
+                return invoke(payload, Instance.class);
+            }
+
+            public <T> Result<T> invoke(Map<String, Object> payload, Class<T> targetClass){
                 String path = "instances/{id}";
                 path = path.replace("{id}", String.valueOf(this.id));
                 Optional<KGResponseWithRequest> result = post(path, payload, params);
-                return Result.translate(result.orElse(null), Instance.class);
+                return Result.translate(result.orElse(null), targetClass);
             }
             
             
@@ -857,10 +873,14 @@ public class KG {
             }
 
             public Result<Instance> invoke(){
+                return invoke(Instance.class);
+            }
+
+            public <T> Result<T> invoke(Class<T> targetClass){
                 String path = "instances/{id}";
                 path = path.replace("{id}", String.valueOf(this.id));
                 Optional<KGResponseWithRequest> result = get(path, params);
-                return Result.translate(result.orElse(null), Instance.class);
+                return Result.translate(result.orElse(null), targetClass);
             }
             
             
@@ -907,9 +927,13 @@ public class KG {
             }
 
             public ResultsById<Instance> invoke(Map<String, Object> payload){
+                return invoke(payload, Instance.class);
+            }
+
+            public <T> ResultsById<T> invoke(Map<String, Object> payload, Class<T> targetClass){
                 String path = "instancesByIdentifiers";
                 Optional<KGResponseWithRequest> result = post(path, payload, params);
-                return ResultsById.translate(result.orElse(null), Instance.class);
+                return ResultsById.translate(result.orElse(null), targetClass);
             }
             
             public GetByIdentifiersBuilder incomingLinksPageSize(int incomingLinksPageSize){
@@ -955,9 +979,13 @@ public class KG {
             }
 
             public ResultsById<Instance> invoke(Map<String, Object> payload){
+                return invoke(payload, Instance.class);
+            }
+
+            public <T> ResultsById<T> invoke(Map<String, Object> payload, Class<T> targetClass){
                 String path = "instancesByIds";
                 Optional<KGResponseWithRequest> result = post(path, payload, params);
-                return ResultsById.translate(result.orElse(null), Instance.class);
+                return ResultsById.translate(result.orElse(null), targetClass);
             }
             
             public GetByIdsBuilder incomingLinksPageSize(int incomingLinksPageSize){
@@ -1010,22 +1038,29 @@ public class KG {
             }
 
             public ResultPage<Instance> invoke(){
+                return invoke(Instance.class);
+            }
+
+            public <T> ResultPage<T> invoke(Class<T> targetClass){
                 String path = "instances/{id}/incomingLinks";
                 path = path.replace("{id}", String.valueOf(this.id));
                 Optional<KGResponseWithRequest> result = get(path, params);
-                return ResultPage.translate(result.orElse(null), Instance.class);
+                return ResultPage.translate(result.orElse(null), targetClass);
+            }
+            public void iterate(Consumer<Instance> consumer, Consumer<KGError> errorConsumer) {
+                iterate(Instance.class, consumer, errorConsumer);
             }
 
-            public void iterate(Consumer<? super Instance> consumer, Consumer<KGError> errorConsumer) {
+            public <T> void iterate(Class<T> targetClass, Consumer<T> consumer, Consumer<KGError> errorConsumer) {
                 //For iteration, we don't need total result information. The opt-out will speed up execution.
                 returnTotalResults(false);
-                ResultPage<Instance> result = invoke();
+                ResultPage<T> result = invoke(targetClass);
                 while(result!=null) {
                     if (result.isSuccessful()) {
                         if (!result.getData().isEmpty()) {
                             result.getData().forEach(consumer);
                             from(result.getFrom() + result.getSize());
-                            result = invoke();
+                            result = invoke(targetClass);
                         } else {
                             result = null;
                         }
@@ -1100,10 +1135,14 @@ public class KG {
             }
 
             public Result<ReleaseStatus> invoke(){
+                return invoke(ReleaseStatus.class);
+            }
+
+            public <T> Result<T> invoke(Class<T> targetClass){
                 String path = "instances/{id}/release/status";
                 path = path.replace("{id}", String.valueOf(this.id));
                 Optional<KGResponseWithRequest> result = get(path, params);
-                return Result.translate(result.orElse(null), ReleaseStatus.class);
+                return Result.translate(result.orElse(null), targetClass);
             }
             
             
@@ -1126,9 +1165,13 @@ public class KG {
             }
 
             public ResultsById<ReleaseStatus> invoke(Map<String, Object> payload){
+                return invoke(payload, ReleaseStatus.class);
+            }
+
+            public <T> ResultsById<T> invoke(Map<String, Object> payload, Class<T> targetClass){
                 String path = "instancesByIds/release/status";
                 Optional<KGResponseWithRequest> result = post(path, payload, params);
-                return ResultsById.translate(result.orElse(null), ReleaseStatus.class);
+                return ResultsById.translate(result.orElse(null), targetClass);
             }
             
             
@@ -1154,10 +1197,14 @@ public class KG {
             }
 
             public Result<Scope> invoke(){
+                return invoke(Scope.class);
+            }
+
+            public <T> Result<T> invoke(Class<T> targetClass){
                 String path = "instances/{id}/scope";
                 path = path.replace("{id}", String.valueOf(this.id));
                 Optional<KGResponseWithRequest> result = get(path, params);
-                return Result.translate(result.orElse(null), Scope.class);
+                return Result.translate(result.orElse(null), targetClass);
             }
             
             public GetScopeBuilder applyRestrictions(){
@@ -1336,21 +1383,28 @@ public class KG {
             }
 
             public ResultPage<Instance> invoke(){
-                String path = "instances";
-                Optional<KGResponseWithRequest> result = get(path, params);
-                return ResultPage.translate(result.orElse(null), Instance.class);
+                return invoke(Instance.class);
             }
 
-            public void iterate(Consumer<? super Instance> consumer, Consumer<KGError> errorConsumer) {
+            public <T> ResultPage<T> invoke(Class<T> targetClass){
+                String path = "instances";
+                Optional<KGResponseWithRequest> result = get(path, params);
+                return ResultPage.translate(result.orElse(null), targetClass);
+            }
+            public void iterate(Consumer<Instance> consumer, Consumer<KGError> errorConsumer) {
+                iterate(Instance.class, consumer, errorConsumer);
+            }
+
+            public <T> void iterate(Class<T> targetClass, Consumer<T> consumer, Consumer<KGError> errorConsumer) {
                 //For iteration, we don't need total result information. The opt-out will speed up execution.
                 returnTotalResults(false);
-                ResultPage<Instance> result = invoke();
+                ResultPage<T> result = invoke(targetClass);
                 while(result!=null) {
                     if (result.isSuccessful()) {
                         if (!result.getData().isEmpty()) {
                             result.getData().forEach(consumer);
                             from(result.getFrom() + result.getSize());
-                            result = invoke();
+                            result = invoke(targetClass);
                         } else {
                             result = null;
                         }
@@ -1450,9 +1504,13 @@ public class KG {
             }
 
             public Result<ListOfUUID> invoke(){
+                return invoke(ListOfUUID.class);
+            }
+
+            public <T> Result<T> invoke(Class<T> targetClass){
                 String path = "instancesWithInvitations";
                 Optional<KGResponseWithRequest> result = get(path, params);
-                return Result.translate(result.orElse(null), ListOfUUID.class);
+                return Result.translate(result.orElse(null), targetClass);
             }
             
         }
@@ -1476,11 +1534,15 @@ public class KG {
             }
 
             public Result<Instance> invoke(){
+                return invoke(Instance.class);
+            }
+
+            public <T> Result<T> invoke(Class<T> targetClass){
                 String path = "instances/{id}/spaces/{space}";
                 path = path.replace("{id}", String.valueOf(this.id));
                 path = path.replace("{space}", String.valueOf(this.space));
                 Optional<KGResponseWithRequest> result = put(path, null, params);
-                return Result.translate(result.orElse(null), Instance.class);
+                return Result.translate(result.orElse(null), targetClass);
             }
             
             
@@ -1655,22 +1717,29 @@ public class KG {
             }
 
             public ResultPage<JsonLdDocument> invoke(){
+                return invoke(JsonLdDocument.class);
+            }
+
+            public <T> ResultPage<T> invoke(Class<T> targetClass){
                 String path = "queries/{queryId}/instances";
                 path = path.replace("{queryId}", String.valueOf(this.queryId));
                 Optional<KGResponseWithRequest> result = get(path, params);
-                return ResultPage.translate(result.orElse(null), JsonLdDocument.class);
+                return ResultPage.translate(result.orElse(null), targetClass);
+            }
+            public void iterate(Consumer<JsonLdDocument> consumer, Consumer<KGError> errorConsumer) {
+                iterate(JsonLdDocument.class, consumer, errorConsumer);
             }
 
-            public void iterate(Consumer<? super JsonLdDocument> consumer, Consumer<KGError> errorConsumer) {
+            public <T> void iterate(Class<T> targetClass, Consumer<T> consumer, Consumer<KGError> errorConsumer) {
                 //For iteration, we don't need total result information. The opt-out will speed up execution.
                 returnTotalResults(false);
-                ResultPage<JsonLdDocument> result = invoke();
+                ResultPage<T> result = invoke(targetClass);
                 while(result!=null) {
                     if (result.isSuccessful()) {
                         if (!result.getData().isEmpty()) {
                             result.getData().forEach(consumer);
                             from(result.getFrom() + result.getSize());
-                            result = invoke();
+                            result = invoke(targetClass);
                         } else {
                             result = null;
                         }
@@ -1726,10 +1795,14 @@ public class KG {
             }
 
             public Result<Instance> invoke(){
+                return invoke(Instance.class);
+            }
+
+            public <T> Result<T> invoke(Class<T> targetClass){
                 String path = "queries/{queryId}";
                 path = path.replace("{queryId}", String.valueOf(this.queryId));
                 Optional<KGResponseWithRequest> result = get(path, params);
-                return Result.translate(result.orElse(null), Instance.class);
+                return Result.translate(result.orElse(null), targetClass);
             }
             
             
@@ -1753,21 +1826,28 @@ public class KG {
             }
 
             public ResultPage<Instance> invoke(){
-                String path = "queries";
-                Optional<KGResponseWithRequest> result = get(path, params);
-                return ResultPage.translate(result.orElse(null), Instance.class);
+                return invoke(Instance.class);
             }
 
-            public void iterate(Consumer<? super Instance> consumer, Consumer<KGError> errorConsumer) {
+            public <T> ResultPage<T> invoke(Class<T> targetClass){
+                String path = "queries";
+                Optional<KGResponseWithRequest> result = get(path, params);
+                return ResultPage.translate(result.orElse(null), targetClass);
+            }
+            public void iterate(Consumer<Instance> consumer, Consumer<KGError> errorConsumer) {
+                iterate(Instance.class, consumer, errorConsumer);
+            }
+
+            public <T> void iterate(Class<T> targetClass, Consumer<T> consumer, Consumer<KGError> errorConsumer) {
                 //For iteration, we don't need total result information. The opt-out will speed up execution.
                 returnTotalResults(false);
-                ResultPage<Instance> result = invoke();
+                ResultPage<T> result = invoke(targetClass);
                 while(result!=null) {
                     if (result.isSuccessful()) {
                         if (!result.getData().isEmpty()) {
                             result.getData().forEach(consumer);
                             from(result.getFrom() + result.getSize());
-                            result = invoke();
+                            result = invoke(targetClass);
                         } else {
                             result = null;
                         }
@@ -1846,21 +1926,28 @@ public class KG {
             }
 
             public ResultPage<JsonLdDocument> invoke(Map<String, Object> payload){
-                String path = "queries";
-                Optional<KGResponseWithRequest> result = post(path, payload, params);
-                return ResultPage.translate(result.orElse(null), JsonLdDocument.class);
+                return invoke(payload, JsonLdDocument.class);
             }
 
-            public void iterate(Map<String, Object> payload, Consumer<? super JsonLdDocument> consumer, Consumer<KGError> errorConsumer) {
+            public <T> ResultPage<T> invoke(Map<String, Object> payload, Class<T> targetClass){
+                String path = "queries";
+                Optional<KGResponseWithRequest> result = post(path, payload, params);
+                return ResultPage.translate(result.orElse(null), targetClass);
+            }
+            public void iterate(Map<String, Object> payload, Consumer<JsonLdDocument> consumer, Consumer<KGError> errorConsumer) {
+                iterate(JsonLdDocument.class, payload, consumer, errorConsumer);
+            }
+
+            public <T> void iterate(Class<T> targetClass, Map<String, Object> payload, Consumer<T> consumer, Consumer<KGError> errorConsumer) {
                 //For iteration, we don't need total result information. The opt-out will speed up execution.
                 returnTotalResults(false);
-                ResultPage<JsonLdDocument> result = invoke(payload);
+                ResultPage<T> result = invoke(payload, targetClass);
                 while(result!=null) {
                     if (result.isSuccessful()) {
                         if (!result.getData().isEmpty()) {
                             result.getData().forEach(consumer);
                             from(result.getFrom() + result.getSize());
-                            result = invoke(payload);
+                            result = invoke(payload, targetClass);
                         } else {
                             result = null;
                         }
@@ -1915,10 +2002,14 @@ public class KG {
             }
 
             public Result<Instance> invoke(Map<String, Object> payload){
+                return invoke(payload, Instance.class);
+            }
+
+            public <T> Result<T> invoke(Map<String, Object> payload, Class<T> targetClass){
                 String path = "queries/{queryId}";
                 path = path.replace("{queryId}", String.valueOf(this.queryId));
                 Optional<KGResponseWithRequest> result = put(path, payload, params);
-                return Result.translate(result.orElse(null), Instance.class);
+                return Result.translate(result.orElse(null), targetClass);
             }
             
             
@@ -1950,9 +2041,13 @@ public class KG {
             }
 
             public Result<JsonLdDocument> invoke(){
+                return invoke(JsonLdDocument.class);
+            }
+
+            public <T> Result<T> invoke(Class<T> targetClass){
                 String path = "setup/authentication";
                 Optional<KGResponseWithRequest> result = get(path, params);
-                return Result.translate(result.orElse(null), JsonLdDocument.class);
+                return Result.translate(result.orElse(null), targetClass);
             }
             
         }
@@ -1980,10 +2075,14 @@ public class KG {
             }
 
             public Result<SpaceInformation> invoke(){
+                return invoke(SpaceInformation.class);
+            }
+
+            public <T> Result<T> invoke(Class<T> targetClass){
                 String path = "spaces/{space}";
                 path = path.replace("{space}", String.valueOf(this.space));
                 Optional<KGResponseWithRequest> result = get(path, params);
-                return Result.translate(result.orElse(null), SpaceInformation.class);
+                return Result.translate(result.orElse(null), targetClass);
             }
             
             public GetBuilder permissions(){
@@ -2010,21 +2109,28 @@ public class KG {
             }
 
             public ResultPage<SpaceInformation> invoke(){
-                String path = "spaces";
-                Optional<KGResponseWithRequest> result = get(path, params);
-                return ResultPage.translate(result.orElse(null), SpaceInformation.class);
+                return invoke(SpaceInformation.class);
             }
 
-            public void iterate(Consumer<? super SpaceInformation> consumer, Consumer<KGError> errorConsumer) {
+            public <T> ResultPage<T> invoke(Class<T> targetClass){
+                String path = "spaces";
+                Optional<KGResponseWithRequest> result = get(path, params);
+                return ResultPage.translate(result.orElse(null), targetClass);
+            }
+            public void iterate(Consumer<SpaceInformation> consumer, Consumer<KGError> errorConsumer) {
+                iterate(SpaceInformation.class, consumer, errorConsumer);
+            }
+
+            public <T> void iterate(Class<T> targetClass, Consumer<T> consumer, Consumer<KGError> errorConsumer) {
                 //For iteration, we don't need total result information. The opt-out will speed up execution.
                 returnTotalResults(false);
-                ResultPage<SpaceInformation> result = invoke();
+                ResultPage<T> result = invoke(targetClass);
                 while(result!=null) {
                     if (result.isSuccessful()) {
                         if (!result.getData().isEmpty()) {
                             result.getData().forEach(consumer);
                             from(result.getFrom() + result.getSize());
-                            result = invoke();
+                            result = invoke(targetClass);
                         } else {
                             result = null;
                         }
@@ -2078,9 +2184,13 @@ public class KG {
             }
 
             public ResultsById<TypeInformation> invoke(Map<String, Object> payload){
+                return invoke(payload, TypeInformation.class);
+            }
+
+            public <T> ResultsById<T> invoke(Map<String, Object> payload, Class<T> targetClass){
                 String path = "typesByName";
                 Optional<KGResponseWithRequest> result = post(path, payload, params);
-                return ResultsById.translate(result.orElse(null), TypeInformation.class);
+                return ResultsById.translate(result.orElse(null), targetClass);
             }
             
             public GetByNameBuilder space(String space){
@@ -2119,21 +2229,28 @@ public class KG {
             }
 
             public ResultPage<TypeInformation> invoke(){
-                String path = "types";
-                Optional<KGResponseWithRequest> result = get(path, params);
-                return ResultPage.translate(result.orElse(null), TypeInformation.class);
+                return invoke(TypeInformation.class);
             }
 
-            public void iterate(Consumer<? super TypeInformation> consumer, Consumer<KGError> errorConsumer) {
+            public <T> ResultPage<T> invoke(Class<T> targetClass){
+                String path = "types";
+                Optional<KGResponseWithRequest> result = get(path, params);
+                return ResultPage.translate(result.orElse(null), targetClass);
+            }
+            public void iterate(Consumer<TypeInformation> consumer, Consumer<KGError> errorConsumer) {
+                iterate(TypeInformation.class, consumer, errorConsumer);
+            }
+
+            public <T> void iterate(Class<T> targetClass, Consumer<T> consumer, Consumer<KGError> errorConsumer) {
                 //For iteration, we don't need total result information. The opt-out will speed up execution.
                 returnTotalResults(false);
-                ResultPage<TypeInformation> result = invoke();
+                ResultPage<T> result = invoke(targetClass);
                 while(result!=null) {
                     if (result.isSuccessful()) {
                         if (!result.getData().isEmpty()) {
                             result.getData().forEach(consumer);
                             from(result.getFrom() + result.getSize());
-                            result = invoke();
+                            result = invoke(targetClass);
                         } else {
                             result = null;
                         }
@@ -2193,9 +2310,13 @@ public class KG {
             }
 
             public Result<User> invoke(){
+                return invoke(User.class);
+            }
+
+            public <T> Result<T> invoke(Class<T> targetClass){
                 String path = "users/me";
                 Optional<KGResponseWithRequest> result = get(path, params);
-                return Result.translate(result.orElse(null), User.class);
+                return Result.translate(result.orElse(null), targetClass);
             }
             
         }
@@ -2215,12 +2336,19 @@ public class KG {
             }
 
             public Result<UserWithRoles> invoke(){
+                return invoke(UserWithRoles.class);
+            }
+
+            public <T> Result<T> invoke(Class<T> targetClass){
                 String path = "users/me/roles";
                 Optional<KGResponseWithRequest> result = get(path, params);
-                return Result.translate(result.orElse(null), UserWithRoles.class);
+                return Result.translate(result.orElse(null), targetClass);
             }
+            
         }
+    
     }
+    
 
 
     public static KGClientBuilder kg(){
