@@ -32,116 +32,114 @@ from jinja2 import Environment, PackageLoader, select_autoescape
 
 APPLICATION_JSON = "application/json"
 
+default_values = {
+    "from": 0,
+    "size": 50,
+    "returnTotalResults": True
+}
+
 class JavaClientGenerator(ClientGenerator):
 
-    def __init__(self, kg_root:str, open_api_spec_subpath:str, id_namespace:str, default_client_id_for_device_flow:str, versions:List[str]):
+
+    def __init__(self, kg_root:str, open_api_spec_subpath:str, id_namespace:str, default_client_id_for_device_flow:str):
         super(JavaClientGenerator, self).__init__(kg_root, open_api_spec_subpath, id_namespace)
         self.default_client_id_for_device_flow = default_client_id_for_device_flow
-        self.versions = versions
 
-    def generate(self) -> None:
+    def generate(self, api_version:str) -> None:
         env = Environment(
             loader=PackageLoader("generator"),
             autoescape=select_autoescape()
         )
         template = env.get_template("kg.java.j2")
-        for api_version in self.versions:
-            target = f"kgCoreJava/src/main/java/eu/ebrains/kg/sdk/KG.java"
-            api_spec = requests.get(f"{self.spec_root}/{api_version}").json()
-            paths = api_spec["paths"]
-            client_paths = {}
-            admin_paths = {}
-            for path, v in paths.items():
-                for operation, definition in v.items():
-                    if "tags" in definition and definition["tags"] and "3 Admin" in definition["tags"]:
-                        if path not in admin_paths:
-                            admin_paths[path] = {}
-                        admin_paths[path][operation] = definition
-                    else:
-                        if path not in client_paths:
-                            client_paths[path] = {}
-                        client_paths[path][operation] = definition
+        target = f"kgCoreJava/src/main/java/eu/ebrains/kg/sdk/KG.java"
+        api_spec = requests.get(f"{self.spec_root}/{api_version}").json()
+        paths = api_spec["paths"]
+        client_paths = {}
+        admin_paths = {}
+        for path, v in paths.items():
+            for operation, definition in v.items():
+                if "tags" in definition and definition["tags"] and "3 Admin" in definition["tags"]:
+                    if path not in admin_paths:
+                        admin_paths[path] = {}
+                    admin_paths[path][operation] = definition
+                else:
+                    if path not in client_paths:
+                        client_paths[path] = {}
+                    client_paths[path][operation] = definition
 
-            all_schemas: Dict[str, Dict[Any, Any]] = api_spec["components"]["schemas"] if "components" in api_spec and "schemas" in api_spec["components"] else {}
-            paths_by_categories: Dict[str, Dict[str, Any]] = {}
-            paths_by_categories["admin"] = admin_paths
-            for path, value in client_paths.items():
+        all_schemas: Dict[str, Dict[Any, Any]] = api_spec["components"]["schemas"] if "components" in api_spec and "schemas" in api_spec["components"] else {}
+        paths_by_categories: Dict[str, Dict[str, Any]] = {}
+        paths_by_categories["admin"] = admin_paths
+        for path, value in client_paths.items():
+            tmp_api_version, relative_path = self._split_path(path)
+            root_path = relative_path.split("/")[0]
+            category = re.findall('[a-z]*',root_path)[0]
+            for operation, definition in value.items():
+                if category not in paths_by_categories:
+                    paths_by_categories[category] = {}
+                paths = paths_by_categories[category]
+                if path not in paths:
+                    paths[path] = {}
+                paths[path][operation] = definition
+        methods_by_category: Dict[str, List[Dict[str, Any]]] = {}
+
+        for category, paths in paths_by_categories.items():
+            methods_by_category[category] = []
+            for path, value in paths.items():
                 tmp_api_version, relative_path = self._split_path(path)
-                root_path = relative_path.split("/")[0]
-                category = re.findall('[a-z]*',root_path)[0]
                 for operation, definition in value.items():
-                    if category not in paths_by_categories:
-                        paths_by_categories[category] = {}
-                    paths = paths_by_categories[category]
-                    if path not in paths:
-                        paths[path] = {}
-                    paths[path][operation] = definition
-            methods_by_category: Dict[str, List[Dict[str, Any]]] = {}
+                    parameters: List[Dict[str, Any]] = definition["parameters"] if "parameters" in definition else []
+                    for p in parameters:
+                        if p["name"] == "allRequestParams":
+                            # We change the wording for the "allRequestParams" because the client ensures there
+                            # is no override of the original "hard-coded" properties and therefore the role of this parameter slightly changes.
+                            p["name"] = "additionalRequestParams"
 
-            for category, paths in paths_by_categories.items():
-                methods_by_category[category] = []
-                for path, value in paths.items():
-                    tmp_api_version, relative_path = self._split_path(path)
-                    for operation, definition in value.items():
-                        parameters: List[Dict[str, Any]] = definition["parameters"] if "parameters" in definition else []
-                        for p in parameters:
-                            if p["name"] == "allRequestParams":
-                                # We change the wording for the "allRequestParams" because the client ensures there
-                                # is no override of the original "hard-coded" properties and therefore the role of this parameter slightly changes.
-                                p["name"] = "additionalRequestParams"
-                        path_parameters = [p["name"] for p in parameters if p["in"] == "path"]
-                        query_parameters = [{"name": p["name"], "param":p["name"]} for p in parameters if p["in"] == "query"]
+                    method_parameters = [self._translate_parameter(p) for p in parameters]
+                    method_parameters.sort(key=self._sort_params)
+                    query_parameters = [p for p in method_parameters if p["in"] == "query"]
+                    path_parameters = [p for p in method_parameters if p["in"] == "path"]
+                    required_parameters = [p for p in method_parameters if p["required"] == True and not p["default"] and not p["name"]=="stage"]
+                    dynamic_parameters = [p["name"] for p in method_parameters if p["type"].startswith("Dict[str, Any]")]
+                    for dp in dynamic_parameters:
+                        for qp in query_parameters:
+                            if qp["param"] == dp:
+                                query_parameters.remove(qp)
+                                break
+                    method_name = definition["operationId"]
+                    category_capitalized = category.capitalize()
+                    category_singular = category_capitalized[:-1] if category_capitalized.endswith("s") else category_capitalized
+                    method_name = re.sub(category_capitalized, "", method_name)
+                    method_name = re.sub(category_singular, "", method_name)
 
-                        method_parameters = [self._translate_parameter(p) for p in parameters]
-                        method_parameters.sort(key=self._sort_params)
+                    response_type = self._response_type(definition["responses"] if "responses" in definition else {})
+                    generic_response_type = None
+                    raw_response_type = response_type
+                    if response_type:
+                        generics = re.findall(f"(?<=\<).*(?=>)", response_type)
+                        if len(generics) > 0:
+                            generic_response_type = generics[0]
 
-                        method_param_names: List[Optional[str]] = [p["name"] for p in method_parameters]
-                        self.consolidate_request_objects(ExtendedResponseConfiguration(), method_parameters, method_param_names, query_parameters)
-                        self.consolidate_request_objects(ResponseConfiguration(), method_parameters, method_param_names, query_parameters)
-                        self.consolidate_request_objects(Pagination(), method_parameters, method_param_names, query_parameters)
-                        dynamic_parameters = [p["name"] for p in method_parameters if p["type"].startswith("Dict[str, Any]")]
-                        for dp in dynamic_parameters:
-                            for qp in query_parameters:
-                                if qp["param"] == dp:
-                                    query_parameters.remove(qp)
-                                    break
-                        method_name = definition["operationId"]
-                        category_singular = category[:-1] if category.endswith("s") else category
-                        method_name = re.sub(f"^{category_singular}_", "", method_name)
-                        method_name = re.sub(f"^{category}_", "", method_name)
-                        method_name = re.sub(f"_{category_singular}_", "_", method_name)
-                        method_name = re.sub(f"_{category}_", "_", method_name)
-                        method_name = re.sub(f"_{category}$", "", method_name)
-                        method_name = re.sub(f"_{category_singular}$", "", method_name)
-
-                        response_type = self._response_type(definition["responses"] if "responses" in definition else {})
-                        generic_response_type = None
-                        raw_response_type = response_type
-                        if response_type:
-                            generics = re.findall(f"(?<=\<).*(?=>)", response_type)
-                            if len(generics) > 0:
-                                generic_response_type = generics[0]
-
-                            raw = re.findall(f"(.*)(?=\<)", response_type)
-                            if len(raw)>0:
-                                raw_response_type = raw[0]
+                        raw = re.findall(f"(.*)(?=\<)", response_type)
+                        if len(raw)>0:
+                            raw_response_type = raw[0]
 
 
-                        method: Dict[str, Any] = {"operation": operation, "summary": definition["summary"] if "summary" in definition else None, "has_payload": "requestBody" in definition and definition["requestBody"],
-                                  "path": {"name": relative_path, "has_path_params": len(path_parameters) > 0}, "name": method_name,
-                                  "parameters": method_parameters, "query_parameters": query_parameters, "dynamic_parameters": dynamic_parameters, "response_type": response_type, "generic_response_type": generic_response_type, "raw_response_type": raw_response_type}
-                        methods_by_category[category].append(method)
-                        print(f"Operation: {operation}, Path: {relative_path}")
-                # Todo sort by operationId
-                for _, methods in methods_by_category.items():
-                    methods.sort(key=lambda m: m['name'])
-            os.makedirs(os.path.dirname(target), exist_ok=True)
-            with open(target, "w+") as file:
-                file.write(template.render(default_kg_root=self.default_kg_root, methods_by_category=sorted(methods_by_category.items()), api_version=api_version, id_namespace=self.id_namespace, default_client_id_for_device_flow=self.default_client_id_for_device_flow))
-            print(json.dumps(paths_by_categories, indent=4))
-            print(json.dumps(all_schemas, indent=4))
+                    method: Dict[str, Any] = {"operation": operation, "summary": definition["summary"] if "summary" in definition else None, "has_payload": "requestBody" in definition and definition["requestBody"],
+                              "path": {"name": relative_path,  "has_path_params": len(path_parameters) > 0}, "name": method_name,
+                              "path_parameters": path_parameters, "required_parameters": required_parameters, "parameters": method_parameters, "query_parameters": query_parameters, "dynamic_parameters": dynamic_parameters, "response_type": response_type, "generic_response_type": generic_response_type, "raw_response_type": raw_response_type}
+                    methods_by_category[category].append(method)
+                    print(f"Operation: {operation}, Path: {relative_path}")
+            # Todo sort by operationId
+            for _, methods in methods_by_category.items():
+                methods.sort(key=lambda m: m['name'])
+        os.makedirs(os.path.dirname(target), exist_ok=True)
+        with open(target, "w+") as file:
+            file.write(template.render(default_kg_root=self.default_kg_root, methods_by_category=sorted(methods_by_category.items()), api_version=api_version, id_namespace=self.id_namespace, default_client_id_for_device_flow=self.default_client_id_for_device_flow))
+        print(json.dumps(paths_by_categories, indent=4))
+        print(json.dumps(all_schemas, indent=4))
 
-    def _find_type(self, type_: Optional[str], items: Optional[Dict[str, Any]], format_: Optional[str], required: bool, default: Optional[str], enum_: Optional[List[str]]) -> Optional[str]:
+    def _find_type(self, type_: Optional[str], items: Optional[Dict[str, Any]], format_: Optional[str], enum_: Optional[List[str]]) -> Optional[str]:
         result = None
         if type_ == "string":
             if format_ == "uuid":
@@ -156,9 +154,9 @@ class JavaClientGenerator(ClientGenerator):
             else:
                 result = "String"
         elif type_ == "boolean":
-            result = "boolean" if required and not default else "Boolean"
+            result = "boolean"
         elif type_ == "integer":
-            result = "int" if required and not default else "Integer"
+            result = "int"
         elif type_ == "object":
             result = "Map<String, Object>"
         elif type_ == "array":
@@ -173,14 +171,18 @@ class JavaClientGenerator(ClientGenerator):
         type_: Optional[str] = schema.get("type", None)
         items: Optional[Dict[str, Any]] = schema.get("items", None)
         format_: Optional[str] = schema.get("format", None)
-        default: Optional[str] = str(schema["default"]) if "default" in schema else None
+        default: Optional[Any] = str(schema["default"]) if "default" in schema else default_values[input_["name"]] if input_["name"] in default_values else None
+        default = str(default).lower() if isinstance(default, bool) or default == "False" or default == "True" else "new HashMap<String, Object>()" if default == "{}" else f'"{default}"' if isinstance(default, str)  else default
         required: bool = input_.get("required", False)
         enum: Optional[List[str]] = schema.get("enum", None)
         return {
             "name": input_["name"],
-            "type": self._find_type(type_, items, format_, required, default, enum)
+            "type": self._find_type(type_, items, format_, enum),
+            "default": default,
+            "in": input_["in"],
+            "required": required,
+            "booleanTrueOnly": type_ == "boolean" and (default == "false" or not default)
         }
-
 
     def _to_camel_case(self, snake_str):
         components = snake_str.split('_')
@@ -278,19 +280,17 @@ class JavaClientGenerator(ClientGenerator):
                 for p in method_parameters:
                     if p["name"] == r and "replace" not in p:
                         p["replace"] = request_object_name_translated_camel_case
-                for p in query_parameters:
-                    if p["param"] == r and "replace" not in p:
-                        p["replace"] = request_object_name_translated_camel_case
             method_parameters.append({"name": request_object_name_translated_camel_case, "type": f"{request_object_name}"})
 
 
 if __name__ == "__main__":
-    localhost = JavaClientGenerator("localhost:8000", "v3/api-docs/", "https://kg.ebrains.eu/api/instances/", "kg-core-python", ["v3-beta", "v3"])
-    dev = JavaClientGenerator("core.kg-dev.ebrains.eu", "v3/api-docs/", "https://kg.ebrains.eu/api/instances/", "kg-core-python", ["v3-beta", "v3"])
-    ppd = JavaClientGenerator("core.kg-ppd.ebrains.eu", "v3/api-docs/", "https://kg.ebrains.eu/api/instances/", "kg-core-python", ["v3-beta", "v3"])
-    prod = JavaClientGenerator("core.kg.ebrains.eu", "v3/api-docs/", "https://kg.ebrains.eu/api/instances/", "kg-core-python", ["v3-beta", "v3"])
+
+    localhost = JavaClientGenerator("localhost:8000", "v3/api-docs/", "https://kg.ebrains.eu/api/instances/", "kg-core-python")
+    dev = JavaClientGenerator("core.kg-dev.ebrains.eu", "v3/api-docs/", "https://kg.ebrains.eu/api/instances/", "kg-core-python")
+    ppd = JavaClientGenerator("core.kg-ppd.ebrains.eu", "v3/api-docs/", "https://kg.ebrains.eu/api/instances/", "kg-core-python")
+    prod = JavaClientGenerator("core.kg.ebrains.eu", "v3/api-docs/", "https://kg.ebrains.eu/api/instances/", "kg-core-python")
 
     # localhost.generate()
     #dev.generate()
-    ppd.generate()
-    #prod.generate()
+    #ppd.generate()
+    prod.generate("v3")

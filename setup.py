@@ -54,6 +54,6 @@ setup(
     author_email = 'kg@ebrains.eu',
     keywords = ['EBRAINS', 'Knowledge Graph', 'KG'],
     classifiers = [],
-    url = 'https://github.com/HumanBrainProject/kg-core-python',
+    url = 'https://github.com/HumanBrainProject/kg-core-sdks',
     long_description = long_description
 )
