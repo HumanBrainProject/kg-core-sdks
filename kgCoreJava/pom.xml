@@ -27,7 +27,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>eu.ebrains.kg</groupId>
     <artifactId>kg-core-sdk</artifactId>
-    <version>3.0.0</version>
+    <version>3.0.0-beta</version>
     <name>kg-core-sdk</name>
     <packaging>jar</packaging>
     <description>A SDK for KG core</description>
@@ -62,7 +62,6 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-source-plugin</artifactId>
-                <version>3.1.0</version>
                 <executions>
                     <execution>
                         <id>attach-sources</id>
@@ -75,7 +74,6 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
-                <version>3.2.0</version>
                 <executions>
                     <execution>
                         <id>attach-javadocs</id>
@@ -104,10 +102,4 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
-    <distributionManagement>
-        <repository>
-            <id>repo.kg.ebrains.eu</id>
-            <url>https://repo.kg.ebrains.eu/repository/maven-releases/</url>
-        </repository>
-    </distributionManagement>
 </project>
