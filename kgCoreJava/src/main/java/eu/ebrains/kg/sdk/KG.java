@@ -44,6 +44,7 @@ public class KG {
     }
 
     public static class Client {
+        private final String idNamespace;
         public final Instances instances;
         public final Jsonld jsonld;
         public final Queries queries;
@@ -53,6 +54,7 @@ public class KG {
         public final Users users;
         
         private Client(KGConfig kgConfig) {
+           this.idNamespace = kgConfig != null ? kgConfig.getIdNamespace() : null;
            this.instances = new Instances(kgConfig);
             this.jsonld = new Jsonld(kgConfig);
             this.queries = new Queries(kgConfig);
@@ -61,6 +63,10 @@ public class KG {
             this.types = new Types(kgConfig);
             this.users = new Users(kgConfig);
             
+        }
+
+        public UUID uuidFromInstanceId(String instanceId){
+            return Translator.fromInstanceId(instanceId, this.idNamespace);
         }
     }
 

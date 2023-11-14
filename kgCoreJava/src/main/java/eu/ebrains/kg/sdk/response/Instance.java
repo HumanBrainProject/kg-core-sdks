@@ -1,6 +1,8 @@
 package eu.ebrains.kg.sdk.response;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import eu.ebrains.kg.sdk.utils.Translator;
+
 import java.util.UUID;
 
 public class Instance extends JsonLdDocument{
@@ -16,14 +18,7 @@ public class Instance extends JsonLdDocument{
 
     @JsonIgnore
     void evaluateUUID(String idNamespace){
-        final String instanceId = getInstanceId();
-        if(instanceId!=null && instanceId.startsWith(idNamespace)){
-            try{
-                this.uuid = UUID.fromString(instanceId.substring(idNamespace.length()));
-            }
-            catch (IllegalArgumentException ignored){
-            }
-        }
+        this.uuid = Translator.fromInstanceId(getInstanceId(), idNamespace);
     }
 
 }

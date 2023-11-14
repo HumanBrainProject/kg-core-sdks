@@ -12,6 +12,17 @@ import java.util.UUID;
 public class Translator {
     private static final ObjectMapper objectMapper = new ObjectMapper();
 
+    public static UUID fromInstanceId(String instanceId, String idNamespace){
+        if(instanceId!=null && instanceId.startsWith(idNamespace)){
+            try{
+                return UUID.fromString(instanceId.substring(idNamespace.length()));
+            }
+            catch (IllegalArgumentException ignored){
+            }
+        }
+        return null;
+    }
+
     public static Optional<KGError> translateError(KGResponseWithRequest response){
         if(response!=null && response.getResponse() != null){
              if(response.getResponse().body() != null){
