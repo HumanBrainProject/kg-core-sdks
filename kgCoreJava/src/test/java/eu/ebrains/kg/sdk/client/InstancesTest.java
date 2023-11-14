@@ -38,6 +38,17 @@ class InstancesTest {
                     System.out.println(i.getUUID());
                 });
     }
+
+
+    @Test
+    public void streamInstancePages(){
+        instances.list("https://openminds.ebrains.eu/core/DatasetVersion").streamPage(Instance.class).forEach(i -> {
+            System.out.println("New page");
+            i.getData().forEach(instance -> {
+                System.out.println(instance.getUUID());
+            });
+        });
+    }
     @Test
     public void streamInstancesToList(){
         final List<Instance> collect = instances.list("https://openminds.ebrains.eu/core/DatasetVersion").stream(Instance.class).collect(Collectors.toList());

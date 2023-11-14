@@ -7,13 +7,18 @@ public abstract class ResultPageProvider<C> extends AbstractResultPageProvider<C
     public abstract <T> ResultPage<T> invoke(Class<T> targetClass);
 
     public <T> Stream<T> stream(Class<T> targetClass){
-        return stream(new InstanceIterator<>(targetClass));
+        return stream(new PageIterator<>(targetClass));
     }
 
-    private class InstanceIterator<T> extends AbstractResultPageProvider<C>.AbstractInstanceIterator<T> {
+    public <T> Stream<ResultPage<T>> streamPage(Class<T> targetClass){
+        return streamPages(new PageIterator<>(targetClass));
+    }
+
+
+    private class PageIterator<T> extends AbstractResultPageProvider<C>.AbstractPageIterator<T> {
         private final Class<T> targetClass;
 
-        private InstanceIterator(Class<T> targetClass) {
+        private PageIterator(Class<T> targetClass) {
             this.targetClass = targetClass;
         }
 
@@ -22,4 +27,5 @@ public abstract class ResultPageProvider<C> extends AbstractResultPageProvider<C
             return ResultPageProvider.this.invoke(targetClass);
         }
     }
+
 }
