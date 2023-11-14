@@ -27,7 +27,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>eu.ebrains.kg</groupId>
     <artifactId>kg-core-sdk</artifactId>
-    <version>3.0.0-beta</version>
+    <version>3.0.0-beta1</version>
     <name>kg-core-sdk</name>
     <packaging>jar</packaging>
     <description>A SDK for KG core</description>
