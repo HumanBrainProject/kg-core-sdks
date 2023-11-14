@@ -58,6 +58,7 @@ If you want to talk to another endpoint than the official one (e.g. for developm
 ```python
 kg("core.kg-ppd.ebrains.eu").build()
 ```
+
 <sub>Java</sub>
 ```java
 KG.kg("core.kg-ppd.ebrains.eu").build();
@@ -74,10 +75,12 @@ This is the default if nothing else is specified. The script will print a URL in
 This is useful for sessions in which the user is in front of the computer at execution time e.g. for the manual execution of a script.
 
 You can customize this authentication mechanism by 
+
 <sub>Python</sub>
 ```python
 kg().with_device_flow(client_id="your-client-id", open_id_configuration_url="the_url_to_your_openid_configuration").build()
 ```
+
 <sub>Java</sub>
 ```java
 KG.kg().withDeviceFlow("yourClientId", "theUrlToYourOpenIdConfiguration").build();
@@ -86,6 +89,7 @@ Usually, there is no need to change those parameters. Therefore, both parameters
 
 ##### Inside an authenticated session: Token (only available for Python and Java)
 Sometimes, you already have a valid access token which you might want to reuse - e.g. because you're using the library in a broader context. If this is the case, you can simply pass the existing token like
+
 <sub>Python</sub>
 ```python
 kg().with_token(token="your-access-token").build()
@@ -101,10 +105,12 @@ Please note, that in Python, "your-access-token" defaults to the environment var
 ##### Unsupervised script execution: With credentials (only available for Python and Java)
 If you want to have unsupervised script execution (e.g. because you're building a cron-job interacting with the KG), you should register an OIDC client with a service account at EBRAINS. 
 Once done, you will receive a "client_id" and a "client_secret" which you can pass to the KG client:
+
 <sub>Python</sub>
 ```python
 kg().with_credentials(client_id="your-client-id", client_secret="your-client-secret").build()
 ```
+
 <sub>Java</sub>
 ```java
 KG.kg().withCredentials("yourClientId", "yourClientSecret").build()
@@ -114,15 +120,18 @@ Just as with an existing token, the arguments "client_id" and "client_secret" de
 
 ##### Custom token provider
 Maybe, you don't have the token itself but you have some logic which can fetch it. This is what the custom token provider is for: You can implement your own function on how to fetch the token:
+
 <sub>Python</sub>
 ```python
 kg().with_custom_token_provider(lambda: some_way_to_fetch_the_token()).build()
 ```
+
 <sub>TypeScript</sub>
 ```javascript
 const fetchToken = ():string|null => {someWayToFetchTheToken}
 kg().withCustomTokenProvider(fetchToken).build();
 ```
+
 <sub>Java</sub>
 ```java
 KG.kg().withCustomTokenProvider(new CallableTokenHandler(() -> someWayToFetchTheToken))
@@ -182,6 +191,8 @@ One of the main tasks you will meet when working with the KG is to iterate lists
 
 ##### The for loop
 The easiest way to iterate a ResultPage is to use the for loop:
+
+<sub>Python</sub>
 ```python
 for i in result.items():
     print(i)
@@ -190,6 +201,8 @@ This will make sure you loop across the instances. The listing methods contain a
 
 ##### The while loop with "has_next_page()" / "next_page()"
 If you want more fine-grained control over the looping, you can also use the **has_next_page()** as well as the **next_page()** methods:
+
+<sub>Python</sub>
 ```python
 while result.has_next_page():
     if result.data:
@@ -200,8 +213,10 @@ while result.has_next_page():
 Please note that `result.next_page()` returns None if there are no more pages, so theoretically, instead of `while result.has_next_page()` we could also just have written `while result:`. Nevertheless, we think it's easier to read in the above example and of course there are other use-cases where you might only want to check if a result has a next page without actually loading it.
 
 
-# Java
+#### Java
 As a very convenient API, we recommend to loop instances with the "streaming" API:
+
+<sub>Java</sub>
 ```java
 Stream<Instance> stream = client.instances.list("https://openminds.ebrains.eu/core/Person").stream();
 ```
