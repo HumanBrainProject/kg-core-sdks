@@ -1,40 +1,35 @@
 package eu.ebrains.kg.sdk.response;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.util.List;
 
-public class UserWithRoles {
-    private final User user;
-    private final List<String> clientRoles;
-    private final List<String> userRoles;
-    private final List<String> invitations;
-    private final String clientId;
+@JsonIgnoreProperties(ignoreUnknown = true)
+public record UserWithRoles(User user, List<String> clientRoles, List<String> userRoles, List<String> invitations, String clientId, List<Permission> permissions) {
 
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    public record Permission(String functionality, String space, String id) {
+        public Permission(@JsonProperty("functionality") String functionality,
+                          @JsonProperty("space") String space,
+                          @JsonProperty("id") String id) {
+            this.functionality = functionality;
+            this.space = space;
+            this.id = id;
+        }
+    }
 
-    public UserWithRoles(User user, List<String> clientRoles, List<String> userRoles, List<String> invitations, String clientId) {
+    public UserWithRoles(@JsonProperty("user") User user,
+                         @JsonProperty("clientRoles") List<String> clientRoles,
+                         @JsonProperty("userRoles") List<String> userRoles,
+                         @JsonProperty("invitations") List<String> invitations,
+                         @JsonProperty("clientId") String clientId,
+                         @JsonProperty("permissions") List<Permission> permissions) {
         this.user = user;
         this.clientRoles = clientRoles;
         this.userRoles = userRoles;
         this.invitations = invitations;
         this.clientId = clientId;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public List<String> getClientRoles() {
-        return clientRoles;
-    }
-
-    public List<String> getUserRoles() {
-        return userRoles;
-    }
-
-    public List<String> getInvitations() {
-        return invitations;
-    }
-
-    public String getClientId() {
-        return clientId;
+        this.permissions = permissions;
     }
 }

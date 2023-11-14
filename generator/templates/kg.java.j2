@@ -24,11 +24,8 @@ import eu.ebrains.kg.sdk.response.*;
 import eu.ebrains.kg.sdk.request.*;
 import eu.ebrains.kg.sdk.communication.*;
 import java.util.*;
-
-import eu.ebrains.kg.sdk.utils.KGClientBuilder;
-import eu.ebrains.kg.sdk.utils.KGConfig;
-import eu.ebrains.kg.sdk.utils.Translator;
-import java.util.function.Consumer;
+import eu.ebrains.kg.sdk.utils.*;
+import java.util.stream.Stream;
 import eu.ebrains.kg.sdk.communication.tokenHandler.TokenHandler;
 
 /**
@@ -68,7 +65,7 @@ public class KG {
             return new {{method.name[0] | capitalize}}{{method.name[1:]}}Builder({% for param in method.required_parameters %}{{param.name}}{% if not loop.last %}, {% endif %}{% endfor %});
         }
 
-        public class {{method.name[0] | capitalize}}{{method.name[1:]}}Builder{
+        public class {{method.name[0] | capitalize}}{{method.name[1:]}}Builder {% if method.raw_response_type == "ResultPage" %}extends ResultPageProvider{% if method.payload_type %}WithPayload{%endif%}<{{method.name[0] | capitalize}}{{method.name[1:]}}Builder{% if method.payload_type %}, {{method.payload_type}}{%endif%}> {%endif%}{
 
             private final Map<String, Object> params = new HashMap<>();{%for param in method.path_parameters %}
             private final {{param.type}} {{param.name}};{% endfor %}
@@ -79,39 +76,21 @@ public class KG {
                 this.params.put("{{param.name}}", {{param.default}});{% endif %}{% endfor %}
             }
 
-            public {% if method.response_type %}{{method.response_type}}{% else %}Optional<KGError>{% endif %} invoke({% if method.has_payload %}Map<String, Object> payload{% endif %}){{'{'}}{% if method.generic_response_type %}
-                return invoke({% if method.has_payload %}payload, {% endif %}{{method.generic_response_type}}.class);
+            {% if method.raw_response_type == "ResultPage" and method.generic_response_type %}public Stream<{{method.generic_response_type}}> stream({% if method.payload_type %}{{method.payload_type}} payload{%endif%}){
+                return stream({% if method.payload_type %}payload, {%endif%}{{method.generic_response_type}}.class);
             }
 
-            public <T> {{method.raw_response_type}}<T> invoke({% if method.has_payload %}Map<String, Object> payload, {% endif %}Class<T> targetClass){{'{'}}{%endif%}
+            {%endif%}public {% if method.response_type %}{{method.response_type}}{% else %}Optional<KGError>{% endif %} invoke({% if method.payload_type %}{{method.payload_type}} payload{% endif %}){{'{'}}{% if method.generic_response_type %}
+                return invoke({% if method.payload_type %}payload, {% endif %}{{method.generic_response_type}}.class);
+            }
+
+            {% if method.raw_response_type == "ResultPage" %}@Override {%endif%}
+            public <T> {{method.raw_response_type}}<T> invoke({% if method.payload_type %}{{method.payload_type}} payload, {% endif %}Class<T> targetClass){{'{'}}{%endif%}
                 String path = "{{method.path.name}}";{%for path_param in method.path_parameters %}
                 path = path.replace("{{'{'}}{{path_param.name}}{{'}'}}", String.valueOf(this.{{path_param.name}}));{% endfor %}
-                Optional<KGResponseWithRequest> result = {{method.operation}}(path, {% if method.has_payload %}payload, {%elif method.operation not in ['get', 'delete'] %}null, {% endif %}params);
-                return {% if method.raw_response_type %}{{ method.raw_response_type}}.translate(result.orElse(null), {% if method.generic_response_type %}targetClass{% elif method.response_type %}{{method.response_type}}.class{% endif %}){% else %}result.isPresent() ? Translator.translateError(result.get()) : Optional.empty(){% endif %};
-            }{% if method.raw_response_type == "ResultPage" %}
-            public void iterate({% if method.has_payload %}Map<String, Object> payload, {% endif %}Consumer<{{method.generic_response_type}}> consumer, Consumer<KGError> errorConsumer) {
-                iterate({{method.generic_response_type}}.class, {% if method.has_payload %}payload, {% endif %}consumer, errorConsumer);
+                Optional<KGResponseWithRequest> result = {{method.operation}}(path, {% if method.payload_type %}payload, {%elif method.operation not in ['get', 'delete'] %}null, {% endif %}params);
+                return {% if method.raw_response_type %}{{ method.raw_response_type}}.translate(getIdNamespace(), result.orElse(null), {% if method.generic_response_type %}targetClass{% elif method.response_type %}{{method.response_type}}.class{% endif %}){% else %}result.isPresent() ? Translator.translateError(result.get()) : Optional.empty(){% endif %};
             }
-
-            public <T> void iterate(Class<T> targetClass, {% if method.has_payload %}Map<String, Object> payload, {% endif %}Consumer<T> consumer, Consumer<KGError> errorConsumer) {
-                //For iteration, we don't need total result information. The opt-out will speed up execution.
-                returnTotalResults(false);
-                ResultPage<T> result = invoke({% if method.has_payload %}payload, {% endif %}targetClass);
-                while(result!=null) {
-                    if (result.isSuccessful()) {
-                        if (!result.getData().isEmpty()) {
-                            result.getData().forEach(consumer);
-                            from(result.getFrom() + result.getSize());
-                            result = invoke({% if method.has_payload %}payload, {% endif %}targetClass);
-                        } else {
-                            result = null;
-                        }
-                    } else {
-                        errorConsumer.accept(result.getError());
-                        break;
-                    }
-                }
-            }{% endif %}
             {% for p in method.parameters %}
             {%if (not p.required or p.default) and p.name != "stage" %}public {{method.name[0] | capitalize}}{{method.name[1:]}}Builder {{p.name}}({%if not p.booleanTrueOnly%}{{p.type}} {{p.name}}{% endif %}){
                 {%if p.booleanTrueOnly%}params.put("{{p.name}}", true);{% else %}params.put("{{p.name}}", {{p.name}});{% endif %}

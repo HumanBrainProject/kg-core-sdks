@@ -10,4 +10,8 @@ public class TestUtils {
         final String testClientSecret = System.getenv("TEST_CLIENT_SECRET");
         return KG.kg().host("core.kg-int.ebrains.eu").stage(Stage.IN_PROGRESS).withCredentials(testClientId, testClientSecret);
     }
+
+    public static KGClientBuilder kgIntDevFlow(){
+        return KG.kg().host("core.kg-int.ebrains.eu").stage(Stage.IN_PROGRESS);
+    }
 }

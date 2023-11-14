@@ -24,11 +24,8 @@ import eu.ebrains.kg.sdk.response.*;
 import eu.ebrains.kg.sdk.request.*;
 import eu.ebrains.kg.sdk.communication.*;
 import java.util.*;
-
-import eu.ebrains.kg.sdk.utils.KGClientBuilder;
-import eu.ebrains.kg.sdk.utils.KGConfig;
-import eu.ebrains.kg.sdk.utils.Translator;
-import java.util.function.Consumer;
+import eu.ebrains.kg.sdk.utils.*;
+import java.util.stream.Stream;
 import eu.ebrains.kg.sdk.communication.tokenHandler.TokenHandler;
 
 /**
@@ -80,7 +77,7 @@ public class KG {
             return new AssignTypeToSpaceBuilder(space, type);
         }
 
-        public class AssignTypeToSpaceBuilder{
+        public class AssignTypeToSpaceBuilder {
 
             private final Map<String, Object> params = new HashMap<>();
             private final String space;
@@ -108,7 +105,7 @@ public class KG {
             return new CalculateInstanceInvitationScopeBuilder(id);
         }
 
-        public class CalculateInstanceInvitationScopeBuilder{
+        public class CalculateInstanceInvitationScopeBuilder {
 
             private final Map<String, Object> params = new HashMap<>();
             private final UUID id;
@@ -134,7 +131,7 @@ public class KG {
             return new CreateSpaceDefinitionBuilder(space);
         }
 
-        public class CreateSpaceDefinitionBuilder{
+        public class CreateSpaceDefinitionBuilder {
 
             private final Map<String, Object> params = new HashMap<>();
             private final String space;
@@ -180,7 +177,7 @@ public class KG {
             return new CreateTypeDefinitionBuilder(type);
         }
 
-        public class CreateTypeDefinitionBuilder{
+        public class CreateTypeDefinitionBuilder {
 
             private final Map<String, Object> params = new HashMap<>();
 
@@ -188,14 +185,14 @@ public class KG {
                 this.params.put("type", type);
             }
 
-            public Optional<KGError> invoke(Map<String, Object> payload){
+            public Optional<KGError> invoke(JsonLdDocument payload){
                 String path = "types/specification";
                 Optional<KGResponseWithRequest> result = put(path, payload, params);
                 return result.isPresent() ? Translator.translateError(result.get()) : Optional.empty();
             }
             
-            public CreateTypeDefinitionBuilder global(){
-                params.put("global", true);
+            public CreateTypeDefinitionBuilder global(boolean global){
+                params.put("global", global);
                 return this;
             }
             
@@ -208,7 +205,7 @@ public class KG {
             return new DefinePropertyBuilder(property);
         }
 
-        public class DefinePropertyBuilder{
+        public class DefinePropertyBuilder {
 
             private final Map<String, Object> params = new HashMap<>();
 
@@ -216,14 +213,14 @@ public class KG {
                 this.params.put("property", property);
             }
 
-            public Optional<KGError> invoke(Map<String, Object> payload){
+            public Optional<KGError> invoke(JsonLdDocument payload){
                 String path = "properties";
                 Optional<KGResponseWithRequest> result = put(path, payload, params);
                 return result.isPresent() ? Translator.translateError(result.get()) : Optional.empty();
             }
             
-            public DefinePropertyBuilder global(){
-                params.put("global", true);
+            public DefinePropertyBuilder global(boolean global){
+                params.put("global", global);
                 return this;
             }
             
@@ -236,7 +233,7 @@ public class KG {
             return new DefinePropertyForTypeBuilder(property, type);
         }
 
-        public class DefinePropertyForTypeBuilder{
+        public class DefinePropertyForTypeBuilder {
 
             private final Map<String, Object> params = new HashMap<>();
 
@@ -245,14 +242,14 @@ public class KG {
                 this.params.put("type", type);
             }
 
-            public Optional<KGError> invoke(Map<String, Object> payload){
+            public Optional<KGError> invoke(JsonLdDocument payload){
                 String path = "propertiesForType";
                 Optional<KGResponseWithRequest> result = put(path, payload, params);
                 return result.isPresent() ? Translator.translateError(result.get()) : Optional.empty();
             }
             
-            public DefinePropertyForTypeBuilder global(){
-                params.put("global", true);
+            public DefinePropertyForTypeBuilder global(boolean global){
+                params.put("global", global);
                 return this;
             }
             
@@ -266,7 +263,7 @@ public class KG {
             return new DeprecatePropertyBuilder(property);
         }
 
-        public class DeprecatePropertyBuilder{
+        public class DeprecatePropertyBuilder {
 
             private final Map<String, Object> params = new HashMap<>();
 
@@ -280,8 +277,8 @@ public class KG {
                 return result.isPresent() ? Translator.translateError(result.get()) : Optional.empty();
             }
             
-            public DeprecatePropertyBuilder global(){
-                params.put("global", true);
+            public DeprecatePropertyBuilder global(boolean global){
+                params.put("global", global);
                 return this;
             }
             
@@ -294,7 +291,7 @@ public class KG {
             return new DeprecatePropertyForTypeBuilder(property, type);
         }
 
-        public class DeprecatePropertyForTypeBuilder{
+        public class DeprecatePropertyForTypeBuilder {
 
             private final Map<String, Object> params = new HashMap<>();
 
@@ -309,8 +306,8 @@ public class KG {
                 return result.isPresent() ? Translator.translateError(result.get()) : Optional.empty();
             }
             
-            public DeprecatePropertyForTypeBuilder global(){
-                params.put("global", true);
+            public DeprecatePropertyForTypeBuilder global(boolean global){
+                params.put("global", global);
                 return this;
             }
             
@@ -322,7 +319,7 @@ public class KG {
             return new GetAllRoleDefinitionsBuilder();
         }
 
-        public class GetAllRoleDefinitionsBuilder{
+        public class GetAllRoleDefinitionsBuilder {
 
             private final Map<String, Object> params = new HashMap<>();
 
@@ -342,7 +339,7 @@ public class KG {
             return new GetAvailableChecksBuilder();
         }
 
-        public class GetAvailableChecksBuilder{
+        public class GetAvailableChecksBuilder {
 
             private final Map<String, Object> params = new HashMap<>();
 
@@ -362,7 +359,7 @@ public class KG {
             return new GetClaimForRoleBuilder(role);
         }
 
-        public class GetClaimForRoleBuilder{
+        public class GetClaimForRoleBuilder {
 
             private final Map<String, Object> params = new HashMap<>();
             private final String role;
@@ -390,7 +387,7 @@ public class KG {
             return new GetReportBuilder(name);
         }
 
-        public class GetReportBuilder{
+        public class GetReportBuilder {
 
             private final Map<String, Object> params = new HashMap<>();
             private final String name;
@@ -416,7 +413,7 @@ public class KG {
             return new HealthStatusBuilder();
         }
 
-        public class HealthStatusBuilder{
+        public class HealthStatusBuilder {
 
             private final Map<String, Object> params = new HashMap<>();
 
@@ -438,7 +435,7 @@ public class KG {
             return new RemoveSpaceDefinitionBuilder(space);
         }
 
-        public class RemoveSpaceDefinitionBuilder{
+        public class RemoveSpaceDefinitionBuilder {
 
             private final Map<String, Object> params = new HashMap<>();
             private final String space;
@@ -464,7 +461,7 @@ public class KG {
             return new RemoveTypeDefinitionBuilder();
         }
 
-        public class RemoveTypeDefinitionBuilder{
+        public class RemoveTypeDefinitionBuilder {
 
             private final Map<String, Object> params = new HashMap<>();
 
@@ -477,8 +474,8 @@ public class KG {
                 return result.isPresent() ? Translator.translateError(result.get()) : Optional.empty();
             }
             
-            public RemoveTypeDefinitionBuilder global(){
-                params.put("global", true);
+            public RemoveTypeDefinitionBuilder global(boolean global){
+                params.put("global", global);
                 return this;
             }
             public RemoveTypeDefinitionBuilder type(String type){
@@ -494,7 +491,7 @@ public class KG {
             return new RemoveTypeFromSpaceBuilder(space, type);
         }
 
-        public class RemoveTypeFromSpaceBuilder{
+        public class RemoveTypeFromSpaceBuilder {
 
             private final Map<String, Object> params = new HashMap<>();
             private final String space;
@@ -522,7 +519,7 @@ public class KG {
             return new RerunEventsBuilder(space);
         }
 
-        public class RerunEventsBuilder{
+        public class RerunEventsBuilder {
 
             private final Map<String, Object> params = new HashMap<>();
             private final String space;
@@ -548,7 +545,7 @@ public class KG {
             return new TriggerInferenceBuilder(space);
         }
 
-        public class TriggerInferenceBuilder{
+        public class TriggerInferenceBuilder {
 
             private final Map<String, Object> params = new HashMap<>();
             private final String space;
@@ -581,7 +578,7 @@ public class KG {
             return new UpdateClaimForRoleBuilder(remove, role);
         }
 
-        public class UpdateClaimForRoleBuilder{
+        public class UpdateClaimForRoleBuilder {
 
             private final Map<String, Object> params = new HashMap<>();
             private final String role;
@@ -620,7 +617,7 @@ public class KG {
             return new ContributeToFullReplacementBuilder(id);
         }
 
-        public class ContributeToFullReplacementBuilder{
+        public class ContributeToFullReplacementBuilder {
 
             private final Map<String, Object> params = new HashMap<>();
             private final UUID id;
@@ -629,15 +626,16 @@ public class KG {
                 this.id = id;
             }
 
-            public Result<Instance> invoke(Map<String, Object> payload){
+            public Result<Instance> invoke(JsonLdDocument payload){
                 return invoke(payload, Instance.class);
             }
 
-            public <T> Result<T> invoke(Map<String, Object> payload, Class<T> targetClass){
+            
+            public <T> Result<T> invoke(JsonLdDocument payload, Class<T> targetClass){
                 String path = "instances/{id}";
                 path = path.replace("{id}", String.valueOf(this.id));
                 Optional<KGResponseWithRequest> result = put(path, payload, params);
-                return Result.translate(result.orElse(null), targetClass);
+                return Result.translate(getIdNamespace(), result.orElse(null), targetClass);
             }
             
             
@@ -645,24 +643,24 @@ public class KG {
                 params.put("incomingLinksPageSize", incomingLinksPageSize);
                 return this;
             }
-            public ContributeToFullReplacementBuilder returnAlternatives(){
-                params.put("returnAlternatives", true);
+            public ContributeToFullReplacementBuilder returnAlternatives(boolean returnAlternatives){
+                params.put("returnAlternatives", returnAlternatives);
                 return this;
             }
-            public ContributeToFullReplacementBuilder returnEmbedded(){
-                params.put("returnEmbedded", true);
+            public ContributeToFullReplacementBuilder returnEmbedded(boolean returnEmbedded){
+                params.put("returnEmbedded", returnEmbedded);
                 return this;
             }
-            public ContributeToFullReplacementBuilder returnIncomingLinks(){
-                params.put("returnIncomingLinks", true);
+            public ContributeToFullReplacementBuilder returnIncomingLinks(boolean returnIncomingLinks){
+                params.put("returnIncomingLinks", returnIncomingLinks);
                 return this;
             }
-            public ContributeToFullReplacementBuilder returnPayload(){
-                params.put("returnPayload", true);
+            public ContributeToFullReplacementBuilder returnPayload(boolean returnPayload){
+                params.put("returnPayload", returnPayload);
                 return this;
             }
-            public ContributeToFullReplacementBuilder returnPermissions(){
-                params.put("returnPermissions", true);
+            public ContributeToFullReplacementBuilder returnPermissions(boolean returnPermissions){
+                params.put("returnPermissions", returnPermissions);
                 return this;
             }
         }
@@ -674,7 +672,7 @@ public class KG {
             return new ContributeToPartialReplacementBuilder(id);
         }
 
-        public class ContributeToPartialReplacementBuilder{
+        public class ContributeToPartialReplacementBuilder {
 
             private final Map<String, Object> params = new HashMap<>();
             private final UUID id;
@@ -683,15 +681,16 @@ public class KG {
                 this.id = id;
             }
 
-            public Result<Instance> invoke(Map<String, Object> payload){
+            public Result<Instance> invoke(JsonLdDocument payload){
                 return invoke(payload, Instance.class);
             }
 
-            public <T> Result<T> invoke(Map<String, Object> payload, Class<T> targetClass){
+            
+            public <T> Result<T> invoke(JsonLdDocument payload, Class<T> targetClass){
                 String path = "instances/{id}";
                 path = path.replace("{id}", String.valueOf(this.id));
                 Optional<KGResponseWithRequest> result = patch(path, payload, params);
-                return Result.translate(result.orElse(null), targetClass);
+                return Result.translate(getIdNamespace(), result.orElse(null), targetClass);
             }
             
             
@@ -699,24 +698,24 @@ public class KG {
                 params.put("incomingLinksPageSize", incomingLinksPageSize);
                 return this;
             }
-            public ContributeToPartialReplacementBuilder returnAlternatives(){
-                params.put("returnAlternatives", true);
+            public ContributeToPartialReplacementBuilder returnAlternatives(boolean returnAlternatives){
+                params.put("returnAlternatives", returnAlternatives);
                 return this;
             }
-            public ContributeToPartialReplacementBuilder returnEmbedded(){
-                params.put("returnEmbedded", true);
+            public ContributeToPartialReplacementBuilder returnEmbedded(boolean returnEmbedded){
+                params.put("returnEmbedded", returnEmbedded);
                 return this;
             }
-            public ContributeToPartialReplacementBuilder returnIncomingLinks(){
-                params.put("returnIncomingLinks", true);
+            public ContributeToPartialReplacementBuilder returnIncomingLinks(boolean returnIncomingLinks){
+                params.put("returnIncomingLinks", returnIncomingLinks);
                 return this;
             }
-            public ContributeToPartialReplacementBuilder returnPayload(){
-                params.put("returnPayload", true);
+            public ContributeToPartialReplacementBuilder returnPayload(boolean returnPayload){
+                params.put("returnPayload", returnPayload);
                 return this;
             }
-            public ContributeToPartialReplacementBuilder returnPermissions(){
-                params.put("returnPermissions", true);
+            public ContributeToPartialReplacementBuilder returnPermissions(boolean returnPermissions){
+                params.put("returnPermissions", returnPermissions);
                 return this;
             }
         }
@@ -728,7 +727,7 @@ public class KG {
             return new CreateNewBuilder(space);
         }
 
-        public class CreateNewBuilder{
+        public class CreateNewBuilder {
 
             private final Map<String, Object> params = new HashMap<>();
 
@@ -736,38 +735,39 @@ public class KG {
                 this.params.put("space", space);
             }
 
-            public Result<Instance> invoke(Map<String, Object> payload){
+            public Result<Instance> invoke(JsonLdDocument payload){
                 return invoke(payload, Instance.class);
             }
 
-            public <T> Result<T> invoke(Map<String, Object> payload, Class<T> targetClass){
+            
+            public <T> Result<T> invoke(JsonLdDocument payload, Class<T> targetClass){
                 String path = "instances";
                 Optional<KGResponseWithRequest> result = post(path, payload, params);
-                return Result.translate(result.orElse(null), targetClass);
+                return Result.translate(getIdNamespace(), result.orElse(null), targetClass);
             }
             
             public CreateNewBuilder incomingLinksPageSize(int incomingLinksPageSize){
                 params.put("incomingLinksPageSize", incomingLinksPageSize);
                 return this;
             }
-            public CreateNewBuilder returnAlternatives(){
-                params.put("returnAlternatives", true);
+            public CreateNewBuilder returnAlternatives(boolean returnAlternatives){
+                params.put("returnAlternatives", returnAlternatives);
                 return this;
             }
-            public CreateNewBuilder returnEmbedded(){
-                params.put("returnEmbedded", true);
+            public CreateNewBuilder returnEmbedded(boolean returnEmbedded){
+                params.put("returnEmbedded", returnEmbedded);
                 return this;
             }
-            public CreateNewBuilder returnIncomingLinks(){
-                params.put("returnIncomingLinks", true);
+            public CreateNewBuilder returnIncomingLinks(boolean returnIncomingLinks){
+                params.put("returnIncomingLinks", returnIncomingLinks);
                 return this;
             }
-            public CreateNewBuilder returnPayload(){
-                params.put("returnPayload", true);
+            public CreateNewBuilder returnPayload(boolean returnPayload){
+                params.put("returnPayload", returnPayload);
                 return this;
             }
-            public CreateNewBuilder returnPermissions(){
-                params.put("returnPermissions", true);
+            public CreateNewBuilder returnPermissions(boolean returnPermissions){
+                params.put("returnPermissions", returnPermissions);
                 return this;
             }
             
@@ -780,7 +780,7 @@ public class KG {
             return new CreateNewWithIdBuilder(id, space);
         }
 
-        public class CreateNewWithIdBuilder{
+        public class CreateNewWithIdBuilder {
 
             private final Map<String, Object> params = new HashMap<>();
             private final UUID id;
@@ -790,15 +790,16 @@ public class KG {
                 this.params.put("space", space);
             }
 
-            public Result<Instance> invoke(Map<String, Object> payload){
+            public Result<Instance> invoke(JsonLdDocument payload){
                 return invoke(payload, Instance.class);
             }
 
-            public <T> Result<T> invoke(Map<String, Object> payload, Class<T> targetClass){
+            
+            public <T> Result<T> invoke(JsonLdDocument payload, Class<T> targetClass){
                 String path = "instances/{id}";
                 path = path.replace("{id}", String.valueOf(this.id));
                 Optional<KGResponseWithRequest> result = post(path, payload, params);
-                return Result.translate(result.orElse(null), targetClass);
+                return Result.translate(getIdNamespace(), result.orElse(null), targetClass);
             }
             
             
@@ -806,24 +807,24 @@ public class KG {
                 params.put("incomingLinksPageSize", incomingLinksPageSize);
                 return this;
             }
-            public CreateNewWithIdBuilder returnAlternatives(){
-                params.put("returnAlternatives", true);
+            public CreateNewWithIdBuilder returnAlternatives(boolean returnAlternatives){
+                params.put("returnAlternatives", returnAlternatives);
                 return this;
             }
-            public CreateNewWithIdBuilder returnEmbedded(){
-                params.put("returnEmbedded", true);
+            public CreateNewWithIdBuilder returnEmbedded(boolean returnEmbedded){
+                params.put("returnEmbedded", returnEmbedded);
                 return this;
             }
-            public CreateNewWithIdBuilder returnIncomingLinks(){
-                params.put("returnIncomingLinks", true);
+            public CreateNewWithIdBuilder returnIncomingLinks(boolean returnIncomingLinks){
+                params.put("returnIncomingLinks", returnIncomingLinks);
                 return this;
             }
-            public CreateNewWithIdBuilder returnPayload(){
-                params.put("returnPayload", true);
+            public CreateNewWithIdBuilder returnPayload(boolean returnPayload){
+                params.put("returnPayload", returnPayload);
                 return this;
             }
-            public CreateNewWithIdBuilder returnPermissions(){
-                params.put("returnPermissions", true);
+            public CreateNewWithIdBuilder returnPermissions(boolean returnPermissions){
+                params.put("returnPermissions", returnPermissions);
                 return this;
             }
             
@@ -836,7 +837,7 @@ public class KG {
             return new DeleteBuilder(id);
         }
 
-        public class DeleteBuilder{
+        public class DeleteBuilder {
 
             private final Map<String, Object> params = new HashMap<>();
             private final UUID id;
@@ -862,7 +863,7 @@ public class KG {
             return new GetByIdBuilder(id);
         }
 
-        public class GetByIdBuilder{
+        public class GetByIdBuilder {
 
             private final Map<String, Object> params = new HashMap<>();
             private final UUID id;
@@ -876,11 +877,12 @@ public class KG {
                 return invoke(Instance.class);
             }
 
+            
             public <T> Result<T> invoke(Class<T> targetClass){
                 String path = "instances/{id}";
                 path = path.replace("{id}", String.valueOf(this.id));
                 Optional<KGResponseWithRequest> result = get(path, params);
-                return Result.translate(result.orElse(null), targetClass);
+                return Result.translate(getIdNamespace(), result.orElse(null), targetClass);
             }
             
             
@@ -888,24 +890,24 @@ public class KG {
                 params.put("incomingLinksPageSize", incomingLinksPageSize);
                 return this;
             }
-            public GetByIdBuilder returnAlternatives(){
-                params.put("returnAlternatives", true);
+            public GetByIdBuilder returnAlternatives(boolean returnAlternatives){
+                params.put("returnAlternatives", returnAlternatives);
                 return this;
             }
-            public GetByIdBuilder returnEmbedded(){
-                params.put("returnEmbedded", true);
+            public GetByIdBuilder returnEmbedded(boolean returnEmbedded){
+                params.put("returnEmbedded", returnEmbedded);
                 return this;
             }
-            public GetByIdBuilder returnIncomingLinks(){
-                params.put("returnIncomingLinks", true);
+            public GetByIdBuilder returnIncomingLinks(boolean returnIncomingLinks){
+                params.put("returnIncomingLinks", returnIncomingLinks);
                 return this;
             }
-            public GetByIdBuilder returnPayload(){
-                params.put("returnPayload", true);
+            public GetByIdBuilder returnPayload(boolean returnPayload){
+                params.put("returnPayload", returnPayload);
                 return this;
             }
-            public GetByIdBuilder returnPermissions(){
-                params.put("returnPermissions", true);
+            public GetByIdBuilder returnPermissions(boolean returnPermissions){
+                params.put("returnPermissions", returnPermissions);
                 return this;
             }
             
@@ -918,7 +920,7 @@ public class KG {
             return new GetByIdentifiersBuilder();
         }
 
-        public class GetByIdentifiersBuilder{
+        public class GetByIdentifiersBuilder {
 
             private final Map<String, Object> params = new HashMap<>();
 
@@ -926,38 +928,39 @@ public class KG {
                 this.params.put("stage", getStage());
             }
 
-            public ResultsById<Instance> invoke(Map<String, Object> payload){
+            public ResultsById<Instance> invoke(List<String> payload){
                 return invoke(payload, Instance.class);
             }
 
-            public <T> ResultsById<T> invoke(Map<String, Object> payload, Class<T> targetClass){
+            
+            public <T> ResultsById<T> invoke(List<String> payload, Class<T> targetClass){
                 String path = "instancesByIdentifiers";
                 Optional<KGResponseWithRequest> result = post(path, payload, params);
-                return ResultsById.translate(result.orElse(null), targetClass);
+                return ResultsById.translate(getIdNamespace(), result.orElse(null), targetClass);
             }
             
             public GetByIdentifiersBuilder incomingLinksPageSize(int incomingLinksPageSize){
                 params.put("incomingLinksPageSize", incomingLinksPageSize);
                 return this;
             }
-            public GetByIdentifiersBuilder returnAlternatives(){
-                params.put("returnAlternatives", true);
+            public GetByIdentifiersBuilder returnAlternatives(boolean returnAlternatives){
+                params.put("returnAlternatives", returnAlternatives);
                 return this;
             }
-            public GetByIdentifiersBuilder returnEmbedded(){
-                params.put("returnEmbedded", true);
+            public GetByIdentifiersBuilder returnEmbedded(boolean returnEmbedded){
+                params.put("returnEmbedded", returnEmbedded);
                 return this;
             }
-            public GetByIdentifiersBuilder returnIncomingLinks(){
-                params.put("returnIncomingLinks", true);
+            public GetByIdentifiersBuilder returnIncomingLinks(boolean returnIncomingLinks){
+                params.put("returnIncomingLinks", returnIncomingLinks);
                 return this;
             }
-            public GetByIdentifiersBuilder returnPayload(){
-                params.put("returnPayload", true);
+            public GetByIdentifiersBuilder returnPayload(boolean returnPayload){
+                params.put("returnPayload", returnPayload);
                 return this;
             }
-            public GetByIdentifiersBuilder returnPermissions(){
-                params.put("returnPermissions", true);
+            public GetByIdentifiersBuilder returnPermissions(boolean returnPermissions){
+                params.put("returnPermissions", returnPermissions);
                 return this;
             }
             
@@ -970,7 +973,7 @@ public class KG {
             return new GetByIdsBuilder();
         }
 
-        public class GetByIdsBuilder{
+        public class GetByIdsBuilder {
 
             private final Map<String, Object> params = new HashMap<>();
 
@@ -978,38 +981,39 @@ public class KG {
                 this.params.put("stage", getStage());
             }
 
-            public ResultsById<Instance> invoke(Map<String, Object> payload){
+            public ResultsById<Instance> invoke(List<String> payload){
                 return invoke(payload, Instance.class);
             }
 
-            public <T> ResultsById<T> invoke(Map<String, Object> payload, Class<T> targetClass){
+            
+            public <T> ResultsById<T> invoke(List<String> payload, Class<T> targetClass){
                 String path = "instancesByIds";
                 Optional<KGResponseWithRequest> result = post(path, payload, params);
-                return ResultsById.translate(result.orElse(null), targetClass);
+                return ResultsById.translate(getIdNamespace(), result.orElse(null), targetClass);
             }
             
             public GetByIdsBuilder incomingLinksPageSize(int incomingLinksPageSize){
                 params.put("incomingLinksPageSize", incomingLinksPageSize);
                 return this;
             }
-            public GetByIdsBuilder returnAlternatives(){
-                params.put("returnAlternatives", true);
+            public GetByIdsBuilder returnAlternatives(boolean returnAlternatives){
+                params.put("returnAlternatives", returnAlternatives);
                 return this;
             }
-            public GetByIdsBuilder returnEmbedded(){
-                params.put("returnEmbedded", true);
+            public GetByIdsBuilder returnEmbedded(boolean returnEmbedded){
+                params.put("returnEmbedded", returnEmbedded);
                 return this;
             }
-            public GetByIdsBuilder returnIncomingLinks(){
-                params.put("returnIncomingLinks", true);
+            public GetByIdsBuilder returnIncomingLinks(boolean returnIncomingLinks){
+                params.put("returnIncomingLinks", returnIncomingLinks);
                 return this;
             }
-            public GetByIdsBuilder returnPayload(){
-                params.put("returnPayload", true);
+            public GetByIdsBuilder returnPayload(boolean returnPayload){
+                params.put("returnPayload", returnPayload);
                 return this;
             }
-            public GetByIdsBuilder returnPermissions(){
-                params.put("returnPermissions", true);
+            public GetByIdsBuilder returnPermissions(boolean returnPermissions){
+                params.put("returnPermissions", returnPermissions);
                 return this;
             }
             
@@ -1022,7 +1026,7 @@ public class KG {
             return new GetIncomingLinksBuilder(id, property, type);
         }
 
-        public class GetIncomingLinksBuilder{
+        public class GetIncomingLinksBuilder extends ResultPageProvider<GetIncomingLinksBuilder> {
 
             private final Map<String, Object> params = new HashMap<>();
             private final UUID id;
@@ -1037,38 +1041,20 @@ public class KG {
                 this.params.put("stage", getStage());
             }
 
+            public Stream<Instance> stream(){
+                return stream(Instance.class);
+            }
+
             public ResultPage<Instance> invoke(){
                 return invoke(Instance.class);
             }
 
+            @Override 
             public <T> ResultPage<T> invoke(Class<T> targetClass){
                 String path = "instances/{id}/incomingLinks";
                 path = path.replace("{id}", String.valueOf(this.id));
                 Optional<KGResponseWithRequest> result = get(path, params);
-                return ResultPage.translate(result.orElse(null), targetClass);
-            }
-            public void iterate(Consumer<Instance> consumer, Consumer<KGError> errorConsumer) {
-                iterate(Instance.class, consumer, errorConsumer);
-            }
-
-            public <T> void iterate(Class<T> targetClass, Consumer<T> consumer, Consumer<KGError> errorConsumer) {
-                //For iteration, we don't need total result information. The opt-out will speed up execution.
-                returnTotalResults(false);
-                ResultPage<T> result = invoke(targetClass);
-                while(result!=null) {
-                    if (result.isSuccessful()) {
-                        if (!result.getData().isEmpty()) {
-                            result.getData().forEach(consumer);
-                            from(result.getFrom() + result.getSize());
-                            result = invoke(targetClass);
-                        } else {
-                            result = null;
-                        }
-                    } else {
-                        errorConsumer.accept(result.getError());
-                        break;
-                    }
-                }
+                return ResultPage.translate(getIdNamespace(), result.orElse(null), targetClass);
             }
             
             public GetIncomingLinksBuilder from(int from){
@@ -1096,7 +1082,7 @@ public class KG {
             return new GetNeighborsBuilder(id);
         }
 
-        public class GetNeighborsBuilder{
+        public class GetNeighborsBuilder {
 
             private final Map<String, Object> params = new HashMap<>();
             private final UUID id;
@@ -1124,7 +1110,7 @@ public class KG {
             return new GetReleaseStatusBuilder(id, releaseTreeScope);
         }
 
-        public class GetReleaseStatusBuilder{
+        public class GetReleaseStatusBuilder {
 
             private final Map<String, Object> params = new HashMap<>();
             private final UUID id;
@@ -1138,11 +1124,12 @@ public class KG {
                 return invoke(ReleaseStatus.class);
             }
 
+            
             public <T> Result<T> invoke(Class<T> targetClass){
                 String path = "instances/{id}/release/status";
                 path = path.replace("{id}", String.valueOf(this.id));
                 Optional<KGResponseWithRequest> result = get(path, params);
-                return Result.translate(result.orElse(null), targetClass);
+                return Result.translate(getIdNamespace(), result.orElse(null), targetClass);
             }
             
             
@@ -1156,7 +1143,7 @@ public class KG {
             return new GetReleaseStatusByIdsBuilder(releaseTreeScope);
         }
 
-        public class GetReleaseStatusByIdsBuilder{
+        public class GetReleaseStatusByIdsBuilder {
 
             private final Map<String, Object> params = new HashMap<>();
 
@@ -1164,14 +1151,15 @@ public class KG {
                 this.params.put("releaseTreeScope", releaseTreeScope);
             }
 
-            public ResultsById<ReleaseStatus> invoke(Map<String, Object> payload){
+            public ResultsById<ReleaseStatus> invoke(List<UUID> payload){
                 return invoke(payload, ReleaseStatus.class);
             }
 
-            public <T> ResultsById<T> invoke(Map<String, Object> payload, Class<T> targetClass){
+            
+            public <T> ResultsById<T> invoke(List<UUID> payload, Class<T> targetClass){
                 String path = "instancesByIds/release/status";
                 Optional<KGResponseWithRequest> result = post(path, payload, params);
-                return ResultsById.translate(result.orElse(null), targetClass);
+                return ResultsById.translate(getIdNamespace(), result.orElse(null), targetClass);
             }
             
             
@@ -1184,7 +1172,7 @@ public class KG {
             return new GetScopeBuilder(id);
         }
 
-        public class GetScopeBuilder{
+        public class GetScopeBuilder {
 
             private final Map<String, Object> params = new HashMap<>();
             private final UUID id;
@@ -1200,11 +1188,12 @@ public class KG {
                 return invoke(Scope.class);
             }
 
+            
             public <T> Result<T> invoke(Class<T> targetClass){
                 String path = "instances/{id}/scope";
                 path = path.replace("{id}", String.valueOf(this.id));
                 Optional<KGResponseWithRequest> result = get(path, params);
-                return Result.translate(result.orElse(null), targetClass);
+                return Result.translate(getIdNamespace(), result.orElse(null), targetClass);
             }
             
             public GetScopeBuilder applyRestrictions(){
@@ -1226,7 +1215,7 @@ public class KG {
             return new GetSuggestedLinksForPropertyBuilder(id, property);
         }
 
-        public class GetSuggestedLinksForPropertyBuilder{
+        public class GetSuggestedLinksForPropertyBuilder {
 
             private final Map<String, Object> params = new HashMap<>();
             private final UUID id;
@@ -1240,7 +1229,7 @@ public class KG {
                 this.params.put("stage", getStage());
             }
 
-            public Optional<KGError> invoke(Map<String, Object> payload){
+            public Optional<KGError> invoke(JsonLdDocument payload){
                 String path = "instances/{id}/suggestedLinksForProperty";
                 path = path.replace("{id}", String.valueOf(this.id));
                 Optional<KGResponseWithRequest> result = post(path, payload, params);
@@ -1283,7 +1272,7 @@ public class KG {
             return new GetSuggestedLinksForProperty_1Builder(id, property);
         }
 
-        public class GetSuggestedLinksForProperty_1Builder{
+        public class GetSuggestedLinksForProperty_1Builder {
 
             private final Map<String, Object> params = new HashMap<>();
             private final UUID id;
@@ -1340,7 +1329,7 @@ public class KG {
             return new InviteUserForBuilder(id, userId);
         }
 
-        public class InviteUserForBuilder{
+        public class InviteUserForBuilder {
 
             private final Map<String, Object> params = new HashMap<>();
             private final UUID id;
@@ -1370,7 +1359,7 @@ public class KG {
             return new ListBuilder(type);
         }
 
-        public class ListBuilder{
+        public class ListBuilder extends ResultPageProvider<ListBuilder> {
 
             private final Map<String, Object> params = new HashMap<>();
 
@@ -1382,37 +1371,19 @@ public class KG {
                 this.params.put("stage", getStage());
             }
 
+            public Stream<Instance> stream(){
+                return stream(Instance.class);
+            }
+
             public ResultPage<Instance> invoke(){
                 return invoke(Instance.class);
             }
 
+            @Override 
             public <T> ResultPage<T> invoke(Class<T> targetClass){
                 String path = "instances";
                 Optional<KGResponseWithRequest> result = get(path, params);
-                return ResultPage.translate(result.orElse(null), targetClass);
-            }
-            public void iterate(Consumer<Instance> consumer, Consumer<KGError> errorConsumer) {
-                iterate(Instance.class, consumer, errorConsumer);
-            }
-
-            public <T> void iterate(Class<T> targetClass, Consumer<T> consumer, Consumer<KGError> errorConsumer) {
-                //For iteration, we don't need total result information. The opt-out will speed up execution.
-                returnTotalResults(false);
-                ResultPage<T> result = invoke(targetClass);
-                while(result!=null) {
-                    if (result.isSuccessful()) {
-                        if (!result.getData().isEmpty()) {
-                            result.getData().forEach(consumer);
-                            from(result.getFrom() + result.getSize());
-                            result = invoke(targetClass);
-                        } else {
-                            result = null;
-                        }
-                    } else {
-                        errorConsumer.accept(result.getError());
-                        break;
-                    }
-                }
+                return ResultPage.translate(getIdNamespace(), result.orElse(null), targetClass);
             }
             
             public ListBuilder filterProperty(String filterProperty){
@@ -1427,20 +1398,20 @@ public class KG {
                 params.put("from", from);
                 return this;
             }
-            public ListBuilder returnAlternatives(){
-                params.put("returnAlternatives", true);
+            public ListBuilder returnAlternatives(boolean returnAlternatives){
+                params.put("returnAlternatives", returnAlternatives);
                 return this;
             }
-            public ListBuilder returnEmbedded(){
-                params.put("returnEmbedded", true);
+            public ListBuilder returnEmbedded(boolean returnEmbedded){
+                params.put("returnEmbedded", returnEmbedded);
                 return this;
             }
-            public ListBuilder returnPayload(){
-                params.put("returnPayload", true);
+            public ListBuilder returnPayload(boolean returnPayload){
+                params.put("returnPayload", returnPayload);
                 return this;
             }
-            public ListBuilder returnPermissions(){
-                params.put("returnPermissions", true);
+            public ListBuilder returnPermissions(boolean returnPermissions){
+                params.put("returnPermissions", returnPermissions);
                 return this;
             }
             public ListBuilder returnTotalResults(boolean returnTotalResults){
@@ -1470,7 +1441,7 @@ public class KG {
             return new ListInvitationsBuilder(id);
         }
 
-        public class ListInvitationsBuilder{
+        public class ListInvitationsBuilder {
 
             private final Map<String, Object> params = new HashMap<>();
             private final UUID id;
@@ -1496,7 +1467,7 @@ public class KG {
             return new ListWithInvitationsBuilder();
         }
 
-        public class ListWithInvitationsBuilder{
+        public class ListWithInvitationsBuilder {
 
             private final Map<String, Object> params = new HashMap<>();
 
@@ -1507,10 +1478,11 @@ public class KG {
                 return invoke(ListOfUUID.class);
             }
 
+            
             public <T> Result<T> invoke(Class<T> targetClass){
                 String path = "instancesWithInvitations";
                 Optional<KGResponseWithRequest> result = get(path, params);
-                return Result.translate(result.orElse(null), targetClass);
+                return Result.translate(getIdNamespace(), result.orElse(null), targetClass);
             }
             
         }
@@ -1522,7 +1494,7 @@ public class KG {
             return new MoveBuilder(id, space);
         }
 
-        public class MoveBuilder{
+        public class MoveBuilder {
 
             private final Map<String, Object> params = new HashMap<>();
             private final UUID id;
@@ -1537,12 +1509,13 @@ public class KG {
                 return invoke(Instance.class);
             }
 
+            
             public <T> Result<T> invoke(Class<T> targetClass){
                 String path = "instances/{id}/spaces/{space}";
                 path = path.replace("{id}", String.valueOf(this.id));
                 path = path.replace("{space}", String.valueOf(this.space));
                 Optional<KGResponseWithRequest> result = put(path, null, params);
-                return Result.translate(result.orElse(null), targetClass);
+                return Result.translate(getIdNamespace(), result.orElse(null), targetClass);
             }
             
             
@@ -1550,24 +1523,24 @@ public class KG {
                 params.put("incomingLinksPageSize", incomingLinksPageSize);
                 return this;
             }
-            public MoveBuilder returnAlternatives(){
-                params.put("returnAlternatives", true);
+            public MoveBuilder returnAlternatives(boolean returnAlternatives){
+                params.put("returnAlternatives", returnAlternatives);
                 return this;
             }
-            public MoveBuilder returnEmbedded(){
-                params.put("returnEmbedded", true);
+            public MoveBuilder returnEmbedded(boolean returnEmbedded){
+                params.put("returnEmbedded", returnEmbedded);
                 return this;
             }
-            public MoveBuilder returnIncomingLinks(){
-                params.put("returnIncomingLinks", true);
+            public MoveBuilder returnIncomingLinks(boolean returnIncomingLinks){
+                params.put("returnIncomingLinks", returnIncomingLinks);
                 return this;
             }
-            public MoveBuilder returnPayload(){
-                params.put("returnPayload", true);
+            public MoveBuilder returnPayload(boolean returnPayload){
+                params.put("returnPayload", returnPayload);
                 return this;
             }
-            public MoveBuilder returnPermissions(){
-                params.put("returnPermissions", true);
+            public MoveBuilder returnPermissions(boolean returnPermissions){
+                params.put("returnPermissions", returnPermissions);
                 return this;
             }
             
@@ -1580,7 +1553,7 @@ public class KG {
             return new ReleaseBuilder(id);
         }
 
-        public class ReleaseBuilder{
+        public class ReleaseBuilder {
 
             private final Map<String, Object> params = new HashMap<>();
             private final UUID id;
@@ -1610,7 +1583,7 @@ public class KG {
             return new RevokeUserInvitationBuilder(id, userId);
         }
 
-        public class RevokeUserInvitationBuilder{
+        public class RevokeUserInvitationBuilder {
 
             private final Map<String, Object> params = new HashMap<>();
             private final UUID id;
@@ -1640,7 +1613,7 @@ public class KG {
             return new UnreleaseBuilder(id);
         }
 
-        public class UnreleaseBuilder{
+        public class UnreleaseBuilder {
 
             private final Map<String, Object> params = new HashMap<>();
             private final UUID id;
@@ -1673,14 +1646,14 @@ public class KG {
             return new NormalizePayloadBuilder();
         }
 
-        public class NormalizePayloadBuilder{
+        public class NormalizePayloadBuilder {
 
             private final Map<String, Object> params = new HashMap<>();
 
             public NormalizePayloadBuilder(){
             }
 
-            public Optional<KGError> invoke(Map<String, Object> payload){
+            public Optional<KGError> invoke(JsonLdDocument payload){
                 String path = "jsonld/normalizedPayload";
                 Optional<KGResponseWithRequest> result = post(path, payload, params);
                 return result.isPresent() ? Translator.translateError(result.get()) : Optional.empty();
@@ -1702,7 +1675,7 @@ public class KG {
             return new ExecuteQueryByIdBuilder(queryId);
         }
 
-        public class ExecuteQueryByIdBuilder{
+        public class ExecuteQueryByIdBuilder extends ResultPageProvider<ExecuteQueryByIdBuilder> {
 
             private final Map<String, Object> params = new HashMap<>();
             private final UUID queryId;
@@ -1716,38 +1689,20 @@ public class KG {
                 this.params.put("stage", getStage());
             }
 
+            public Stream<JsonLdDocument> stream(){
+                return stream(JsonLdDocument.class);
+            }
+
             public ResultPage<JsonLdDocument> invoke(){
                 return invoke(JsonLdDocument.class);
             }
 
+            @Override 
             public <T> ResultPage<T> invoke(Class<T> targetClass){
                 String path = "queries/{queryId}/instances";
                 path = path.replace("{queryId}", String.valueOf(this.queryId));
                 Optional<KGResponseWithRequest> result = get(path, params);
-                return ResultPage.translate(result.orElse(null), targetClass);
-            }
-            public void iterate(Consumer<JsonLdDocument> consumer, Consumer<KGError> errorConsumer) {
-                iterate(JsonLdDocument.class, consumer, errorConsumer);
-            }
-
-            public <T> void iterate(Class<T> targetClass, Consumer<T> consumer, Consumer<KGError> errorConsumer) {
-                //For iteration, we don't need total result information. The opt-out will speed up execution.
-                returnTotalResults(false);
-                ResultPage<T> result = invoke(targetClass);
-                while(result!=null) {
-                    if (result.isSuccessful()) {
-                        if (!result.getData().isEmpty()) {
-                            result.getData().forEach(consumer);
-                            from(result.getFrom() + result.getSize());
-                            result = invoke(targetClass);
-                        } else {
-                            result = null;
-                        }
-                    } else {
-                        errorConsumer.accept(result.getError());
-                        break;
-                    }
-                }
+                return ResultPage.translate(getIdNamespace(), result.orElse(null), targetClass);
             }
             
             public ExecuteQueryByIdBuilder additionalRequestParams(Map<String, Object> additionalRequestParams){
@@ -1785,7 +1740,7 @@ public class KG {
             return new GetQuerySpecificationBuilder(queryId);
         }
 
-        public class GetQuerySpecificationBuilder{
+        public class GetQuerySpecificationBuilder {
 
             private final Map<String, Object> params = new HashMap<>();
             private final UUID queryId;
@@ -1798,11 +1753,12 @@ public class KG {
                 return invoke(Instance.class);
             }
 
+            
             public <T> Result<T> invoke(Class<T> targetClass){
                 String path = "queries/{queryId}";
                 path = path.replace("{queryId}", String.valueOf(this.queryId));
                 Optional<KGResponseWithRequest> result = get(path, params);
-                return Result.translate(result.orElse(null), targetClass);
+                return Result.translate(getIdNamespace(), result.orElse(null), targetClass);
             }
             
             
@@ -1815,7 +1771,7 @@ public class KG {
             return new ListPerRootTypeBuilder();
         }
 
-        public class ListPerRootTypeBuilder{
+        public class ListPerRootTypeBuilder extends ResultPageProvider<ListPerRootTypeBuilder> {
 
             private final Map<String, Object> params = new HashMap<>();
 
@@ -1825,37 +1781,19 @@ public class KG {
                 this.params.put("size", 50);
             }
 
+            public Stream<Instance> stream(){
+                return stream(Instance.class);
+            }
+
             public ResultPage<Instance> invoke(){
                 return invoke(Instance.class);
             }
 
+            @Override 
             public <T> ResultPage<T> invoke(Class<T> targetClass){
                 String path = "queries";
                 Optional<KGResponseWithRequest> result = get(path, params);
-                return ResultPage.translate(result.orElse(null), targetClass);
-            }
-            public void iterate(Consumer<Instance> consumer, Consumer<KGError> errorConsumer) {
-                iterate(Instance.class, consumer, errorConsumer);
-            }
-
-            public <T> void iterate(Class<T> targetClass, Consumer<T> consumer, Consumer<KGError> errorConsumer) {
-                //For iteration, we don't need total result information. The opt-out will speed up execution.
-                returnTotalResults(false);
-                ResultPage<T> result = invoke(targetClass);
-                while(result!=null) {
-                    if (result.isSuccessful()) {
-                        if (!result.getData().isEmpty()) {
-                            result.getData().forEach(consumer);
-                            from(result.getFrom() + result.getSize());
-                            result = invoke(targetClass);
-                        } else {
-                            result = null;
-                        }
-                    } else {
-                        errorConsumer.accept(result.getError());
-                        break;
-                    }
-                }
+                return ResultPage.translate(getIdNamespace(), result.orElse(null), targetClass);
             }
             
             public ListPerRootTypeBuilder from(int from){
@@ -1887,7 +1825,7 @@ public class KG {
             return new RemoveQueryBuilder(queryId);
         }
 
-        public class RemoveQueryBuilder{
+        public class RemoveQueryBuilder {
 
             private final Map<String, Object> params = new HashMap<>();
             private final UUID queryId;
@@ -1913,7 +1851,7 @@ public class KG {
             return new RunDynamicQueryBuilder();
         }
 
-        public class RunDynamicQueryBuilder{
+        public class RunDynamicQueryBuilder extends ResultPageProviderWithPayload<RunDynamicQueryBuilder, JsonLdDocument> {
 
             private final Map<String, Object> params = new HashMap<>();
 
@@ -1925,37 +1863,19 @@ public class KG {
                 this.params.put("stage", getStage());
             }
 
-            public ResultPage<JsonLdDocument> invoke(Map<String, Object> payload){
+            public Stream<JsonLdDocument> stream(JsonLdDocument payload){
+                return stream(payload, JsonLdDocument.class);
+            }
+
+            public ResultPage<JsonLdDocument> invoke(JsonLdDocument payload){
                 return invoke(payload, JsonLdDocument.class);
             }
 
-            public <T> ResultPage<T> invoke(Map<String, Object> payload, Class<T> targetClass){
+            @Override 
+            public <T> ResultPage<T> invoke(JsonLdDocument payload, Class<T> targetClass){
                 String path = "queries";
                 Optional<KGResponseWithRequest> result = post(path, payload, params);
-                return ResultPage.translate(result.orElse(null), targetClass);
-            }
-            public void iterate(Map<String, Object> payload, Consumer<JsonLdDocument> consumer, Consumer<KGError> errorConsumer) {
-                iterate(JsonLdDocument.class, payload, consumer, errorConsumer);
-            }
-
-            public <T> void iterate(Class<T> targetClass, Map<String, Object> payload, Consumer<T> consumer, Consumer<KGError> errorConsumer) {
-                //For iteration, we don't need total result information. The opt-out will speed up execution.
-                returnTotalResults(false);
-                ResultPage<T> result = invoke(payload, targetClass);
-                while(result!=null) {
-                    if (result.isSuccessful()) {
-                        if (!result.getData().isEmpty()) {
-                            result.getData().forEach(consumer);
-                            from(result.getFrom() + result.getSize());
-                            result = invoke(payload, targetClass);
-                        } else {
-                            result = null;
-                        }
-                    } else {
-                        errorConsumer.accept(result.getError());
-                        break;
-                    }
-                }
+                return ResultPage.translate(getIdNamespace(), result.orElse(null), targetClass);
             }
             
             public RunDynamicQueryBuilder additionalRequestParams(Map<String, Object> additionalRequestParams){
@@ -1992,7 +1912,7 @@ public class KG {
             return new SaveQueryBuilder(queryId);
         }
 
-        public class SaveQueryBuilder{
+        public class SaveQueryBuilder {
 
             private final Map<String, Object> params = new HashMap<>();
             private final UUID queryId;
@@ -2001,15 +1921,16 @@ public class KG {
                 this.queryId = queryId;
             }
 
-            public Result<Instance> invoke(Map<String, Object> payload){
+            public Result<Instance> invoke(JsonLdDocument payload){
                 return invoke(payload, Instance.class);
             }
 
-            public <T> Result<T> invoke(Map<String, Object> payload, Class<T> targetClass){
+            
+            public <T> Result<T> invoke(JsonLdDocument payload, Class<T> targetClass){
                 String path = "queries/{queryId}";
                 path = path.replace("{queryId}", String.valueOf(this.queryId));
                 Optional<KGResponseWithRequest> result = put(path, payload, params);
-                return Result.translate(result.orElse(null), targetClass);
+                return Result.translate(getIdNamespace(), result.orElse(null), targetClass);
             }
             
             
@@ -2033,7 +1954,7 @@ public class KG {
             return new GetOpenIdConfigUrlBuilder();
         }
 
-        public class GetOpenIdConfigUrlBuilder{
+        public class GetOpenIdConfigUrlBuilder {
 
             private final Map<String, Object> params = new HashMap<>();
 
@@ -2044,10 +1965,11 @@ public class KG {
                 return invoke(JsonLdDocument.class);
             }
 
+            
             public <T> Result<T> invoke(Class<T> targetClass){
                 String path = "setup/authentication";
                 Optional<KGResponseWithRequest> result = get(path, params);
-                return Result.translate(result.orElse(null), targetClass);
+                return Result.translate(getIdNamespace(), result.orElse(null), targetClass);
             }
             
         }
@@ -2064,7 +1986,7 @@ public class KG {
             return new GetBuilder(space);
         }
 
-        public class GetBuilder{
+        public class GetBuilder {
 
             private final Map<String, Object> params = new HashMap<>();
             private final String space;
@@ -2078,11 +2000,12 @@ public class KG {
                 return invoke(SpaceInformation.class);
             }
 
+            
             public <T> Result<T> invoke(Class<T> targetClass){
                 String path = "spaces/{space}";
                 path = path.replace("{space}", String.valueOf(this.space));
                 Optional<KGResponseWithRequest> result = get(path, params);
-                return Result.translate(result.orElse(null), targetClass);
+                return Result.translate(getIdNamespace(), result.orElse(null), targetClass);
             }
             
             public GetBuilder permissions(){
@@ -2097,7 +2020,7 @@ public class KG {
             return new ListBuilder();
         }
 
-        public class ListBuilder{
+        public class ListBuilder extends ResultPageProvider<ListBuilder> {
 
             private final Map<String, Object> params = new HashMap<>();
 
@@ -2108,37 +2031,19 @@ public class KG {
                 this.params.put("size", 50);
             }
 
+            public Stream<SpaceInformation> stream(){
+                return stream(SpaceInformation.class);
+            }
+
             public ResultPage<SpaceInformation> invoke(){
                 return invoke(SpaceInformation.class);
             }
 
+            @Override 
             public <T> ResultPage<T> invoke(Class<T> targetClass){
                 String path = "spaces";
                 Optional<KGResponseWithRequest> result = get(path, params);
-                return ResultPage.translate(result.orElse(null), targetClass);
-            }
-            public void iterate(Consumer<SpaceInformation> consumer, Consumer<KGError> errorConsumer) {
-                iterate(SpaceInformation.class, consumer, errorConsumer);
-            }
-
-            public <T> void iterate(Class<T> targetClass, Consumer<T> consumer, Consumer<KGError> errorConsumer) {
-                //For iteration, we don't need total result information. The opt-out will speed up execution.
-                returnTotalResults(false);
-                ResultPage<T> result = invoke(targetClass);
-                while(result!=null) {
-                    if (result.isSuccessful()) {
-                        if (!result.getData().isEmpty()) {
-                            result.getData().forEach(consumer);
-                            from(result.getFrom() + result.getSize());
-                            result = invoke(targetClass);
-                        } else {
-                            result = null;
-                        }
-                    } else {
-                        errorConsumer.accept(result.getError());
-                        break;
-                    }
-                }
+                return ResultPage.translate(getIdNamespace(), result.orElse(null), targetClass);
             }
             
             public ListBuilder from(int from){
@@ -2173,7 +2078,7 @@ public class KG {
             return new GetByNameBuilder();
         }
 
-        public class GetByNameBuilder{
+        public class GetByNameBuilder {
 
             private final Map<String, Object> params = new HashMap<>();
 
@@ -2183,14 +2088,15 @@ public class KG {
                 this.params.put("withProperties", false);
             }
 
-            public ResultsById<TypeInformation> invoke(Map<String, Object> payload){
+            public ResultsById<TypeInformation> invoke(List<String> payload){
                 return invoke(payload, TypeInformation.class);
             }
 
-            public <T> ResultsById<T> invoke(Map<String, Object> payload, Class<T> targetClass){
+            
+            public <T> ResultsById<T> invoke(List<String> payload, Class<T> targetClass){
                 String path = "typesByName";
                 Optional<KGResponseWithRequest> result = post(path, payload, params);
-                return ResultsById.translate(result.orElse(null), targetClass);
+                return ResultsById.translate(getIdNamespace(), result.orElse(null), targetClass);
             }
             
             public GetByNameBuilder space(String space){
@@ -2215,7 +2121,7 @@ public class KG {
             return new ListBuilder();
         }
 
-        public class ListBuilder{
+        public class ListBuilder extends ResultPageProvider<ListBuilder> {
 
             private final Map<String, Object> params = new HashMap<>();
 
@@ -2228,37 +2134,19 @@ public class KG {
                 this.params.put("withProperties", false);
             }
 
+            public Stream<TypeInformation> stream(){
+                return stream(TypeInformation.class);
+            }
+
             public ResultPage<TypeInformation> invoke(){
                 return invoke(TypeInformation.class);
             }
 
+            @Override 
             public <T> ResultPage<T> invoke(Class<T> targetClass){
                 String path = "types";
                 Optional<KGResponseWithRequest> result = get(path, params);
-                return ResultPage.translate(result.orElse(null), targetClass);
-            }
-            public void iterate(Consumer<TypeInformation> consumer, Consumer<KGError> errorConsumer) {
-                iterate(TypeInformation.class, consumer, errorConsumer);
-            }
-
-            public <T> void iterate(Class<T> targetClass, Consumer<T> consumer, Consumer<KGError> errorConsumer) {
-                //For iteration, we don't need total result information. The opt-out will speed up execution.
-                returnTotalResults(false);
-                ResultPage<T> result = invoke(targetClass);
-                while(result!=null) {
-                    if (result.isSuccessful()) {
-                        if (!result.getData().isEmpty()) {
-                            result.getData().forEach(consumer);
-                            from(result.getFrom() + result.getSize());
-                            result = invoke(targetClass);
-                        } else {
-                            result = null;
-                        }
-                    } else {
-                        errorConsumer.accept(result.getError());
-                        break;
-                    }
-                }
+                return ResultPage.translate(getIdNamespace(), result.orElse(null), targetClass);
             }
             
             public ListBuilder from(int from){
@@ -2302,7 +2190,7 @@ public class KG {
             return new MyInfoBuilder();
         }
 
-        public class MyInfoBuilder{
+        public class MyInfoBuilder {
 
             private final Map<String, Object> params = new HashMap<>();
 
@@ -2313,10 +2201,11 @@ public class KG {
                 return invoke(User.class);
             }
 
+            
             public <T> Result<T> invoke(Class<T> targetClass){
                 String path = "users/me";
                 Optional<KGResponseWithRequest> result = get(path, params);
-                return Result.translate(result.orElse(null), targetClass);
+                return Result.translate(getIdNamespace(), result.orElse(null), targetClass);
             }
             
         }
@@ -2328,7 +2217,7 @@ public class KG {
             return new MyRolesBuilder();
         }
 
-        public class MyRolesBuilder{
+        public class MyRolesBuilder {
 
             private final Map<String, Object> params = new HashMap<>();
 
@@ -2339,10 +2228,11 @@ public class KG {
                 return invoke(UserWithRoles.class);
             }
 
+            
             public <T> Result<T> invoke(Class<T> targetClass){
                 String path = "users/me/roles";
                 Optional<KGResponseWithRequest> result = get(path, params);
-                return Result.translate(result.orElse(null), targetClass);
+                return Result.translate(getIdNamespace(), result.orElse(null), targetClass);
             }
             
         }

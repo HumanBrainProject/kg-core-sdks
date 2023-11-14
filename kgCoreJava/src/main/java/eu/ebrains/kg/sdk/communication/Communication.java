@@ -139,4 +139,8 @@ public class Communication {
         return doRequest(new KGRequest(path, null, params, "DELETE"));
     }
 
+    protected String getIdNamespace(){
+        return kgConfig != null ? kgConfig.getIdNamespace() : null;
+    }
+
 }

@@ -1,22 +1,29 @@
 package eu.ebrains.kg.sdk.response;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import java.util.UUID;
+
 public class Instance extends JsonLdDocument{
 
+    @JsonIgnore
+    private transient UUID uuid;
 
-    public String getInstanceId(){
-        final Object atId = get("@id");
-        if(atId instanceof String){
-            return (String)atId;
-        }
-        return null;
+    @JsonIgnore
+    public UUID getUUID(){
+        return uuid;
     }
-//
-//    public Optional<UUID> getUUID(){
-////        final Optional<String> instanceId = getInstanceId();
-////        if(instanceId.isPresent()){
-////            return toUUID(instanceId.get());
-////        }
-////        return Optional.empty();
-//    }
+
+
+    @JsonIgnore
+    void evaluateUUID(String idNamespace){
+        final String instanceId = getInstanceId();
+        if(instanceId!=null && instanceId.startsWith(idNamespace)){
+            try{
+                this.uuid = UUID.fromString(instanceId.substring(idNamespace.length()));
+            }
+            catch (IllegalArgumentException ignored){
+            }
+        }
+    }
 
 }

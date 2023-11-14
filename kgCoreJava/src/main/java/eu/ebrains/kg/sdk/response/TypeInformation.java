@@ -1,37 +1,35 @@
 package eu.ebrains.kg.sdk.response;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class TypeInformation {
-    @JsonProperty("http://schema.org/identifier")
-    private final String identifier;
-    @JsonProperty("http://schema.org/description")
-    private final String description;
-    @JsonProperty("http://schema.org/name")
-    private final String name;
-    @JsonProperty("https://core.kg.ebrains.eu/vocab/meta/occurrences")
-    private final Integer occurrences;
+import java.util.List;
 
-    public TypeInformation(String identifier, String description, String name, Integer occurrences) {
+@JsonIgnoreProperties(ignoreUnknown = true)
+public record TypeInformation(String identifier, String description, String name, Integer occurrences, List<Space> spaces, String color, String labelProperty) {
+
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    public record Space(Integer occurrences, String space) {
+        public Space(@JsonProperty("https://core.kg.ebrains.eu/vocab/meta/occurrences") Integer occurrences, @JsonProperty("https://core.kg.ebrains.eu/vocab/meta/space") String space) {
+            this.occurrences = occurrences;
+            this.space = space;
+        }
+    }
+
+    public TypeInformation(@JsonProperty("http://schema.org/identifier") String identifier,
+                           @JsonProperty("http://schema.org/description") String description,
+                           @JsonProperty("http://schema.org/name") String name,
+                           @JsonProperty("https://core.kg.ebrains.eu/vocab/meta/occurrences") Integer occurrences,
+                           @JsonProperty("https://core.kg.ebrains.eu/vocab/meta/spaces") List<Space> spaces,
+                           @JsonProperty("https://core.kg.ebrains.eu/vocab/meta/color") String color,
+                           @JsonProperty("https://core.kg.ebrains.eu/vocab/meta/labelProperty") String labelProperty
+    ) {
         this.identifier = identifier;
         this.description = description;
         this.name = name;
         this.occurrences = occurrences;
-    }
-
-    public String getIdentifier() {
-        return identifier;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public Integer getOccurrences() {
-        return occurrences;
+        this.spaces = spaces;
+        this.color = color;
+        this.labelProperty = labelProperty;
     }
 }

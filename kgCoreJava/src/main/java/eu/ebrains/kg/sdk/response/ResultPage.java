@@ -5,7 +5,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import eu.ebrains.kg.sdk.communication.KGResponseWithRequest;
 
 import java.util.*;
-import java.util.function.Consumer;
 
 public class ResultPage<T> extends AbstractResultPage {
 
@@ -13,7 +12,7 @@ public class ResultPage<T> extends AbstractResultPage {
 
     private final static ObjectMapper objectMapper = new ObjectMapper();
 
-    public static <T> ResultPage<T> translate(KGResponseWithRequest result, Class<T> clazz){
+    public static <T> ResultPage<T> translate(String idNamespace, KGResponseWithRequest result, Class<T> clazz){
         try{
             if(result != null && result.getResponse() != null) {
                 if (result.getResponse().body() != null) {
@@ -23,7 +22,11 @@ public class ResultPage<T> extends AbstractResultPage {
                     if (response.get("data") instanceof List) {
                         resultList = new ArrayList<>();
                         for (Object item : ((List<?>) response.get("data"))) {
-                            resultList.add(objectMapper.readValue(objectMapper.writeValueAsString(item), clazz));
+                            final T i = objectMapper.readValue(objectMapper.writeValueAsString(item), clazz);
+                            if(i instanceof Instance) {
+                                ((Instance)i).evaluateUUID(idNamespace);
+                            }
+                            resultList.add(i);
                         }
                     }
                     KGError error = null;
@@ -63,16 +66,6 @@ public class ResultPage<T> extends AbstractResultPage {
 
     public List<T> getData() {
         return data;
-    }
-
-    public Optional<Boolean> hasNextPage(){
-        if(getTotal()!=null){
-            if(getFrom() != null && getSize()!=null){
-                return Optional.of(getFrom()+getSize() < getTotal());
-            }
-            return Optional.of(false);
-        }
-        return Optional.empty();
     }
 
     public boolean isSuccessful(){

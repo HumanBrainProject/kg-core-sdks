@@ -124,8 +124,10 @@ class JavaClientGenerator(ClientGenerator):
                         if len(raw)>0:
                             raw_response_type = raw[0]
 
+                    request_type = self._request_type(definition["requestBody"] if "requestBody" in definition else None)
 
-                    method: Dict[str, Any] = {"operation": operation, "summary": definition["summary"] if "summary" in definition else None, "has_payload": "requestBody" in definition and definition["requestBody"],
+
+                    method: Dict[str, Any] = {"operation": operation, "summary": definition["summary"] if "summary" in definition else None, "payload_type": request_type,
                               "path": {"name": relative_path,  "has_path_params": len(path_parameters) > 0}, "name": method_name,
                               "path_parameters": path_parameters, "required_parameters": required_parameters, "parameters": method_parameters, "query_parameters": query_parameters, "dynamic_parameters": dynamic_parameters, "response_type": response_type, "generic_response_type": generic_response_type, "raw_response_type": raw_response_type}
                     methods_by_category[category].append(method)
@@ -181,7 +183,7 @@ class JavaClientGenerator(ClientGenerator):
             "default": default,
             "in": input_["in"],
             "required": required,
-            "booleanTrueOnly": type_ == "boolean" and (default == "false" or not default)
+            "booleanTrueOnly": type_ == "boolean" and default == "false"
         }
 
     def _to_camel_case(self, snake_str):
@@ -203,6 +205,23 @@ class JavaClientGenerator(ClientGenerator):
         else:
             sort = 0
         return f"{sort} {input_['name']}"
+
+    def _request_type(self, request_body: Optional[Dict[str, Any]]) -> Optional[str]:
+        if request_body and "content" in request_body and request_body["content"] and "application/json" in request_body["content"] and request_body["content"]["application/json"] and "schema" in  request_body["content"]["application/json"] and request_body["content"]["application/json"]["schema"]:
+            schema = request_body["content"]["application/json"]["schema"]
+            if "type" in schema and schema["type"]:
+                if schema["type"] == "array":
+                    if "items" in schema and schema["items"] and "type" in schema["items"] and schema["items"]["type"]:
+                        if schema["items"]["type"] == "string":
+                            if "format" in schema["items"] and schema["items"]["format"]:
+                                if schema["items"]["format"] == "uuid":
+                                    return "List<UUID>"
+                            return "List<String>"
+            if "$ref" in schema and schema["$ref"]:
+                if schema["$ref"] == "#/components/schemas/JsonLdDoc" or schema["$ref"] == "#/components/schemas/NormalizedJsonLd":
+                    return "JsonLdDocument"
+            return "Map<String, Object>"
+        return None
 
     def _response_type(self, responses: Dict[str, Dict[str, Any]]) -> Optional[str]:
         response_reference = None
@@ -236,7 +255,7 @@ class JavaClientGenerator(ClientGenerator):
             elif response_reference == "#/components/schemas/ResultMapUUIDResultReleaseStatus":
                 return "ResultsById<ReleaseStatus>"
             elif response_reference == "#/components/schemas/ResultListReducedUserInformation":
-                return "Result<ListOfReducedUserInformation>"
+                return "ResultPage<ReducedUserInformation>"
             elif response_reference == "#/components/schemas/ResultUser":
                 return "Result<User>"
             elif response_reference == "#/components/schemas/ResultUserWithRoles":
@@ -253,10 +272,6 @@ class JavaClientGenerator(ClientGenerator):
                 return "ResultPage<TypeInformation>"
             elif response_reference == "#/components/schemas/ResultMapStringResultTypeInformation":
                 return "ResultsById<TypeInformation>"
-            elif response_reference == "#/components/schemas/TermsOfUseResult":
-                return "Optional<TermsOfUse>"
-            # elif response_reference == "#/components/schemas/JsonLdDoc":
-            #     return "ListOfJsonLdDocuments" if is_list else "JsonLdDocument"
             else:
                 print(f"Unknown response reference: {response_reference}")
         return None

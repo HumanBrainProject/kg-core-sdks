@@ -1,30 +1,15 @@
 package eu.ebrains.kg.sdk.response;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.UUID;
 
-public class KGError {
-    private final int code;
-    private final String message;
-    @JsonProperty(value = "instanceId")
-    private final UUID uuid;
-
-    public KGError(int code, String message, UUID uuid) {
+@JsonIgnoreProperties(ignoreUnknown = true)
+public record KGError(int code, String message, UUID uuid) {
+    public KGError(@JsonProperty(value = "code") int code, @JsonProperty(value = "message") String message, @JsonProperty(value = "instanceId") UUID uuid) {
         this.code = code;
         this.message = message;
         this.uuid = uuid;
-    }
-
-    public int getCode() {
-        return code;
-    }
-
-    public String getMessage() {
-        return message;
-    }
-
-    public UUID getUuid() {
-        return uuid;
     }
 }

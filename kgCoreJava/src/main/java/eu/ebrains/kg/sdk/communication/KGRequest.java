@@ -1,7 +1,5 @@
 package eu.ebrains.kg.sdk.communication;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import java.util.Map;
 
 class KGRequest {
@@ -9,8 +7,6 @@ class KGRequest {
     private final Object payload;
     private final Map<String, Object> queryParameters;
     private final String method;
-
-    private final ObjectMapper objectMapper = new ObjectMapper();
 
 
     public KGRequest(String path, Object payload, Map<String, Object> queryParameters, String method) {
