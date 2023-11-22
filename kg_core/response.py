@@ -27,8 +27,8 @@ from enum import Enum, EnumMeta
 from typing import Any, Callable, Iterable, Optional, Dict, TypeVar, Generic, List
 from uuid import UUID
 
-from pydantic import BaseModel
-from pydantic.main import ModelMetaclass
+from pydantic import BaseModel, Field
+from pydantic._internal._model_construction import ModelMetaclass
 
 from kg_core.__communication import KGRequestWithResponseContext
 
@@ -72,72 +72,37 @@ class TermsOfUse(BaseModel):
 class Error(BaseModel):
     code: int
     message: Optional[str] = None
-    uuid: Optional[UUID] = None
-
-    class Config:
-        fields = {
-            "uuid": "instanceId"
-        }
+    uuid: Optional[UUID] = Field(alias='instanceId', default=None)
 
 
 class Scope(BaseModel):
-    uuid: Optional[UUID] = None
+    uuid: Optional[UUID] = Field(alias='instanceId', default=None)
     label: Optional[str] = None
     space: Optional[str] = None
     types: Optional[List[str]] = None
     children: Optional[List[Scope]] = None
     permissions: Optional[List[str]] = None
 
-    class Config:
-        fields = {
-            "uuid": "id"
-        }
-
 
 class SpaceInformation(BaseModel):
-    identifier: Optional[str] = None
-    name: Optional[str] = None
-    permissions: Optional[List[str]] = None
-
-    class Config:
-        fields = {
-            "identifier": "http://schema.org/identifier",
-            "name": "http://schema.org/name",
-            "email": "http://schema.org/email",
-            "permissions": "https://core.kg.ebrains.eu/vocab/meta/permissions"
-        }
+    identifier: Optional[str] = Field(alias='http://schema.org/identifier', default=None)
+    name: Optional[str] = Field(alias='http://schema.org/name', default=None)
+    email: Optional[str] = Field(alias='http://schema.org/email', default=None)
+    permissions: Optional[List[str]] = Field(alias='https://core.kg.ebrains.eu/vocab/meta/permissions', default=None)
 
 
 class TypeInformation(BaseModel):
-    identifier: Optional[str] = None
-    description: Optional[str] = None
-    name: Optional[str] = None
+    identifier: Optional[str] = Field(alias='http://schema.org/identifier', default=None)
+    description: Optional[str] = Field(alias='http://schema.org/description', default=None)
+    name: Optional[str] = Field(alias='http://schema.org/name', default=None)
     # TODO incoming_links
-    occurrences: Optional[int] = None
-
-    # TODO properties
-    # TODO spaces
-
-    class Config:
-        fields = {
-            "identifier": "http://schema.org/identifier",
-            "description": "http://schema.org/description",
-            "name": "http://schema.org/name",
-            "occurrences": "https://core.kg.ebrains.eu/vocab/meta/occurrences"
-        }
+    occurrences: Optional[int] = Field(alias='https://core.kg.ebrains.eu/vocab/meta/occurrences', default=None)
 
 
 class ReducedUserInformation(BaseModel):
-    alternate_name: Optional[str] = None
-    name: Optional[str] = None
-    uuid: Optional[UUID] = None
-
-    class Config:
-        fields = {
-            "alternate_name": "http://schema.org/alternateName",
-            "name": "http://schema.org/name",
-            "uuid": "@id"
-        }
+    alternate_name: Optional[str] = Field(alias='http://schema.org/alternateName', default=None)
+    name: Optional[str] = Field(alias='http://schema.org/name', default=None)
+    uuid: Optional[UUID] = Field(alias='@id', default=None)
 
 
 class ListOfUUID(List[UUID]):
@@ -151,39 +116,20 @@ class ListOfReducedUserInformation(List[ReducedUserInformation]):
 
 
 class User(BaseModel):
-    alternate_name: Optional[str] = None
-    name: Optional[str] = None
-    email: Optional[str] = None
-    given_name: Optional[str] = None
-    family_name: Optional[str] = None
-    identifiers: Optional[List[str]] = None
-
-    class Config:
-        fields = {
-            "alternate_name": "http://schema.org/alternateName",
-            "name": "http://schema.org/name",
-            "email": "http://schema.org/email",
-            "given_name": "http://schema.org/givenName",
-            "family_name": "http://schema.org/familyName",
-            "identifiers": "http://schema.org/identifier"
-        }
+    alternate_name: Optional[str] = Field(alias='http://schema.org/alternateName', default=None)
+    name: Optional[str] = Field(alias='http://schema.org/name', default=None)
+    email: Optional[str] = Field(alias='http://schema.org/email', default=None)
+    given_name: Optional[str] = Field(alias='http://schema.org/givenName', default=None)
+    family_name: Optional[str] = Field(alias='http://schema.org/familyName', default=None)
+    identifiers: Optional[List[str]] = Field(alias='http://schema.org/identifier', default=None)
 
 
 class UserWithRoles(BaseModel):
     user: User
-    client_roles: Optional[List[str]] = None
-    user_roles: Optional[List[str]] = None
+    client_roles: Optional[List[str]] = Field(alias='clientRoles', default=None)
+    user_roles: Optional[List[str]] = Field(alias='userRoles', default=None)
     invitations: Optional[List[str]] = None
-    client_id: Optional[str] = None
-
-    # permissions
-
-    class Config:
-        fields = {
-            "client_roles": "clientRoles",
-            "user_roles": "userRoles",
-            "client_id": "clientId"
-        }
+    client_id: Optional[str] = Field(alias='clientId', default=None)
 
 
 ResponseType = TypeVar("ResponseType")
