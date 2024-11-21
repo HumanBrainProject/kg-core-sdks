@@ -27,8 +27,7 @@ from enum import Enum, EnumMeta
 from typing import Any, Callable, Iterable, Optional, Dict, TypeVar, Generic, List
 from uuid import UUID
 
-from pydantic import BaseModel
-from pydantic.main import ModelMetaclass
+from pydantic import BaseModel, Field
 
 from kg_core.__communication import KGRequestWithResponseContext
 
@@ -72,72 +71,39 @@ class TermsOfUse(BaseModel):
 class Error(BaseModel):
     code: int
     message: Optional[str] = None
-    uuid: Optional[UUID] = None
-
-    class Config:
-        fields = {
-            "uuid": "instanceId"
-        }
+    uuid: Optional[UUID] = Field(None, alias="instanceId")
 
 
 class Scope(BaseModel):
-    uuid: Optional[UUID] = None
+    uuid: Optional[UUID] = Field(None, alias="id")
     label: Optional[str] = None
     space: Optional[str] = None
     types: Optional[List[str]] = None
     children: Optional[List[Scope]] = None
     permissions: Optional[List[str]] = None
 
-    class Config:
-        fields = {
-            "uuid": "id"
-        }
-
 
 class SpaceInformation(BaseModel):
-    identifier: Optional[str] = None
-    name: Optional[str] = None
-    permissions: Optional[List[str]] = None
-
-    class Config:
-        fields = {
-            "identifier": "http://schema.org/identifier",
-            "name": "http://schema.org/name",
-            "email": "http://schema.org/email",
-            "permissions": "https://core.kg.ebrains.eu/vocab/meta/permissions"
-        }
+    identifier: Optional[str] = Field(None, alias="http://schema.org/identifier")
+    name: Optional[str] = Field(None, alias="http://schema.org/name")
+    permissions: Optional[List[str]] = Field(None, alias="https://core.kg.ebrains.eu/vocab/meta/permissions")
 
 
 class TypeInformation(BaseModel):
-    identifier: Optional[str] = None
-    description: Optional[str] = None
-    name: Optional[str] = None
+    identifier: Optional[str] = Field(None, alias="http://schema.org/identifier")
+    description: Optional[str] = Field(None, alias="http://schema.org/description")
+    name: Optional[str] = Field(None, alias="http://schema.org/name")
     # TODO incoming_links
-    occurrences: Optional[int] = None
+    occurrences: Optional[int] = Field(None, alias="https://core.kg.ebrains.eu/vocab/meta/occurrences")
 
     # TODO properties
     # TODO spaces
 
-    class Config:
-        fields = {
-            "identifier": "http://schema.org/identifier",
-            "description": "http://schema.org/description",
-            "name": "http://schema.org/name",
-            "occurrences": "https://core.kg.ebrains.eu/vocab/meta/occurrences"
-        }
-
 
 class ReducedUserInformation(BaseModel):
-    alternate_name: Optional[str] = None
-    name: Optional[str] = None
-    uuid: Optional[UUID] = None
-
-    class Config:
-        fields = {
-            "alternate_name": "http://schema.org/alternateName",
-            "name": "http://schema.org/name",
-            "uuid": "@id"
-        }
+    alternate_name: Optional[str] = Field(None, alias="http://schema.org/alternateName")
+    name: Optional[str] = Field(None, alias="http://schema.org/name")
+    uuid: Optional[UUID] = Field(None, alias="@id")
 
 
 class ListOfUUID(List[UUID]):
@@ -151,39 +117,22 @@ class ListOfReducedUserInformation(List[ReducedUserInformation]):
 
 
 class User(BaseModel):
-    alternate_name: Optional[str] = None
-    name: Optional[str] = None
-    email: Optional[str] = None
-    given_name: Optional[str] = None
-    family_name: Optional[str] = None
-    identifiers: Optional[List[str]] = None
-
-    class Config:
-        fields = {
-            "alternate_name": "http://schema.org/alternateName",
-            "name": "http://schema.org/name",
-            "email": "http://schema.org/email",
-            "given_name": "http://schema.org/givenName",
-            "family_name": "http://schema.org/familyName",
-            "identifiers": "http://schema.org/identifier"
-        }
+    alternate_name: Optional[str] = Field(None, alias="http://schema.org/alternateName")
+    name: Optional[str] = Field(None, alias="http://schema.org/name")
+    email: Optional[str] = Field(None, alias="http://schema.org/email")
+    given_name: Optional[str] = Field(None, alias="http://schema.org/givenName")
+    family_name: Optional[str] = Field(None, alias="http://schema.org/familyName")
+    identifiers: Optional[List[str]] = Field(None, alias="http://schema.org/identifier")
 
 
 class UserWithRoles(BaseModel):
     user: User
-    client_roles: Optional[List[str]] = None
-    user_roles: Optional[List[str]] = None
+    client_roles: Optional[List[str]] = Field(None, alias="clientRoles")
+    user_roles: Optional[List[str]] = Field(None, alias="userRoles")
     invitations: Optional[List[str]] = None
-    client_id: Optional[str] = None
+    client_id: Optional[str] = Field(None, alias="clientId")
 
     # permissions
-
-    class Config:
-        fields = {
-            "client_roles": "clientRoles",
-            "user_roles": "userRoles",
-            "client_id": "clientId"
-        }
 
 
 ResponseType = TypeVar("ResponseType")
@@ -223,9 +172,9 @@ class _AbstractResultPage(_AbstractResult):
 class ResponseObjectConstructor(Generic[ResponseType]):
     @staticmethod
     def init_response_object(constructor: Callable[..., ResponseType], data: Any, id_namespace: Any) -> ResponseType:
-        if type(constructor) is ModelMetaclass:
+        if issubclass(constructor, BaseModel):
             return constructor(**data)
-        elif type(constructor) is EnumMeta:
+        elif issubclass(constructor, Enum):
             # Not pretty but works for now
             return constructor[data]  # type: ignore
         elif constructor == JsonLdDocument or constructor == Instance:

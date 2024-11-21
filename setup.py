@@ -43,12 +43,12 @@ long_description = "This is a client library to access the EBRAINS KG core API v
 
 setup(
     name='ebrains_kg_core',
-    version='0.9.15',
+    version='0.9.20',
     packages=['kg_core'],
     package_data = {
         'kg_core': ['py.typed'],
     },
-    install_requires=['requests', 'pydantic==1.10.10'],
+    install_requires=['requests', 'pydantic'],
     author='EBRAINS',
     scripts=[],
     author_email = 'kg@ebrains.eu',
