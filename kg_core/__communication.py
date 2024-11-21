@@ -48,7 +48,7 @@ class TokenHandler(ABC):
 
     def define_endpoint(self, kg_endpoint: str):
         if not self._auth_endpoint and kg_endpoint:
-            auth_endpoint_response = requests.get(f"{kg_endpoint}/users/authorization/tokenEndpoint")
+            auth_endpoint_response = requests.get(f"{kg_endpoint}users/authorization/tokenEndpoint")
             if auth_endpoint_response.status_code == 200:
                 auth_endpoint = auth_endpoint_response.json()
                 if auth_endpoint and "data" in auth_endpoint and "endpoint" in auth_endpoint["data"] and auth_endpoint["data"]["endpoint"]:
