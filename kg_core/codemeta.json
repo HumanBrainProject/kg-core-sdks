@@ -1,0 +1,39 @@
+{
+    "@context": "https://w3id.org/codemeta/3.0",
+    "type": "SoftwareSourceCode",
+    "author": [
+        {
+            "type": "Person",
+            "familyName": "Schmid",
+            "givenName": "Oliver"
+        },
+        {
+            "type": "Person",
+            "familyName": "Tsanaktsidis",
+            "givenName": "Ioannis"
+        },
+        {
+            "type": "Person",
+            "familyName": "Dénervaud",
+            "givenName": "Gilles"
+        }
+    ],
+    "codeRepository": "https://github.com/HumanBrainProject/kg-core-sdks/",
+    "dateCreated": "2022-07-05",
+    "dateModified": "2024-11-21",
+    "description": "A Python SDK for interacting conveniently with the [EBRAINS KG Core](https://github.com/HumanBrainProject/kg-core). ",
+    "downloadUrl": "https://files.pythonhosted.org/packages/56/20/5b50be539e084529e83f7b3e80781b20147ed9d22e754e75cd1e3f7b7af0/ebrains_kg_core-0.9.20.tar.gz",
+    "isPartOf": "https://kg.ebrains.eu/",
+    "license": "https://spdx.org/licenses/Apache-2.0",
+    "name": "ebrains-kg-core",
+    "operatingSystem": [
+        "Linux",
+        "Windows",
+        "MacOS"
+    ],
+    "programmingLanguage": "Python 3",
+    "relatedLink": "https://docs.kg.ebrains.eu/",
+    "version": "0.9.20",
+    "developmentStatus": "active",
+    "issueTracker": "https://github.com/HumanBrainProject/kg-core-sdks/issues"
+}
